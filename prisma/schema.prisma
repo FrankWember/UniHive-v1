@@ -115,7 +115,6 @@ model Driver {
   carCapacity   Int
 
   user          User   @relation(fields: [userId], references: [id])
-  rides         Ride[]
 }
 
 model Ride {
