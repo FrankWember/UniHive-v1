@@ -1,6 +1,6 @@
 {
-    "name": "Prindle - Productivity App",
-    "short_name": "Prindle",
+    "name": "Unihive - Empowered Campus life",
+    "short_name": "Unihive",
     "description": "A Progressive Web App built with Next.js",
     "start_url": "/",
     "display": "standalone",

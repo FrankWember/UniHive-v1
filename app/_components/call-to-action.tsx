@@ -14,7 +14,7 @@ export function CallToActionSection() {
           </div>
           <div className="w-full max-w-sm space-y-2">
             <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-              <Input className="max-w-lg flex-1 border-muted-foreground" placeholder="Enter your student email" type="email" />
+              <Input className="w-full border-muted-foreground" placeholder="Enter your student email" type="email" />
               <Button type="submit">Sign Up</Button>
             </form>
           </div>
