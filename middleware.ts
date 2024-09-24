@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import NextAuth from "next-auth"
 import {
   DEFAULT_SIGNIN_REDIRECT,
   apiAuthPrefix,
