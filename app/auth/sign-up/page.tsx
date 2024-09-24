@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Link2Icon, LockClosedIcon } from '@radix-ui/react-icons'
-import React from 'react'
+import React, { Suspense } from 'react'
 import Link from 'next/link'
 import { SignUpForm } from '../_components/sign-up-form'
 
@@ -18,7 +18,7 @@ const page = () => {
             </CardDescription>
         </CardHeader>
         <CardContent>
-            <SignUpForm />
+            <Suspense><SignUpForm /></Suspense>
         </CardContent>
     </Card>
   )
