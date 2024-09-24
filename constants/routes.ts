@@ -32,5 +32,5 @@ export const publicRoutes = [
    * The default redirect path after loggin in
    * @type {string}
    */
-  export const DEFAULT_SIGNIN_REDIRECT = "/home/projects";
+  export const DEFAULT_SIGNIN_REDIRECT = "/home";
   
