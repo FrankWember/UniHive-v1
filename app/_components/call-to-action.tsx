@@ -1,7 +1,11 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation"
 
 export function CallToActionSection() {
+  const router = useRouter()
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-primary/10">
       <div className="container px-4 md:px-6">
@@ -15,7 +19,7 @@ export function CallToActionSection() {
           <div className="w-full max-w-sm space-y-2">
             <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
               <Input className="w-full border-muted-foreground" placeholder="Enter your student email" type="email" />
-              <Button type="submit">Sign Up</Button>
+              <Button type="submit" onClick={()=>router.push("/auth/sign-up")}>Sign Up</Button>
             </form>
           </div>
         </div>
