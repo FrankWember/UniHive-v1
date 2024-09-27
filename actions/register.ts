@@ -30,7 +30,7 @@ export const register = async (values: z.infer<typeof SignUpSchema>) => {
       name: name,
       email: email,
       phone: phone,
-      matricule: student_id,
+      studentId: student_id,
       password: hashedPassword,
     },
   });
