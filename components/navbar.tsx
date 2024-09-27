@@ -1,20 +1,19 @@
 "use client"
 
-import { HomeIcon, PersonIcon, CalendarIcon } from '@radix-ui/react-icons'
 import React from 'react'
 import { Button } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
-import { CarIcon, CogIcon } from 'lucide-react'
+import { CalendarSearch, CarTaxiFrontIcon, CogIcon, GraduationCap, StoreIcon } from 'lucide-react'
 
 
 export const Navbar = () => {
     const router = useRouter()
     const pathname = usePathname()
     const tabs = [
-        {name: "Services", link: "/home/services", children: <HomeIcon className="w-6 h-6" />},
-        {name: "Rides", link: "/home/rides", children: <CarIcon className="w-6 h-6"  />},
-        {name: "StudyGroups", link: "/home/study-grups", children: <PersonIcon className="w-6 h-6" />},
-        {name: "Events", link: "/home/events", children: <CalendarIcon className="w-6 h-6" />},
+        {name: "Services", link: "/home/services", children: <StoreIcon className="w-6 h-6" />},
+        {name: "Rides", link: "/home/rides", children: <CarTaxiFrontIcon className="w-6 h-6"  />},
+        {name: "StudyGroups", link: "/home/study-groups", children: <GraduationCap className="w-6 h-6" />},
+        {name: "Events", link: "/home/events", children: <CalendarSearch className="w-6 h-6" />},
         {name: "Settings", link: "/home/settings", children: <CogIcon className="w-6 h-6" />},
     ]
   return (

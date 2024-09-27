@@ -1,6 +1,15 @@
 import nodemailer from 'nodemailer';
 
-const domain = process.env.NEXT_PUBLIC_APP_URL;
+// Function to get the current domain
+const getCurrentDomain = () => {
+  if (typeof window !== 'undefined') {
+    // Client-side
+    return window.location.origin;
+  } else {
+    // Server-side
+    return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; // Fallback to localhost if env var is not set
+  }
+};
 
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
@@ -36,6 +45,7 @@ const createEmailTemplate = (title: string, body: string, buttonText: string, bu
 `;
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const domain = getCurrentDomain();
   const resetLink = `${domain}/auth/new-password?token=${token}`;
 
   const mailOptions = {
@@ -54,6 +64,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
+  const domain = getCurrentDomain();
   const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
   const mailOptions = {
@@ -72,6 +83,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  const domain = getCurrentDomain();
   const mailOptions = {
     from: 'thomsonnguems@gmail.com',
     to: email,

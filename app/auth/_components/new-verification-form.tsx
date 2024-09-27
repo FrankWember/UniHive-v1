@@ -1,6 +1,6 @@
 "use client";
 
-// import { BeatLoader } from "react-spinners";
+import { BeatLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
@@ -43,8 +43,7 @@ export const NewVerificationForm = () => {
 
   return (
       <div className="flex items-center justify-center w-full">
-        {/* Add a Loader for this */}
-        {!success && !error && <p>Loading...</p>}
+        {!success && !error && <BeatLoader />}
         {error && (
             <Alert variant="destructive">
               <ExclamationTriangleIcon className="h-6 w-6" />

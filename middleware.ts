@@ -7,9 +7,13 @@ import {
 } from "@/constants/routes";
 import { NextResponse } from "next/server";
 
-const authConfig = ({
-  providers: []
-}) satisfies NextAuthConfig
+import authConfig from "@/auth.config";
+
+// const authConfig = ({
+//   providers: []
+// }) satisfies NextAuthConfig
+
+
 export const { auth } = NextAuth(authConfig)
 
 export default auth((req) => {
