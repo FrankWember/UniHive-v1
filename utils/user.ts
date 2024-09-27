@@ -19,3 +19,11 @@ export const getUserById = async (userId: string) => {
     if (!user) return null
     return user
 }
+
+export const getUserByStudentId = async (studentId: string) => {
+    const user = await prisma.user.findUnique({
+        where: {studentId: studentId}
+    })
+    if (!user) return null
+    return user
+}

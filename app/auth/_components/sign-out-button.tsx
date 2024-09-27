@@ -4,7 +4,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { PersonIcon } from '@radix-ui/react-icons'
 import { useToast } from '@/hooks/use-toast'
-import { SignOutAction } from '@/actions/sign-out'
+import { SignOutAction } from '@/actions/logout'
 
 export const SignOutButton = () => {
     const { toast } = useToast()

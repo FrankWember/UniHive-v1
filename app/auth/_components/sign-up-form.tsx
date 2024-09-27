@@ -1,5 +1,6 @@
 "use client"
  
+import { useState, useTransition } from "react";
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -7,20 +8,29 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { SignUpSchema } from "@/constants/zod"
 import { useSearchParams } from 'next/navigation'
 import { Link2Icon } from "@radix-ui/react-icons"
+import { register } from "@/actions/register"
 
 
 export const SignUpForm = () => {
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
+    const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get("callbackUrl");
     const urlError =
@@ -41,9 +51,15 @@ export const SignUpForm = () => {
       })
 
     function onSubmit(values: z.infer<typeof SignUpSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+        setError("");
+        setSuccess("");
+    
+        startTransition(() => {
+          register(values).then((data) => {
+            setError(data.error);
+            setSuccess(data.sucess);
+          });
+        });
       }
   return (
     <Form {...form}>
@@ -130,6 +146,23 @@ export const SignUpForm = () => {
             )}
           />
         </div>
+
+        {error && (
+            <Alert variant="destructive">
+              <ExclamationTriangleIcon className="h-6 w-6" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert>
+              <RocketIcon className="h-6 w-6"/>
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
+
+
         <Button type="submit" className="w-full">Submit</Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">
             <p>Already have an Account? </p>
