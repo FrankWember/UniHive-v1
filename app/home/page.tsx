@@ -1,8 +1,19 @@
-import React from 'react'
+"use client"
+
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const page = () => {
+  const router = useRouter()
+
+  useEffect(()=> {
+    router.push("home/services")
+  })
+
   return (
-    <div>Home page</div>
+    <div>
+      Home page
+    </div>
   )
 }
 
