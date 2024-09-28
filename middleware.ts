@@ -1,24 +1,15 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import {
   DEFAULT_SIGNIN_REDIRECT,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
 } from "@/constants/routes";
-import { NextResponse } from "next/server";
 
-import authConfig from "@/auth.config";
-
-// const authConfig = ({
-//   providers: []
-// }) satisfies NextAuthConfig
-
-
-export const { auth } = NextAuth(authConfig)
-
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+export default async function middleware(request: NextRequest) {
+  const { nextUrl } = request;
+  const isLoggedIn = await getLoginStatus(request);
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -49,7 +40,22 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-})
+}
+
+async function getLoginStatus(request: NextRequest): Promise<boolean> {
+  const response = await fetch(new URL('/api/auth/session', request.url), {
+    headers: {
+      cookie: request.headers.get('cookie') || '',
+    },
+  });
+
+  if (response.ok) {
+    const session = await response.json();
+    return !!session.user;
+  }
+
+  return false;
+}
 
 export const config = {
   matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
