@@ -25,6 +25,7 @@ import { SignUpSchema } from "@/constants/zod"
 import { useSearchParams } from 'next/navigation'
 import { Link2Icon } from "@radix-ui/react-icons"
 import { register } from "@/actions/register"
+import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes";
 
 
 export const SignUpForm = () => {
@@ -32,11 +33,8 @@ export const SignUpForm = () => {
     const [success, setSuccess] = useState<string | undefined>("");
     const [isPending, startTransition] = useTransition();
     const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl");
-    const urlError =
-      searchParams.get("error") === "OAuthAccountNotLinked"
-        ? "Email already in use with different Provider!"
-        : "";
+    const callbackUrl = searchParams.get("callbackUrl") || DEFAULT_SIGNIN_REDIRECT
+
 
     const form = useForm<z.infer<typeof SignUpSchema>>({
         resolver: zodResolver(SignUpSchema),

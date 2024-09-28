@@ -29,6 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EnvelopeClosedIcon, PersonIcon } from '@radix-ui/react-icons'
 import React from 'react'
 import { EmailLogin, IDLogin } from "@/actions/login";
+import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes";
 
 export const SignInForm = () => {
   return (
@@ -55,10 +56,6 @@ const EmailForm = () => {
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "Email already in use with different Provider!"
-      : "";
 
   const form = useForm<z.infer<typeof EmailSignInSchema>>({
       resolver: zodResolver(EmailSignInSchema),
@@ -180,11 +177,7 @@ const IDForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get("callbackUrl");
-    const urlError =
-      searchParams.get("error") === "OAuthAccountNotLinked"
-        ? "Email already in use with different Provider!"
-        : "";
+    const callbackUrl = searchParams.get("callbackUrl")
 
     const form = useForm<z.infer<typeof IDSignInSchema>>({
         resolver: zodResolver(IDSignInSchema),
