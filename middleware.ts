@@ -8,53 +8,65 @@ import {
 } from "@/constants/routes";
 
 export default async function middleware(request: NextRequest) {
-  const { nextUrl } = request;
-  const isLoggedIn = await getLoginStatus(request);
+  try {
+    const { nextUrl } = request;
+    const isLoggedIn = await getLoginStatus(request);
 
-  const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+    const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  if (isApiAuthRoute) {
-    return NextResponse.next();
-  }
-
-  if (isAuthRoute) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
-    }
-    return NextResponse.next();
-  }
-
-  if (!isLoggedIn && !isPublicRoute) {
-    let callbackUrl = nextUrl.pathname;
-    if (nextUrl.search) {
-      callbackUrl += nextUrl.search;
+    if (isApiAuthRoute) {
+      return NextResponse.next();
     }
 
-    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+    if (isAuthRoute) {
+      if (isLoggedIn) {
+        return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
+      }
+      return NextResponse.next();
+    }
 
-    return NextResponse.redirect(
-      new URL(`/auth/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-    );
+    if (!isLoggedIn && !isPublicRoute) {
+      let callbackUrl = nextUrl.pathname;
+      if (nextUrl.search) {
+        callbackUrl += nextUrl.search;
+      }
+
+      const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+      return NextResponse.redirect(
+        new URL(`/auth/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+      );
+    }
+
+    return NextResponse.next();
+  } catch (error) {
+    console.error('Middleware error:', error);
+    // Log the error to your error tracking service here if you have one
+    return NextResponse.next();
   }
-
-  return NextResponse.next();
 }
 
 async function getLoginStatus(request: NextRequest): Promise<boolean> {
-  const response = await fetch(new URL('/api/auth/session', request.url), {
-    headers: {
-      cookie: request.headers.get('cookie') || '',
-    },
-  });
+  try {
+    const response = await fetch(new URL('/api/auth/session', request.url), {
+      headers: {
+        cookie: request.headers.get('cookie') || '',
+      },
+    });
 
-  if (response.ok) {
-    const session = await response.json();
-    return !!session.user;
+    if (response.ok) {
+      const session = await response.json();
+      return !!session.user;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('getLoginStatus error:', error);
+    // Log the error to your error tracking service here if you have one
+    return false;
   }
-
-  return false;
 }
 
 export const config = {
