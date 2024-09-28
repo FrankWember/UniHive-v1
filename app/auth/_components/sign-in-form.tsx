@@ -161,7 +161,7 @@ const EmailForm = () => {
           </Alert>
         )}
 
-        <Button type="submit" className="w-full">Submit</Button><Button type="submit" className="w-full" disabled={isPending}>
+        <Button type="submit" className="w-full" disabled={isPending}>
           {isPending===true ? "Signing In...": "Submit"}
         </Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">

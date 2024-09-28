@@ -8,7 +8,7 @@ import React from 'react'
 export const CancelButton = () => {
     const router = useRouter()
   return (
-    <Button onClick={()=>router.back()}>
+    <Button onClick={()=>router.back()} variant="outline">
         <ArrowLeftIcon className="mr-2" />
         Cancel
     </Button>

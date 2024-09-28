@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button'
 import { PersonIcon } from '@radix-ui/react-icons'
 import { useToast } from '@/hooks/use-toast'
 import { SignOutAction } from '@/actions/logout'
+import { useRouter } from 'next/navigation'
 
 export const SignOutButton = () => {
     const { toast } = useToast()
+    const router = useRouter()
     
     const onSignOut = async () => {
         await SignOutAction()
@@ -17,6 +19,7 @@ export const SignOutButton = () => {
                 description: "Your account was signed out successfully."
             })
         })
+        router.push("/home")
     }
   return (
     <Button onClick={onSignOut} variant="destructive">
