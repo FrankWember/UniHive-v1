@@ -17,12 +17,12 @@ export default function SettingsPage() {
       <div className="space-y-8 mx-4 md:mx-10">
         <section>
           <h2 className="text-xl font-semibold mb-4">Theme</h2>
-          <div><ThemeSwitcher /></div>
+          <div className="w-fit"><ThemeSwitcher /></div>
         </section>
 
         <section>
           <Button variant="destructive">
-            <Link href="/auth/sign-out" className="flex gap-2">
+            <Link href="/auth/sign-out" className="flex gap-2 items-center">
               <PersonIcon /> Sign Out
             </Link>
           </Button>

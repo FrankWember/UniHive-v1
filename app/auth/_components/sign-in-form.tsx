@@ -161,7 +161,9 @@ const EmailForm = () => {
           </Alert>
         )}
 
-        <Button type="submit" className="w-full">Submit</Button>
+        <Button type="submit" className="w-full">Submit</Button><Button type="submit" className="w-full" disabled={isPending}>
+          {isPending===true ? "Signing In...": "Submit"}
+        </Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">
             <p>Don't have an Account? </p>
             <Link href={`/auth/sign-up?callbackUrl=${callbackUrl}`} className="flex items-center text-black dark:text-white hover:underline">Sign Up <Link2Icon /></Link>
@@ -282,7 +284,9 @@ const IDForm = () => {
           </Alert>
         )}
 
-        <Button type="submit" className="w-full">Submit</Button>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending===true ? "Signing In...": "Submit"}
+        </Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">
             <p>Don't have an Account? </p>
             <Link href={`/auth/sign-up?callbackUrl=${callbackUrl}`} className="flex items-center text-black dark:text-white hover:underline">Sign Up <Link2Icon /></Link>
