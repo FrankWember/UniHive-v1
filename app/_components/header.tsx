@@ -52,7 +52,7 @@ export function Header() {
 
   return (
     <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b fixed top-0 left-0 right-0 bg-background z-50">
-      <Link className="flex items-center justify-center" href="#">
+      <Link className="flex items-center justify-center" href="/">
         <Suspense fallback={<Skeleton className="w-40 h-40" />}>
           <Image
             src="/Unihive.svg"
