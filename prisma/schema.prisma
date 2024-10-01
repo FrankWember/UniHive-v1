@@ -38,11 +38,10 @@ model User {
 
   services         Service[]
   serviceReviews   ServiceReview[]
+  servicesUsed     ServiceUsed[]      @relation("ServicesUsed")
   driver           Driver?
   ridesOffered     Ride[]             @relation("DriverRides")
   ridesRequested   Ride[]             @relation("PassengerRides")
-  productsSold     Product[]          @relation("SellerProducts")
-  productsBought   Product[]          @relation("BuyerProducts")
   studyGroups      StudyGroupMember[]
   assignments      Assignment[]
   eventsCreated    Event[]            @relation("CreatorEvents")
@@ -114,14 +113,17 @@ model TwoFactorConfirmation {
 // SERVICES //
 
 model Service {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   providerId  String
+  name        String
+  image       String
   description String
   price       Float
-  category    String
+  category    String[]
 
-  provider User            @relation(fields: [providerId], references: [id])
-  reviews  ServiceReview[]
+  provider  User            @relation(fields: [providerId], references: [id])
+  reviews   ServiceReview[]
+  customers ServiceUsed[]   @relation("Customers")
 }
 
 model ServiceReview {
@@ -155,22 +157,24 @@ model Ride {
   startLocation String
   endLocation   String
   status        String
+  isPaid        Boolean  @default(false)
+  paymentId     String?
 
-  driver    User @relation("DriverRides", fields: [driverId], references: [id])
-  passenger User @relation("PassengerRides", fields: [passengerId], references: [id])
+  driver    User     @relation("DriverRides", fields: [driverId], references: [id])
+  passenger User     @relation("PassengerRides", fields: [passengerId], references: [id])
+  reciept   Payment? @relation("RideReceipts", fields: [paymentId], references: [id])
 }
 
-model Product {
-  id          String  @id @default(cuid())
-  sellerId    String
-  buyerId     String?
-  name        String
-  description String
-  price       Float
-  category    String
+model ServiceUsed {
+  id        String  @id @default(uuid())
+  serviceId String
+  buyerId   String
+  isPaid    Boolean @default(false)
+  paymentId String?
 
-  seller User  @relation("SellerProducts", fields: [sellerId], references: [id])
-  buyer  User? @relation("BuyerProducts", fields: [buyerId], references: [id])
+  buyer   User     @relation("ServicesUsed", fields: [buyerId], references: [id])
+  service Service  @relation("Customers", fields: [serviceId], references: [id])
+  reciept Payment? @relation("ServiceReceipts", fields: [paymentId], references: [id])
 }
 
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
@@ -276,7 +280,7 @@ model Message {
 }
 
 // ------------------------------------------------------------------------------------------------------------------------ //
-// PAYMENTS //
+// PAYMENTS & NOTIFICATIONS//
 
 model Notification {
   id        String   @id @default(cuid())
@@ -300,4 +304,7 @@ model Payment {
 
   payer    User @relation("PayerPayments", fields: [payerId], references: [id])
   receiver User @relation("ReceiverPayments", fields: [receiverId], references: [id])
+
+  ServiceReceipts ServiceUsed[] @relation("ServiceReceipts")
+  RidesReceipts   Ride[]        @relation("RideReceipts")
 }

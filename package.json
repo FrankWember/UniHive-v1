@@ -14,7 +14,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@neondatabase/serverless": "^0.9.5",
     "@prisma/adapter-neon": "^5.19.1",
-    "@prisma/client": "^5.19.1",
+    "@prisma/client": "^5.20.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -57,7 +57,6 @@
     "next-pwa": "^5.6.0",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.15",
-    "prisma": "^5.19.1",
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
@@ -78,6 +77,7 @@
     "@types/react-dom": "^18",
     "@types/uuid": "^10.0.0",
     "postcss": "^8",
+    "prisma": "^5.20.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
