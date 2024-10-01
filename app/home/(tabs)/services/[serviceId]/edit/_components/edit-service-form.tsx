@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MultiImageUpload } from './multi-image-upload'
-import { CategorySelect } from './category-select'
+import { MultiImageUpload } from '@/app/home/(tabs)/services/add/_components/multi-image-upload'
+import { CategorySelect } from '@/app/home/(tabs)/services/add/_components/category-select'
 import { useRouter } from 'next/navigation'
-import { createService } from '@/actions/services'
+import { updateService } from '@/actions/services'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -26,33 +26,44 @@ const formSchema = z.object({
   category: z.array(z.string()).min(1, {
     message: "Please select at least one category.",
   }),
-  images: z.array(z.instanceof(File)).min(1, {
+  images: z.array(z.union([z.string(), z.instanceof(File)])).min(1, {
     message: "Please upload at least one image.",
   }),
 })
 
-export const AddServiceForm = () => {
+interface EditServiceFormProps {
+  service: {
+    id: string
+    name: string
+    description: string
+    price: number
+    category: string[]
+    images: string[]
+  }
+}
+
+export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      category: [],
-      images: [],
+      name: service.name,
+      description: service.description,
+      price: service.price,
+      category: service.category,
+      images: service.images,
     },
   })
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmitting(true)
     try {
-      await createService(values)
-      router.push('/home/services')
+      await updateService(service.id, values)
+      router.push(`/home/(tabs)/services/${service.id}`)
     } catch (error) {
-      console.error('Error creating service:', error)
+      console.error('Error updating service:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -128,7 +139,7 @@ export const AddServiceForm = () => {
           )}
         />
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Creating..." : "Create Service"}
+          {isSubmitting ? "Updating..." : "Update Service"}
         </Button>
       </form>
     </Form>

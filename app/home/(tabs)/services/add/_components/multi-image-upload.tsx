@@ -4,8 +4,8 @@ import Image from 'next/image'
 import { X } from 'lucide-react'
 
 interface MultiImageUploadProps {
-  value: File[]
-  onChange: (files: File[]) => void
+  value: (string | File)[]
+  onChange: (files: (string | File)[]) => void
 }
 
 export const MultiImageUpload: React.FC<MultiImageUploadProps> = ({ value, onChange }) => {
@@ -39,7 +39,7 @@ export const MultiImageUpload: React.FC<MultiImageUploadProps> = ({ value, onCha
         {value.map((file, index) => (
           <div key={index} className="relative">
             <Image
-              src={URL.createObjectURL(file)}
+              src={typeof file === 'string' ? file : URL.createObjectURL(file)}
               alt={`Uploaded image ${index + 1}`}
               width={100}
               height={100}
