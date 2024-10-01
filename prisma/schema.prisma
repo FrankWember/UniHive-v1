@@ -116,7 +116,7 @@ model Service {
   id          String   @id @default(cuid())
   providerId  String
   name        String
-  image       String
+  images      String[]
   description String
   price       Float
   category    String[]
@@ -218,6 +218,7 @@ model Event {
   creatorId   String
   title       String
   description String
+  images      String[]
   dateTime    DateTime
   location    String
 
@@ -241,6 +242,7 @@ model Announcement {
   adminId     String
   title       String
   content     String
+  images      String[]
   publishDate DateTime @default(now())
 
   admin User @relation(fields: [adminId], references: [id])

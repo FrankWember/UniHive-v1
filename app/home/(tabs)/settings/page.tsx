@@ -17,7 +17,7 @@ export default function SettingsPage() {
       <div className="space-y-8 mx-4 md:mx-10">
         <section>
           <h2 className="text-xl font-semibold mb-4">Theme</h2>
-          <div className="w-fit"><ThemeSwitcher /></div>
+          <div className="w-fit"><ThemeSwitcher mode="expanded" /></div>
         </section>
 
         <section>
