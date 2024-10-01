@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { SearchBar } from './_components/search-bar'
 import { SideMenu } from '@/app/home/(tabs)/services/_components/side-menu'
 import { MatchedServices } from '@/app/home/(tabs)/services/_components/matched-services'
@@ -15,7 +15,7 @@ const ServicesPage = () => {
       </div>
 
       <div className="w-full mt-20">
-        <MatchedServices />
+        <Suspense><MatchedServices /></Suspense>
       </div>
     </div>
   )
