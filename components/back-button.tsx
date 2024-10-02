@@ -8,8 +8,8 @@ import { ChevronLeftIcon } from '@radix-ui/react-icons'
 export const BackButton = () => {
     const router = useRouter()
   return (
-    <Button onClick={() => router.back()}>
-        <ChevronLeftIcon className="w-4 h-4" />
+    <Button onClick={() => router.back()} variant="outline" size="icon">
+        <ChevronLeftIcon />
     </Button>
   )
 }

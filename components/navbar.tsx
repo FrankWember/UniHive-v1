@@ -17,11 +17,11 @@ export const Navbar = () => {
         {name: "Settings", link: "/home/settings", children: <CogIcon className="w-6 h-6" />},
     ]
   return (
-    <nav className="fixed flex w-full justify-center bottom-5 backdrop-blur-sm">
-        <div className="flex z-50 border rounded-full mx-3 w-fit h-14 bg-muted/20 items-center justify-center">
+    <nav className="fixed flex w-full justify-center bottom-5">
+        <div className="flex z-50 border rounded-full mx-3 w-fit h-14 bg-muted/20 items-center justify-center backdrop-blur-sm">
             {tabs.map(tab=>(
                 <Button
-                    variant={tab.link.includes(pathname)?"default":"ghost"}
+                    variant={pathname.includes(tab.link)?"default":"ghost"}
                     key={tab.name}
                     onClick={()=>router.push(tab.link)}
                     className="rounded-full w-full h-full"

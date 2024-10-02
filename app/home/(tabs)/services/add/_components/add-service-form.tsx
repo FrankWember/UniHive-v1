@@ -41,7 +41,7 @@ export const AddServiceForm = () => {
       name: "",
       description: "",
       price: 0,
-      category: [],
+      category: [], // Ensure this is initialized as an empty array
       images: [],
     },
   })
@@ -92,7 +92,7 @@ export const AddServiceForm = () => {
           name="price"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Price</FormLabel>
+              <FormLabel>Price ($)</FormLabel>
               <FormControl>
                 <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
               </FormControl>
@@ -107,7 +107,13 @@ export const AddServiceForm = () => {
             <FormItem>
               <FormLabel>Categories</FormLabel>
               <FormControl>
-                <CategorySelect value={field.value} onChange={field.onChange} />
+                <CategorySelect 
+                  value={field.value} 
+                  onChange={(newValue) => {
+                    console.log("Category changed:", newValue)
+                    field.onChange(newValue)
+                  }} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

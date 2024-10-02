@@ -1,42 +1,38 @@
-import React from 'react'
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+"use client"
+
+import * as React from "react"
+import { ChevronsUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "@/components/ui/command"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 const categories = [
-  { value: "food", label: "Food" },
-  { value: "transportation", label: "Transportation" },
-  { value: "entertainment", label: "Entertainment" },
-  { value: "academic", label: "Academic" },
-  { value: "health", label: "Health & Wellness" },
+  { value: "tutoring", label: "Tutoring" },
+  { value: "note-taking", label: "Note Taking" },
+  { value: "essay-writing", label: "Essay Writing" },
+  { value: "research-assistance", label: "Research Assistance" },
+  { value: "programming-help", label: "Programming Help" },
 ]
 
-interface CategorySelectProps {
-  value: string[]
+export function CategorySelect({
+  value = [], // Provide a default empty array
+  onChange
+}: {
+  value?: string[] // Make value optional
   onChange: (value: string[]) => void
-}
-
-export const CategorySelect: React.FC<CategorySelectProps> = ({ value, onChange }) => {
+}) {
   const [open, setOpen] = React.useState(false)
 
-  const handleSelect = (category: string) => {
-    if (value.includes(category)) {
-      onChange(value.filter((item) => item !== category))
-    } else {
-      onChange([...value, category])
-    }
+  const handleToggle = (categoryValue: string) => {
+    const newValue = value.includes(categoryValue)
+      ? value.filter(v => v !== categoryValue)
+      : [...value, categoryValue]
+    onChange(newValue)
   }
 
   return (
@@ -49,32 +45,24 @@ export const CategorySelect: React.FC<CategorySelectProps> = ({ value, onChange 
           className="w-full justify-between"
         >
           {value.length > 0
-            ? `${value.length} categor${value.length === 1 ? 'y' : 'ies'} selected`
+            ? `${value.length} categories selected`
             : "Select categories..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
-        <Command>
-          <CommandInput placeholder="Search categories..." />
-          <CommandEmpty>No category found.</CommandEmpty>
-          <CommandGroup>
-            {categories.map((category) => (
-              <CommandItem
-                key={category.value}
-                onSelect={() => handleSelect(category.value)}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value.includes(category.value) ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {category.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          {categories.map((category) => (
+            <div key={category.value} className="flex items-center space-x-2">
+              <Switch
+                id={category.value}
+                checked={value.includes(category.value)}
+                onCheckedChange={() => handleToggle(category.value)}
+              />
+              <Label htmlFor={category.value}>{category.label}</Label>
+            </div>
+          ))}
+        </div>
       </PopoverContent>
     </Popover>
   )
