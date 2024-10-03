@@ -180,6 +180,12 @@ model ServiceUsed {
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
 // STUDY GROUPS //
 
+model Course {
+  id String @id @default(uuid())
+  title String
+  code String
+}
+
 model StudyGroup {
   id         String @id @default(cuid())
   name       String
@@ -187,6 +193,7 @@ model StudyGroup {
 
   members     StudyGroupMember[]
   assignments Assignment[]
+  chats Chat[]
 }
 
 model StudyGroupMember {
@@ -207,11 +214,66 @@ model Assignment {
   title       String
   description String
   filePath    String
+  courseCode  String
   uploadDate  DateTime @default(now())
 
   group    StudyGroup @relation(fields: [groupId], references: [id])
   uploader User       @relation(fields: [uploaderId], references: [id])
 }
+
+
+
+model Announcement {
+  id          String   @id @default(cuid())
+  adminId     String
+  title       String
+  content     String
+  images      String[]
+  publishDate DateTime @default(now())
+
+  admin User @relation(fields: [adminId], references: [id])
+}
+
+// ------------------------------------------------------------------------------------------------------------------------ //
+// GROUP CHATS //
+
+model Chat {
+  id       String @id @default(cuid())
+  chatType String
+  studyGroupId String
+
+  studyGroup StudyGroup @relation(fields: [studyGroupId], references: [id])
+
+  participants ChatParticipant[]
+  messages     Message[]
+}
+
+model ChatParticipant {
+  id     String @id @default(cuid())
+  userId String
+  chatId String
+
+  user User @relation(fields: [userId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id])
+
+  @@unique([userId, chatId])
+}
+
+model Message {
+  id       String   @id @default(cuid())
+  chatId   String
+  senderId String
+  content  String
+  files String[]
+  sendTime DateTime @default(now())
+
+  chat   Chat @relation(fields: [chatId], references: [id])
+  sender User @relation(fields: [senderId], references: [id])
+}
+
+
+// ------------------------------------------------------------------------------------------------------------------------ //
+// EVENTS
 
 model Event {
   id          String   @id @default(cuid())
@@ -238,49 +300,7 @@ model EventAttendee {
   @@unique([userId, eventId])
 }
 
-model Announcement {
-  id          String   @id @default(cuid())
-  adminId     String
-  title       String
-  content     String
-  images      String[]
-  publishDate DateTime @default(now())
 
-  admin User @relation(fields: [adminId], references: [id])
-}
-
-// ------------------------------------------------------------------------------------------------------------------------ //
-// GROUP CHATS //
-
-model Chat {
-  id       String @id @default(cuid())
-  chatType String
-
-  participants ChatParticipant[]
-  messages     Message[]
-}
-
-model ChatParticipant {
-  id     String @id @default(cuid())
-  userId String
-  chatId String
-
-  user User @relation(fields: [userId], references: [id])
-  chat Chat @relation(fields: [chatId], references: [id])
-
-  @@unique([userId, chatId])
-}
-
-model Message {
-  id       String   @id @default(cuid())
-  chatId   String
-  senderId String
-  content  String
-  sendTime DateTime @default(now())
-
-  chat   Chat @relation(fields: [chatId], references: [id])
-  sender User @relation(fields: [senderId], references: [id])
-}
 
 // ------------------------------------------------------------------------------------------------------------------------ //
 // PAYMENTS & NOTIFICATIONS//

@@ -15,7 +15,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
           <Image
-            src={service.image}
+            src={service.images[0]}
             alt={service.name}
             layout="fill"
             objectFit="cover"

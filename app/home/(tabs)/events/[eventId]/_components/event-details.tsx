@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { CalendarIcon, MapPinIcon, User as UserIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Image from 'next/image'
 
 interface EventDetailsProps {
   event: {
@@ -49,7 +50,7 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
         {event.images.length > 0 && (
           <div className="grid grid-cols-2 gap-4">
             {event.images.map((image, index) => (
-              <img key={index} src={image} alt={`Event image ${index + 1}`} className="rounded-md object-cover w-full h-48" />
+              <Image key={index} src={image} alt={`Event image ${index + 1}`} className="rounded-md object-cover w-full h-48" fill/>
             ))}
           </div>
         )}
