@@ -218,6 +218,7 @@ model Event {
   creatorId   String
   title       String
   description String
+  type        String
   images      String[]
   dateTime    DateTime
   location    String

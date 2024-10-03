@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MultiImageUpload } from './multi-image-upload'
+import { MultiImageUpload } from '@/components/multi-image-upload'
 import { CategorySelect } from './category-select'
 import { useRouter } from 'next/navigation'
 import { createService } from '@/actions/services'
