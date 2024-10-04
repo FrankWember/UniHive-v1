@@ -31,12 +31,12 @@ export const ServiceActions: React.FC<ServiceActionsProps> = ({ serviceId, provi
   }
 
   const handleEdit = () => {
-    router.push(`/home/(tabs)/services/${serviceId}/edit`)
+    router.push(`/home/services/${serviceId}/edit`)
   }
 
   const handleDelete = async () => {
     await deleteService(serviceId)
-    router.push('/home/(tabs)/services')
+    router.push('/home/services')
   }
 
   return (

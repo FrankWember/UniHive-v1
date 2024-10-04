@@ -24,7 +24,7 @@ const EventPage = async ({ params }: { params: { eventId: string } }) => {
         <h1 className="text-2xl font-bold">{event.title}</h1>
         <div className="flex items-center space-x-2">
           <RoleGate allowedRoles={[UserRole.ADMIN]}>
-            <Link href={`/home/(tabs)/events/${event.id}/edit`} passHref>
+            <Link href={`/home/events/${event.id}/edit`} passHref>
               <Button variant="outline" size="sm">
                 <PencilIcon className="mr-2 h-4 w-4" />
                 Edit Event

@@ -61,7 +61,7 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
     setIsSubmitting(true)
     try {
       await updateService(service.id, values)
-      router.push(`/home/(tabs)/services/${service.id}`)
+      router.push(`/home/services/${service.id}`)
     } catch (error) {
       console.error('Error updating service:', error)
     } finally {

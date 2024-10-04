@@ -51,7 +51,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <CardFooter className="flex justify-between items-center">
         <span className="text-sm text-muted-foreground">{event.location}</span>
         <Button asChild>
-          <Link href={`/home/(tabs)/events/${event.id}`}>View Details</Link>
+          <Link href={`/home/events/${event.id}`}>View Details</Link>
         </Button>
       </CardFooter>
     </Card>

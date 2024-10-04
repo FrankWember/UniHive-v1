@@ -51,7 +51,7 @@ export function CreateEventForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await createEvent(values)
-      router.push('/home/(tabs)/events')
+      router.push('/home/events')
       router.refresh()
     } catch (error) {
       console.error('Error creating event:', error)

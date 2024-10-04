@@ -17,7 +17,7 @@ export const Assignments: React.FC<AssignmentsProps> = async ({ courseId }) => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Assignments</h2>
         <Button asChild>
-          <Link href={`/home/(tabs)/study-groups/${courseId}/upload-assignment`}>
+          <Link href={`/home/courses/${courseId}/upload-assignment`}>
             <UploadIcon className="mr-2 h-4 w-4" />
             Upload Assignment
           </Link>

@@ -6,7 +6,7 @@ import { getCourseById } from '@/actions/courses'
 import { notFound } from 'next/navigation'
 import { Skeleton } from "@/components/ui/skeleton"
 
-const StudyGroupPage = async ({ params }: { params: { courseId: string } }) => {
+const CoursesPage = async ({ params }: { params: { courseId: string } }) => {
   const course = await getCourseById(params.courseId)
 
   if (!course) {
@@ -43,4 +43,4 @@ const StudyGroupPage = async ({ params }: { params: { courseId: string } }) => {
   )
 }
 
-export default StudyGroupPage
+export default CoursesPage

@@ -7,17 +7,20 @@ import { UserRole } from '@prisma/client'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { PlusCircle } from 'lucide-react'
+import { getCourses } from '@/actions/courses'
 
-const StudyGroupsPage = () => {
+const CoursesPage = async () => {
+  const courses = await getCourses()
+
   return (
     <div className="flex flex-col min-h-screen w-full">
       {/* Header */}
       <div className="flex items-center justify-between h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
-        <h1 className="text-2xl font-bold">Study Groups</h1>
+        <h1 className="text-2xl font-bold">Courses</h1>
         <div className="flex items-center space-x-3">
-          <SearchBar />
+          <SearchBar courses={courses} />
           <RoleGate allowedRoles={[UserRole.ADMIN]}>
-            <Link href="/home/(tabs)/study-groups/create-course" passHref>
+            <Link href="/home/courses/create-course" passHref>
               <Button size="sm">
                 <PlusCircle className="mr-2 h-4 w-4" />
                 Create Course
@@ -30,11 +33,11 @@ const StudyGroupsPage = () => {
       {/* Content */}
       <div className="w-full mt-20 px-6">
         <Suspense fallback={<Skeleton className="w-full h-96" />}>
-          <CourseList />
+          <CourseList courses={courses} />
         </Suspense>
       </div>
     </div>
   )
 }
 
-export default StudyGroupsPage
+export default CoursesPage

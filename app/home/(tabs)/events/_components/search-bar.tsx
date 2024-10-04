@@ -58,9 +58,9 @@ export function SearchBar() {
   const handleSelect = (result: SearchResult) => {
     setOpen(false)
     if (result.type === "event") {
-      router.push(`/home/(tabs)/events/${result.id}`)
+      router.push(`/home/events/${result.id}`)
     } else if (result.type === "creator") {
-      router.push(`/home/(tabs)/events?creator=${result.id}`)
+      router.push(`/home/events?creator=${result.id}`)
     }
   }
 

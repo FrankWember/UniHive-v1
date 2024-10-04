@@ -58,11 +58,11 @@ export function SearchBar() {
   const handleSelect = (result: SearchResult) => {
     setOpen(false)
     if (result.type === "service") {
-      router.push(`/home/(tabs)/services/${result.id}`)
+      router.push(`/home/services/${result.id}`)
     } else if (result.type === "provider") {
-      router.push(`/home/(tabs)/services/provider/${result.id}`)
+      router.push(`/home/services/provider/${result.id}`)
     } else if (result.type === "category") {
-      router.push(`/home/(tabs)/services?category=${result.name}`)
+      router.push(`/home/services?category=${result.name}`)
     }
   }
 

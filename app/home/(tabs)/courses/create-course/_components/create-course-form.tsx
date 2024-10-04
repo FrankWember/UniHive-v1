@@ -32,7 +32,7 @@ export function CreateCourseForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await createCourse(values)
-      router.push('/home/(tabs)/study-groups')
+      router.push('/home/courses')
       router.refresh()
     } catch (error) {
       console.error('Error creating course:', error)

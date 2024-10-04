@@ -56,7 +56,7 @@ export function EditEventForm({ event }: EditEventFormProps) {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await updateEvent(event.id, values)
-      router.push(`/home/(tabs)/events/${event.id}`)
+      router.push(`/home/events/${event.id}`)
       router.refresh()
     } catch (error) {
       console.error('Error updating event:', error)

@@ -17,7 +17,7 @@ export const GroupChats: React.FC<GroupChatsProps> = async ({ courseId }) => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Group Chats</h2>
         <Button asChild>
-          <Link href={`/home/(tabs)/study-groups/${courseId}/create-chat`}>
+          <Link href={`/home/courses/${courseId}/create-chat`}>
             <PlusCircleIcon className="mr-2 h-4 w-4" />
             Create New Chat
           </Link>
@@ -32,7 +32,7 @@ export const GroupChats: React.FC<GroupChatsProps> = async ({ courseId }) => {
             </CardHeader>
             <CardContent>
               <Button asChild>
-                <Link href={`/home/(tabs)/study-groups/${courseId}/chats/${chat.id}`}>
+                <Link href={`/home/courses/${courseId}/chats/${chat.id}`}>
                   <MessageCircleIcon className="mr-2 h-4 w-4" />
                   Join Chat
                 </Link>

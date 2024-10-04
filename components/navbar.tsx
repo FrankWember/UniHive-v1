@@ -12,7 +12,7 @@ export const Navbar = () => {
     const tabs = [
         {name: "Services", link: "/home/services", children: <StoreIcon className="w-6 h-6" />},
         {name: "Rides", link: "/home/rides", children: <CarTaxiFrontIcon className="w-6 h-6"  />},
-        {name: "StudyGroups", link: "/home/study-groups", children: <GraduationCap className="w-6 h-6" />},
+        {name: "Courses", link: "/home/courses", children: <GraduationCap className="w-6 h-6" />},
         {name: "Events", link: "/home/events", children: <CalendarSearch className="w-6 h-6" />},
         {name: "Settings", link: "/home/settings", children: <CogIcon className="w-6 h-6" />},
     ]

@@ -20,7 +20,7 @@ const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
       <div className="flex items-center justify-between h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <h1 className="text-2xl font-bold">{service.name}</h1>
         <div className="flex items-center space-x-4">
-          <Link href={`/home/(tabs)/services/provider/${service.providerId}`}>
+          <Link href={`/home/services/provider/${service.providerId}`}>
             <Button variant="outline">
               <PersonIcon className="mr-2 h-4 w-4" />
               View Provider
