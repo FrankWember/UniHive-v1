@@ -2,7 +2,6 @@ import React, { Suspense } from 'react'
 import { SearchBar } from './_components/search-bar'
 import { SideMenu } from './_components/side-menu'
 import { MatchedEvents } from './_components/matched-events'
-import { FeaturedEvents } from './_components/featured-events'
 import { Skeleton } from "@/components/ui/skeleton"
 
 const EventsPage = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
@@ -19,9 +18,6 @@ const EventsPage = ({ searchParams }: { searchParams: { [key: string]: string | 
 
       {/* Content */}
       <div className="w-full mt-20 space-y-8 px-6">
-        <Suspense fallback={<Skeleton className="w-full h-64" />}>
-          <FeaturedEvents />
-        </Suspense>
         <Suspense fallback={<Skeleton className="w-full h-96" />}>
           <MatchedEvents searchParams={searchParams} />
         </Suspense>

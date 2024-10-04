@@ -18,7 +18,6 @@ export async function searchEvents(query: string) {
         select: { id: true, name: true },
       },
     },
-    take: 5,
   })
 
   const creators = await prisma.user.findMany({
@@ -28,7 +27,6 @@ export async function searchEvents(query: string) {
         { email: { contains: query, mode: 'insensitive' } },
       ],
     },
-    take: 3,
   })
 
   return [
@@ -46,18 +44,6 @@ export async function searchEvents(query: string) {
   ]
 }
 
-
-export async function getFeaturedEvents() {
-  return prisma.event.findMany({
-    take: 5,
-    orderBy: { dateTime: 'asc' },
-    include: {
-      creator: {
-        select: { id: true, name: true },
-      },
-    },
-  })
-}
 
 export async function getMatchedEvents(searchParams: { [key: string]: string | string[] | undefined }) {
   const session = await auth()
@@ -89,9 +75,9 @@ export async function getMatchedEvents(searchParams: { [key: string]: string | s
       },
     },
     orderBy: { dateTime: 'asc' },
-    take: 9,
   })
 }
+
 
 export async function getEventById(id: string) {
   return prisma.event.findUnique({
