@@ -7,7 +7,7 @@ const getCurrentDomain = () => {
     return window.location.origin;
   } else {
     // Server-side
-    return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; // Fallback to localhost if env var is not set
+    return process.env.NEXT_PUBLIC_APP_URL || 'https://unihive-v1.vercel.app'; // Fallback to localhost if env var is not set
   }
 };
 

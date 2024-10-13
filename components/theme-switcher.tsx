@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ThemeSwitcher({mode} : {mode?: "default" | "compact" | "expanded"}) {
+export function ThemeSwitcher({mode="default"} : {mode?: "default" | "compact" | "expanded"}) {
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 

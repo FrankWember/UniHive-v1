@@ -38,7 +38,7 @@ export function SearchBar({courses}: {courses: Course[]}) {
         className="hidden sm:flex text-muted-foreground font-normal justify-between space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700"
       >
         <MagnifyingGlassIcon className="mr-2" />
-        Search events...
+        Search courses...
         <code className="text-muted-foreground rounded p-1 bg-background font-mono text-xs">⌘K</code>
       </Button>
       <Button
@@ -51,7 +51,7 @@ export function SearchBar({courses}: {courses: Course[]}) {
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
-          placeholder="Search events or creators..."
+          placeholder="Search your courses..."
           value={query}
           onValueChange={setQuery}
         />

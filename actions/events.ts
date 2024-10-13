@@ -3,6 +3,7 @@
 import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
 import { uploadToS3 } from "@/utils/s3"
+import { uploadToGoogleDrive, deleteFromGoogleDrive } from '@/lib/cloud-storage';
 
 export async function searchEvents(query: string) {
   const events = await prisma.event.findMany({
@@ -136,23 +137,12 @@ export async function createEvent(data: {
   type: string
   dateTime: string
   location: string
-  images: (string | File)[]
+  images: File[]
 }) {
   const session = await auth()
   if (!session?.user?.id) {
     throw new Error("You must be logged in to create an event")
   }
-
-  // Upload images to S3
-  const imageUrls = await Promise.all(
-    data.images.map(async (image) => {
-      if (typeof image === 'string') {
-        return image // If it's already a URL, keep it as is
-      } else {
-        return await uploadToS3(image)
-      }
-    })
-  )
 
   const event = await prisma.event.create({
     data: {
@@ -161,10 +151,17 @@ export async function createEvent(data: {
       type: data.type,
       dateTime: new Date(data.dateTime),
       location: data.location,
-      images: imageUrls,
       creatorId: session.user.id,
     },
   })
+
+  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_EVENTS_FOLDER_ID}/${event.id}`;
+  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
+
+  await prisma.event.update({
+    where: { id: event.id },
+    data: { images: imageUrls },
+  });
 
   return event
 }
@@ -187,16 +184,26 @@ export async function updateEvent(
     throw new Error("You must be logged in to update an event")
   }
 
-  // Upload new images to S3
-  const imageUrls = await Promise.all(
-    data.images.map(async (image) => {
-      if (typeof image === 'string') {
-        return image // If it's already a URL, keep it as is
-      } else {
-        return await uploadToS3(image)
-      }
-    })
-  )
+  const existingEvent = await prisma.event.findUnique({
+    where: { id: eventId },
+  });
+
+  if (!existingEvent) {
+    throw new Error("Event not found");
+  }
+
+  // Delete old images that are not in the new data
+  const oldImages = existingEvent.images as string[];
+  const imagesToKeep = data.images.filter((img): img is string => typeof img === 'string');
+  const imagesToDelete = oldImages.filter(img => !imagesToKeep.includes(img));
+  await Promise.all(imagesToDelete.map(deleteFromGoogleDrive));
+
+  // Upload new images
+  const newImages = data.images.filter((img): img is File => img instanceof File);
+  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_EVENTS_FOLDER_ID}/${eventId}`;
+  const newImageUrls = await uploadToGoogleDrive(newImages, folderUrl);
+
+  const updatedImageUrls = [...imagesToKeep, ...newImageUrls];
 
   const event = await prisma.event.update({
     where: { id: eventId },
@@ -206,7 +213,7 @@ export async function updateEvent(
       type: data.type,
       dateTime: new Date(data.dateTime),
       location: data.location,
-      images: imageUrls,
+      images: updatedImageUrls,
     },
   })
 

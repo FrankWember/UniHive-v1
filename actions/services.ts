@@ -3,6 +3,7 @@
 import { generatePresignedUrl, getS3Url } from "@/utils/s3"
 import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
+import { uploadToGoogleDrive, deleteFromGoogleDrive } from '@/lib/cloud-storage';
 
 export async function createService(data: {
   name: string
@@ -16,31 +17,23 @@ export async function createService(data: {
     throw new Error("You must be logged in to create a service")
   }
 
-  const imageUrls = await Promise.all(
-    data.images.map(async (image) => {
-      const fileName = `${Date.now()}-${image.name}`
-      const signedUrl = await generatePresignedUrl(fileName, image.type)
-      await fetch(signedUrl, {
-        method: "PUT",
-        body: image,
-        headers: {
-          "Content-Type": image.type,
-        },
-      })
-      return getS3Url(fileName)
-    })
-  )
-
   const service = await prisma.service.create({
     data: {
       name: data.name,
       description: data.description,
       price: data.price,
       category: data.category,
-      images: imageUrls,
       providerId: session.user.id,
     },
   })
+
+  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_SERVICES_FOLDER_ID}/${service.id}`;
+  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
+
+  await prisma.service.update({
+    where: { id: service.id },
+    data: { images: imageUrls },
+  });
 
   return service
 }
@@ -66,6 +59,9 @@ export async function deleteService(id: string) {
     throw new Error("You do not have permission to delete this service")
   }
 
+  // Delete images from Google Drive
+  await Promise.all(service.images.map(deleteFromGoogleDrive));
+
   await prisma.service.delete({
     where: { id },
   })
@@ -78,7 +74,7 @@ export async function updateService(
     description: string
     price: number
     category: string[]
-    images: (string | File)[]
+    images: File[]
   }
 ) {
   const session = await auth()
@@ -94,24 +90,8 @@ export async function updateService(
     throw new Error("You do not have permission to update this service")
   }
 
-  const imageUrls = await Promise.all(
-    data.images.map(async (image) => {
-      if (typeof image === 'string') {
-        return image
-      } else {
-        const fileName = `${Date.now()}-${image.name}`
-        const signedUrl = await generatePresignedUrl(fileName, image.type)
-        await fetch(signedUrl, {
-          method: "PUT",
-          body: image,
-          headers: {
-            "Content-Type": image.type,
-          },
-        })
-        return getS3Url(fileName)
-      }
-    })
-  )
+  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_SERVICES_FOLDER_ID}/${id}`;
+  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
 
   const updatedService = await prisma.service.update({
     where: { id },
