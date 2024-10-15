@@ -137,7 +137,7 @@ export async function createEvent(data: {
   type: string
   dateTime: string
   location: string
-  images: File[]
+  images: string[]
 }) {
   const session = await auth()
   if (!session?.user?.id) {
@@ -152,15 +152,9 @@ export async function createEvent(data: {
       dateTime: new Date(data.dateTime),
       location: data.location,
       creatorId: session.user.id,
+      images: data.images
     },
   })
-
-  const imageUrls = await uploadToUploadThing(data.images);
-
-  await prisma.event.update({
-    where: { id: event.id },
-    data: { images: imageUrls },
-  });
 
   return event
 }
@@ -175,7 +169,7 @@ export async function updateEvent(
     type: string
     dateTime: string
     location: string
-    images: (string | File)[]
+    images: string[]
   }
 ) {
   const session = await auth()
@@ -191,17 +185,6 @@ export async function updateEvent(
     throw new Error("Event not found");
   }
 
-  // Delete old images that are not in the new data
-  const oldImages = existingEvent.images as string[];
-  const imagesToKeep = data.images.filter((img): img is string => typeof img === 'string');
-  const imagesToDelete = oldImages.filter(img => !imagesToKeep.includes(img));
-  await Promise.all(imagesToDelete.map(deleteFromGoogleDrive));
-
-  // Upload new images
-  const newImages = data.images.filter((img): img is File => img instanceof File);
-  const newImageUrls = await uploadToUploadThing(newImages);
-
-  const updatedImageUrls = [...imagesToKeep, ...newImageUrls];
 
   const event = await prisma.event.update({
     where: { id: eventId },
@@ -211,7 +194,7 @@ export async function updateEvent(
       type: data.type,
       dateTime: new Date(data.dateTime),
       location: data.location,
-      images: updatedImageUrls,
+      images: data.images,
     },
   })
 

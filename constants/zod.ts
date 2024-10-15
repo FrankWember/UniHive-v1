@@ -60,7 +60,36 @@ export const ServiceSchema = z.object({
   category: z.array(z.string()).min(1, {
     message: "Please select at least one category.",
   }),
-  images: z.array(z.string()).min(1, {
+  images: z.array(z.string())
+    .min(1, {
     message: "Please upload at least one image.",
+    })
+    .max(5, {
+      message: "You can upload a maximum of 5 images.",
+    }),
+})
+
+export const EventSchema = z.object({
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
   }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+  type: z.string().min(1, {
+    message: "Please select an event type.",
+  }),
+  dateTime: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
+    message: "Please enter a valid date and time.",
+  }),
+  location: z.string().min(2, {
+    message: "Location must be at least 2 characters.",
+  }),
+  images: z.array(z.string())
+    .min(1, {
+    message: "Please upload at least one image.",
+    })
+    .max(5, {
+      message: "You can upload a maximum of 5 images.",
+    }),
 })

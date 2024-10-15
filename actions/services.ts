@@ -37,6 +37,9 @@ export async function createService(data: MyService) {
 export async function getServiceById(id: string) {
   const service = await prisma.service.findUnique({
     where: { id },
+    include: {
+      provider: true
+    }
   })
   return service
 }
@@ -164,6 +167,7 @@ export async function getProviderById(id: string) {
       name: true,
       email: true,
       image: true,
+      phone: true
     },
   })
   return provider

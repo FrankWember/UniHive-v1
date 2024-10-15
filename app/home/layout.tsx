@@ -14,8 +14,8 @@ export default function HomeLayout({
 }>) {
   return (
     <div className="flex flex-col justify-center items-center w-full h-screen">
-        {children}
-        <Suspense><Navbar /></Suspense>
+      {children}
+      <Suspense><Navbar /></Suspense>
     </div>
   );
 }
