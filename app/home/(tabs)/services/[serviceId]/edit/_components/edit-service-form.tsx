@@ -57,6 +57,7 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
       await updateService(service.id, values)
       setSuccess("Your servce has been updated")
       router.push(`/home/services/${service.id}`)
+      router.refresh()
     } catch (error) {
       setError("We couldn't update your service. Please try again!")
       console.error('Error updating service:', error)

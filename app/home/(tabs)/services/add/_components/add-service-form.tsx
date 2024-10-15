@@ -48,6 +48,7 @@ export const AddServiceForm = () => {
       await createService(values)
       setSuccess("Your service is now live!")
       router.push('/home/services')
+      router.refresh()
     } catch (error) {
       setError("We couldn't create your service. Please try again!")
       console.error('Error creating service:', error)
