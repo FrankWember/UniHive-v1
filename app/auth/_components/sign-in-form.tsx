@@ -22,7 +22,7 @@ import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { IDSignInSchema, EmailSignInSchema} from "@/constants/zod"
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Link2Icon } from "@radix-ui/react-icons"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -55,7 +55,8 @@ const EmailForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  const callbackUrl = searchParams.get("callbackUrl") || "/home"
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof EmailSignInSchema>>({
       resolver: zodResolver(EmailSignInSchema),
@@ -88,6 +89,7 @@ const EmailForm = () => {
         })
         .catch(() => setError("Something went wrong"));
     });
+    router.push(callbackUrl)
     }
 
   return (

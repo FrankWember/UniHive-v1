@@ -8,28 +8,18 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { MultiImageUpload } from '@/components/multi-image-upload'
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { CategorySelect } from '@/app/home/(tabs)/services/add/_components/category-select'
 import { useRouter } from 'next/navigation'
 import { updateService } from '@/actions/services'
+import { ServiceSchema } from '@/constants/zod'
+import { MultiImageUpload } from '@/components/multi-image-upload'
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Service name must be at least 2 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-  price: z.number().min(0, {
-    message: "Price must be a positive number.",
-  }),
-  category: z.array(z.string()).min(1, {
-    message: "Please select at least one category.",
-  }),
-  images: z.array(z.union([z.string(), z.instanceof(File)])).min(1, {
-    message: "Please upload at least one image.",
-  }),
-})
 
 interface EditServiceFormProps {
   service: {
@@ -44,10 +34,12 @@ interface EditServiceFormProps {
 
 export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof ServiceSchema>>({
+    resolver: zodResolver(ServiceSchema),
     defaultValues: {
       name: service.name,
       description: service.description,
@@ -57,12 +49,16 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof ServiceSchema>) => {
+    setError("")
+    setSuccess("")
     setIsSubmitting(true)
     try {
       await updateService(service.id, values)
+      setSuccess("Your servce has been updated")
       router.push(`/home/services/${service.id}`)
     } catch (error) {
+      setError("We couldn't update your service. Please try again!")
       console.error('Error updating service:', error)
     } finally {
       setIsSubmitting(false)
@@ -131,13 +127,31 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
             <FormItem>
               <FormLabel>Images</FormLabel>
               <FormControl>
-                <MultiImageUpload value={field.value} onChange={field.onChange} />
+                <MultiImageUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  maxFiles={5}
+                />
               </FormControl>
               <FormDescription>Upload up to 5 images for your service.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+        {error && (
+            <Alert variant="destructive">
+              <ExclamationTriangleIcon className="h-6 w-6" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert>
+              <RocketIcon className="h-6 w-6"/>
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Updating..." : "Update Service"}
         </Button>

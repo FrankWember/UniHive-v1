@@ -1,5 +1,9 @@
 import { google } from 'googleapis';
 import { Readable } from 'stream';
+import { UTApi } from "uploadthing/server";
+
+export const utapi = new UTApi();
+
 
 const auth = new google.auth.GoogleAuth({
   credentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS || '{}'),
@@ -39,4 +43,17 @@ export async function deleteFromGoogleDrive(fileUrl: string): Promise<void> {
   if (!fileId) throw new Error('Invalid file URL');
 
   await drive.files.delete({ fileId });
+}
+
+export async function uploadToUploadThing(files: File[]): Promise<string[]> {
+  const res = await utapi.uploadFiles(files)
+  const urls = res.map((response) => {
+    return response.data!.url
+  })
+  return urls
+}
+
+export async function deleteFromUploadThing(fileUrl: string | string[]): Promise<void> {
+  // Replace Google Drive delete logic with UploadThing logic
+  await utapi.deleteFiles(fileUrl)
 }

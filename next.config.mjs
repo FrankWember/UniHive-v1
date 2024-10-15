@@ -11,6 +11,14 @@ const nextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
+  images: {
+    remotePatterns:[
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+      }
+    ]
+  }
 };
 
 // Export the config with PWA options applied

@@ -46,3 +46,21 @@ export const NewPasswordSchema = z.object({
   password: z.string({required_error: "Please Enter your password"})
     .min(8, "Minimum 8 characters required!"),
 });
+
+export const ServiceSchema = z.object({
+  name: z.string().min(2, {
+    message: "Service name must be at least 2 characters.",
+  }),
+  description: z.string().min(10, {
+    message: "Description must be at least 10 characters.",
+  }),
+  price: z.number().min(0, {
+    message: "Price must be a positive number.",
+  }),
+  category: z.array(z.string()).min(1, {
+    message: "Please select at least one category.",
+  }),
+  images: z.array(z.string()).min(1, {
+    message: "Please upload at least one image.",
+  }),
+})

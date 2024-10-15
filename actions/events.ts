@@ -3,7 +3,7 @@
 import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
 import { uploadToS3 } from "@/utils/s3"
-import { uploadToGoogleDrive, deleteFromGoogleDrive } from '@/lib/cloud-storage';
+import { uploadToUploadThing, deleteFromGoogleDrive } from '@/lib/cloud-storage';
 
 export async function searchEvents(query: string) {
   const events = await prisma.event.findMany({
@@ -155,8 +155,7 @@ export async function createEvent(data: {
     },
   })
 
-  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_EVENTS_FOLDER_ID}/${event.id}`;
-  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
+  const imageUrls = await uploadToUploadThing(data.images);
 
   await prisma.event.update({
     where: { id: event.id },
@@ -200,8 +199,7 @@ export async function updateEvent(
 
   // Upload new images
   const newImages = data.images.filter((img): img is File => img instanceof File);
-  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_EVENTS_FOLDER_ID}/${eventId}`;
-  const newImageUrls = await uploadToGoogleDrive(newImages, folderUrl);
+  const newImageUrls = await uploadToUploadThing(newImages);
 
   const updatedImageUrls = [...imagesToKeep, ...newImageUrls];
 

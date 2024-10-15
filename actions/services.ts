@@ -3,15 +3,19 @@
 import { generatePresignedUrl, getS3Url } from "@/utils/s3"
 import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
-import { uploadToGoogleDrive, deleteFromGoogleDrive } from '@/lib/cloud-storage';
+import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage';
+import { ServiceSchema } from "@/constants/zod";
+import * as z from 'zod'
 
-export async function createService(data: {
-  name: string
-  description: string
-  price: number
-  category: string[]
-  images: File[]
-}) {
+interface MyService {
+  name: string,
+  description: string,
+  price: number,
+  category: string[],
+  images: string[]
+}
+
+export async function createService(data: MyService) {
   const session = await auth()
   if (!session?.user?.id) {
     throw new Error("You must be logged in to create a service")
@@ -24,17 +28,9 @@ export async function createService(data: {
       price: data.price,
       category: data.category,
       providerId: session.user.id,
+      images: data.images
     },
   })
-
-  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_SERVICES_FOLDER_ID}/${service.id}`;
-  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
-
-  await prisma.service.update({
-    where: { id: service.id },
-    data: { images: imageUrls },
-  });
-
   return service
 }
 
@@ -59,8 +55,7 @@ export async function deleteService(id: string) {
     throw new Error("You do not have permission to delete this service")
   }
 
-  // Delete images from Google Drive
-  await Promise.all(service.images.map(deleteFromGoogleDrive));
+  await deleteFromUploadThing(service.images)
 
   await prisma.service.delete({
     where: { id },
@@ -69,13 +64,7 @@ export async function deleteService(id: string) {
 
 export async function updateService(
   id: string,
-  data: {
-    name: string
-    description: string
-    price: number
-    category: string[]
-    images: File[]
-  }
+  data: MyService
 ) {
   const session = await auth()
   if (!session?.user?.id) {
@@ -90,9 +79,6 @@ export async function updateService(
     throw new Error("You do not have permission to update this service")
   }
 
-  const folderUrl = `https://drive.google.com/drive/folders/${process.env.GOOGLE_DRIVE_SERVICES_FOLDER_ID}/${id}`;
-  const imageUrls = await uploadToGoogleDrive(data.images, folderUrl);
-
   const updatedService = await prisma.service.update({
     where: { id },
     data: {
@@ -100,7 +86,7 @@ export async function updateService(
       description: data.description,
       price: data.price,
       category: data.category,
-      images: imageUrls,
+      images: data.images,
     },
   })
 
