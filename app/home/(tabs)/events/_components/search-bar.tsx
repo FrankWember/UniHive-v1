@@ -2,58 +2,49 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import {
-  CalendarIcon,
-  MagnifyingGlassIcon,
-} from "@radix-ui/react-icons"
-import { User as UserIcon } from "lucide-react"
-
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
+import { User as UserIcon, CalendarIcon } from "lucide-react"
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
-import { useDebounce } from "@/hooks/use-debounce"
-import { searchEvents } from "@/actions/events"
+import { useEvents } from "@/contexts/events-context"
 
 type SearchResult = {
   id: string
-  name: string | null
+  name: string
   type: "event" | "creator"
-  creatorName?: string | null
+  creatorName?: string
 }
 
 export function SearchBar() {
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
-  const debouncedQuery = useDebounce(query, 300)
-  const [results, setResults] = React.useState<SearchResult[]>([])
   const router = useRouter()
+  const { events, isLoading } = useEvents()
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
-    }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+  const results = React.useMemo(() => {
+    if (query.length === 0 || isLoading) return []
 
-  React.useEffect(() => {
-    if (debouncedQuery.length > 0) {
-      searchEvents(debouncedQuery).then((searchResults) => {
-        setResults(searchResults)
-      })
-    } else {
-      setResults([])
-    }
-  }, [debouncedQuery])
+    const filteredResults: SearchResult[] = [
+      ...events
+        .filter((event) => event.title.toLowerCase().includes(query.toLowerCase()))
+        .map((event) => ({
+          id: event.id,
+          name: event.title,
+          type: "event" as const,
+          creatorName: event.creator.name || undefined,
+        })),
+      ...events
+        .map((event) => event.creator)
+        .filter((creator, index, self) => self.findIndex((c) => c.id === creator.id) === index)
+        .filter((creator) => creator.name && creator.name.toLowerCase().includes(query.toLowerCase()))
+        .map((creator) => ({
+          id: creator.id,
+          name: creator.name!,
+          type: "creator" as const,
+        })),
+    ]
+    return filteredResults
+  }, [query, events, isLoading])
 
   const handleSelect = (result: SearchResult) => {
     setOpen(false)

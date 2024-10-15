@@ -51,26 +51,28 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <Carousel className="w-full max-w-2xl mx-auto">
-          <CarouselContent>
-            {event.images.map((image, index) => (
-              <CarouselItem key={index}>
-                <div className="aspect-video relative">
-                  <Image
-                    src={image}
-                    alt={`Event image ${index + 1}`}
-                    height={300}
-                    width={300}
-                    objectFit="cover"
-                    className="rounded-lg"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <div className="px-4 md:px-0">
+          <Carousel className="w-full max-w-2xl mx-auto">
+            <CarouselContent>
+              {event.images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="aspect-video relative">
+                    <Image
+                      src={image}
+                      alt={`Event image ${index + 1}`}
+                      height={300}
+                      width={300}
+                      objectFit="cover"
+                      className="rounded-lg"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center space-x-2">
             <CalendarIcon className="h-5 w-5 text-muted-foreground" />

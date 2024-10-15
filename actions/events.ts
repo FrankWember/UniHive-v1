@@ -6,44 +6,12 @@ import { uploadToS3 } from "@/utils/s3"
 import { uploadToUploadThing, deleteFromGoogleDrive } from '@/lib/cloud-storage';
 import { currentUser } from "@/lib/auth";
 
-export async function searchEvents(query: string) {
-  const events = await prisma.event.findMany({
-    where: {
-      OR: [
-        { title: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-        { creator: { name: { contains: query, mode: 'insensitive' } } },
-      ],
-    },
+export async function getAllEvents () {
+  return await prisma.event.findMany({
     include: {
-      creator: {
-        select: { id: true, name: true },
-      },
-    },
+      creator: true
+    }
   })
-
-  const creators = await prisma.user.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: 'insensitive' } },
-        { email: { contains: query, mode: 'insensitive' } },
-      ],
-    },
-  })
-
-  return [
-    ...events.map((event) => ({
-      id: event.id,
-      name: event.title,
-      type: 'event' as const,
-      creatorName: event.creator.name,
-    })),
-    ...creators.map((creator) => ({
-      id: creator.id,
-      name: creator.name,
-      type: 'creator' as const,
-    })),
-  ]
 }
 
 

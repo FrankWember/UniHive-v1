@@ -2,58 +2,60 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import {
-  CalendarIcon,
-  MagnifyingGlassIcon,
-} from "@radix-ui/react-icons"
-
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { User as UserIcon, Tag as TagIcon } from "lucide-react"
-
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
-import { useDebounce } from "@/hooks/use-debounce"
-import { searchServices } from "@/actions/services"
+import { useServices } from "@/contexts/services-context"
 
 type SearchResult = {
   id: string
-  name: string
+  name: string | null
   type: "service" | "provider" | "category"
-  providerName?: string
+  providerName: string | null
 }
-
 
 export function SearchBar() {
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
-  const debouncedQuery = useDebounce(query, 300)
-  const [results, setResults] = React.useState<SearchResult[]>([])
   const router = useRouter()
+  const { services, isLoading } = useServices()
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
-    }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+  const results = React.useMemo(() => {
+    if (query.length === 0 || isLoading) return []
 
-  React.useEffect(() => {
-    if (debouncedQuery.length > 0) {
-      searchServices(debouncedQuery).then(results => setResults(results as SearchResult[]))
-    } else {
-      setResults([])
-    }
-  }, [debouncedQuery])
+    const filteredResults: SearchResult[] = [
+      ...services
+        .filter((service) => service.name.toLowerCase().includes(query.toLowerCase()))
+        .map((service) => ({
+          id: service.id,
+          name: service.name,
+          type: "service" as const,
+          providerName: service.provider.name,
+        })),
+      ...services
+        .flatMap((service) => service.category)
+        .filter((category, index, self) => self.indexOf(category) === index)
+        .filter((category) => category.toLowerCase().includes(query.toLowerCase()))
+        .map((category) => ({
+          id: category,
+          name: category,
+          type: "category" as const,
+          providerName: null,
+        })),
+      ...services
+        .map((service) => service.provider)
+        .filter((provider, index, self) => self.findIndex((p) => p.id === provider.id) === index)
+        .filter((provider) => provider.name && provider.name.toLowerCase().includes(query.toLowerCase()))
+        .map((provider) => ({
+          id: provider.id,
+          name: provider.name,
+          type: "provider" as const,
+          providerName: provider.name,
+        })),
+    ]
+    return filteredResults
+  }, [query, services, isLoading])
 
   const handleSelect = (result: SearchResult) => {
     setOpen(false)
@@ -100,7 +102,7 @@ export function SearchBar() {
                   .filter((result) => result.type === "service")
                   .map((result) => (
                     <CommandItem key={result.id} onSelect={() => handleSelect(result)}>
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <MagnifyingGlassIcon className="mr-2 h-4 w-4" />
                       <span>{result.name}</span>
                       {result.providerName && (
                         <span className="ml-2 text-sm text-muted-foreground">

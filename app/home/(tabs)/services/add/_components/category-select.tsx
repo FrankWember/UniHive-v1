@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronsUpDown } from "lucide-react"
+import { ChevronsUpDown, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
-const categories = [
+const defaultCategories = [
   { value: "tutoring", label: "Tutoring" },
   { value: "note-taking", label: "Note Taking" },
   { value: "essay-writing", label: "Essay Writing" },
@@ -20,19 +21,30 @@ const categories = [
 ]
 
 export function CategorySelect({
-  value = [], // Provide a default empty array
+  value = [],
   onChange
 }: {
-  value?: string[] // Make value optional
+  value?: string[]
   onChange: (value: string[]) => void
 }) {
   const [open, setOpen] = React.useState(false)
+  const [categories, setCategories] = React.useState(defaultCategories)
+  const [newCategory, setNewCategory] = React.useState("")
 
   const handleToggle = (categoryValue: string) => {
     const newValue = value.includes(categoryValue)
       ? value.filter(v => v !== categoryValue)
       : [...value, categoryValue]
     onChange(newValue)
+  }
+
+  const handleAddCategory = () => {
+    if (newCategory && !categories.some(cat => cat.value === newCategory.toLowerCase())) {
+      const newCat = { value: newCategory.toLowerCase(), label: newCategory }
+      setCategories([...categories, newCat])
+      handleToggle(newCat.value)
+      setNewCategory("")
+    }
   }
 
   return (
@@ -62,6 +74,22 @@ export function CategorySelect({
               <Label htmlFor={category.value}>{category.label}</Label>
             </div>
           ))}
+          <div className="flex items-center space-x-2">
+            <Input
+              placeholder="Add new category"
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  handleAddCategory()
+                }
+              }}
+            />
+            <Button type="button" size="icon" onClick={handleAddCategory}>
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>

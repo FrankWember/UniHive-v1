@@ -98,65 +98,12 @@ export async function updateService(
 }
 
 
-export async function searchServices(query: string) {
-  const services = await prisma.service.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: 'insensitive' } },
-        { description: { contains: query, mode: 'insensitive' } },
-        { category: { hasSome: [query] } },
-        { provider: { name: { contains: query, mode: 'insensitive' } } },
-      ],
-    },
+export async function getAllServices () {
+  return await prisma.service.findMany({
     include: {
-      provider: {
-        select: { id: true, name: true },
-      },
-    },
-    take: 5,
+      provider: true
+    }
   })
-
-  const providers = await prisma.user.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: 'insensitive' } },
-        { email: { contains: query, mode: 'insensitive' } },
-      ],
-    },
-    take: 3,
-  })
-
-  const categories = await prisma.service.findMany({
-    where: {
-      category: { hasSome: [query] },
-    },
-    select: {
-      category: true,
-    },
-    distinct: ['category'],
-    take: 3,
-  })
-
-  return [
-    ...services.map((service) => ({
-      id: service.id,
-      name: service.name,
-      type: 'service' as const,
-      providerName: service.provider.name,
-    })),
-    ...providers.map((provider) => ({
-      id: provider.id,
-      name: provider.name,
-      type: 'provider' as const,
-    })),
-    ...categories.flatMap((service) =>
-      service.category.map((cat) => ({
-        id: cat,
-        name: cat,
-        type: 'category' as const,
-      }))
-    ),
-  ]
 }
 
 

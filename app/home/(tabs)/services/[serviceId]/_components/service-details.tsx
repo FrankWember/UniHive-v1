@@ -71,7 +71,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
           <p className="text-muted-foreground">{service.description}</p>
         </div>
         <Separator />
-        <div>
+        <div className="px-4 md:px-0">
           <h2 className="text-xl font-semibold mb-4">Service Images</h2>
           <Carousel className="w-full max-w-lg mx-auto">
             <CarouselContent>
