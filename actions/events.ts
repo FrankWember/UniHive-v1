@@ -4,6 +4,7 @@ import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
 import { uploadToS3 } from "@/utils/s3"
 import { uploadToUploadThing, deleteFromGoogleDrive } from '@/lib/cloud-storage';
+import { currentUser } from "@/lib/auth";
 
 export async function searchEvents(query: string) {
   const events = await prisma.event.findMany({
@@ -43,40 +44,6 @@ export async function searchEvents(query: string) {
       type: 'creator' as const,
     })),
   ]
-}
-
-
-export async function getMatchedEvents(searchParams: { [key: string]: string | string[] | undefined }) {
-  const session = await auth()
-  const userId = session?.user?.id
-
-  const where: any = {}
-
-  if (searchParams.mine === 'true' && userId) {
-    where.creatorId = userId
-  }
-
-  if (searchParams.type) {
-    where.type = searchParams.type
-  }
-
-  if (searchParams.attending === 'true' && userId) {
-    where.attendees = {
-      some: {
-        userId: userId
-      }
-    }
-  }
-
-  return prisma.event.findMany({
-    where,
-    include: {
-      creator: {
-        select: { id: true, name: true },
-      },
-    },
-    orderBy: { dateTime: 'asc' },
-  })
 }
 
 
@@ -199,4 +166,50 @@ export async function updateEvent(
   })
 
   return event
+}
+
+
+export async function getMatchedEvents(searchParams: { [key: string]: string | string[] | undefined }) {
+  const user = await currentUser()
+  const userId = user?.id
+
+  let query: any = {}
+
+  if (searchParams.type) {
+    query.type = searchParams.type as string
+  }
+
+  if (searchParams.mine === 'true' && userId) {
+    query.creatorId = userId
+  }
+
+  if (searchParams.attending === 'true' && userId) {
+    query.attendees = {
+      some: {
+        userId: userId
+      }
+    }
+  }
+
+  const events = await prisma.event.findMany({
+    where: query,
+    include: {
+      creator: {
+        select: {
+          name: true,
+          image: true
+        }
+      },
+      attendees: {
+        select: {
+          userId: true
+        }
+      }
+    },
+    orderBy: {
+      dateTime: 'asc'
+    }
+  })
+
+  return events
 }

@@ -1,12 +1,11 @@
 import React, { Suspense } from 'react'
 import { SearchBar } from './_components/search-bar'
-import { SideMenu } from '@/app/home/(tabs)/services/_components/side-menu'
-import { MatchedServices } from '@/app/home/(tabs)/services/_components/matched-services'
-import { prisma } from '@/prisma/connection'
+import { SideMenu } from './_components/side-menu'
+import { MatchedServices } from './_components/matched-services'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getMatchedServices } from '@/actions/services'
 
-const ServicesPage = async () => {
-  const allServices = await prisma.service.findMany()
+const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   return (
     <div className="flex flex-col min-h-screen w-full">
       {/* Header */}
@@ -27,7 +26,7 @@ const ServicesPage = async () => {
             ))}
           </div>
         }>
-          <MatchedServices allServices={allServices} />
+          <MatchedServices searchParams={searchParams} />
         </Suspense>
       </div>
     </div>

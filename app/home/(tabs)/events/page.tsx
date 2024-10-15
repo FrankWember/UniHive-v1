@@ -17,8 +17,14 @@ const EventsPage = ({ searchParams }: { searchParams: { [key: string]: string | 
       </div>
 
       {/* Content */}
-      <div className="w-full mt-20 space-y-8 px-6">
-        <Suspense fallback={<Skeleton className="w-full h-96" />}>
+      <div className="w-full mt-20">
+        <Suspense fallback={
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            {[...Array(6)].map((_, index) => (
+              <Skeleton key={index} className="h-[300px] w-full rounded-lg" />
+            ))}
+          </div>
+        }>
           <MatchedEvents searchParams={searchParams} />
         </Suspense>
       </div>

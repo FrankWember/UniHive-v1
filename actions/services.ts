@@ -6,6 +6,7 @@ import { auth } from "@/auth"
 import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage';
 import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
+import { currentUser } from "@/lib/auth";
 
 interface MyService {
   name: string,
@@ -182,5 +183,36 @@ export async function getProviderServices(providerId: string) {
       },
     },
   })
+  return services
+}
+
+export async function getMatchedServices(searchParams: { [key: string]: string | string[] | undefined }) {
+  const user = await currentUser()
+  const userId = user?.id
+
+  let query: any = {}
+
+  if (searchParams.category) {
+    query.category = {
+      has: searchParams.category as string
+    }
+  }
+
+  if (searchParams.mine === 'true' && userId) {
+    query.providerId = userId
+  }
+
+  const services = await prisma.service.findMany({
+    where: query,
+    include: {
+      provider: {
+        select: {
+          name: true,
+          image: true
+        }
+      }
+    }
+  })
+
   return services
 }
