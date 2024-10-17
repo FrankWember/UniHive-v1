@@ -51,11 +51,11 @@ export const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="px-4 md:px-0">
-          <Carousel className="w-full max-w-2xl mx-auto">
+        <div className="px-8 md:px-0">
+          <Carousel className="w-full max-w-[75vw]">
             <CarouselContent>
               {event.images.map((image, index) => (
-                <CarouselItem key={index}>
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="aspect-video relative">
                     <Image
                       src={image}

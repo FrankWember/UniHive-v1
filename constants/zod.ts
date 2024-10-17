@@ -79,9 +79,7 @@ export const EventSchema = z.object({
   type: z.string().min(1, {
     message: "Please select an event type.",
   }),
-  dateTime: z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
-    message: "Please enter a valid date and time.",
-  }),
+  dateTime: z.date(),
   location: z.string().min(2, {
     message: "Location must be at least 2 characters.",
   }),

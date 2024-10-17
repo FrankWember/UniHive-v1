@@ -64,12 +64,10 @@ export const SideMenu = () => {
           <div className="space-y-4">
             <h3 className="text-lg font-medium">Manage Events</h3>
             <div className="flex flex-col space-y-2">
-              <RoleGate allowedRoles={[UserRole.ADMIN]}>
-                <Button onClick={() => router.push('/home/events/create')} className="justify-start">
-                  <PlusIcon className="mr-2 h-4 w-4" />
-                  Create Event
-                </Button>
-              </RoleGate>
+              <Button onClick={() => router.push('/home/events/create')} className="justify-start">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Create Event
+              </Button>
               <Button onClick={() => router.push("/home/events?mine=true")} className="justify-start">
                 <PersonIcon className="mr-2 h-4 w-4" />
                 My Events

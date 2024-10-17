@@ -87,8 +87,12 @@ const EmailForm = () => {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError("Something went wrong"));
-    });
+        .catch(() => setError("Something went wrong"))
+        .finally(() => {
+          router.push(callbackUrl)
+          router.refresh()
+        })
+    })
     router.push(callbackUrl)
     }
 

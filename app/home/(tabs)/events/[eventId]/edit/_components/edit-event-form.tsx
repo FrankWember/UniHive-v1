@@ -19,24 +19,24 @@ import { MultiImageUpload } from '@/components/multi-image-upload'
 import { updateEvent } from '@/actions/events'
 import { useRouter } from 'next/navigation'
 import { Event } from '@prisma/client'
+import { DatePicker } from '@/components/ui/date-picker'
+import { TimePicker } from '@/components/ui/time-picker'
 import { EventSchema } from '@/constants/zod'
 
 
-interface EditEventFormProps {
-  event: Event & { images: string[] }
-}
-
-export function EditEventForm({ event }: EditEventFormProps) {
+export function EditEventForm({ event }: {event: Event}) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const router = useRouter()
+  const [date, setDate] = useState<Date | undefined>(undefined)
+
   const form = useForm<z.infer<typeof EventSchema>>({
     resolver: zodResolver(EventSchema),
     defaultValues: {
       title: event.title,
       description: event.description,
       type: event.type,
-      dateTime: new Date(event.dateTime).toISOString().slice(0, 16),
+      dateTime: new Date(),
       location: event.location,
       images: event.images,
     },
@@ -112,11 +112,32 @@ export function EditEventForm({ event }: EditEventFormProps) {
           control={form.control}
           name="dateTime"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>Date and Time</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
+              <div className="flex space-x-2">
+                <FormControl>
+                  <DatePicker
+                    date={date}
+                    setDate={(newDate) => {
+                      setDate(newDate)
+                      if (newDate) {
+                        field.onChange(newDate)
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <TimePicker
+                    date={date}
+                    setDate={(newDate) => {
+                      setDate(newDate)
+                      if (newDate) {
+                        field.onChange(newDate)
+                      }
+                    }}
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}

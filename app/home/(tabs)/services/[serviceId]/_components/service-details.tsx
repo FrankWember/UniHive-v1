@@ -71,20 +71,22 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
           <p className="text-muted-foreground">{service.description}</p>
         </div>
         <Separator />
-        <div className="px-4 md:px-0">
+        <div className="px-8 md:px-0">
           <h2 className="text-xl font-semibold mb-4">Service Images</h2>
-          <Carousel className="w-full max-w-lg mx-auto">
+          <Carousel className="w-ful  max-w-[75vw]">
             <CarouselContent>
               {service.images.map((image, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <AspectRatio ratio={1/1}>
+                  <div className="aspect-video relative">
                     <Image
                       src={image}
-                      alt={`${service.name} image ${index + 1}`}
-                      fill
-                      className="rounded-lg object-cover"
+                      alt={`Event image ${index + 1}`}
+                      height={300}
+                      width={300}
+                      objectFit="cover"
+                      className="rounded-lg"
                     />
-                  </AspectRatio>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>

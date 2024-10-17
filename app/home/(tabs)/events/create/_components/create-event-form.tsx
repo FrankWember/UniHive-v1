@@ -9,37 +9,41 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
-import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons"
 import { MultiImageUpload } from '@/components/multi-image-upload'
 import { createEvent } from '@/actions/events'
 import { useRouter } from 'next/navigation'
+import { DatePicker } from '@/components/ui/date-picker'
+import { TimePicker } from '@/components/ui/time-picker'
 import { EventSchema } from '@/constants/zod'
+import { BeatLoader } from 'react-spinners'
 
+type EventFormValues = z.infer<typeof EventSchema>
 
 export function CreateEventForm() {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setError] = useState<string | undefined>("")
+  const [success, setSuccess] = useState<string | undefined>("")
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const form = useForm<z.infer<typeof EventSchema>>({
+  const [date, setDate] = useState<Date | undefined>(undefined)
+
+  const form = useForm<EventFormValues>({
     resolver: zodResolver(EventSchema),
     defaultValues: {
       title: "",
       description: "",
       type: "",
-      dateTime: "",
+      dateTime: new Date(),
       location: "",
       images: [],
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof EventSchema>) => {
+  const onSubmit = async (values: EventFormValues) => {
     setError("")
     setSuccess("")
+    setLoading(true)
     try {
       await createEvent(values)
       setSuccess("Your Event is now live!")
@@ -48,6 +52,8 @@ export function CreateEventForm() {
     } catch (error) {
       console.error('Error creating event:', error)
       setError("We couldn't create your Event. Please try again!")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -107,11 +113,32 @@ export function CreateEventForm() {
           control={form.control}
           name="dateTime"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col">
               <FormLabel>Date and Time</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
+              <div className="flex space-x-2">
+                <FormControl>
+                  <DatePicker
+                    date={date}
+                    setDate={(newDate) => {
+                      setDate(newDate)
+                      if (newDate) {
+                        field.onChange(newDate)
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormControl>
+                  <TimePicker
+                    date={date}
+                    setDate={(newDate) => {
+                      setDate(newDate)
+                      if (newDate) {
+                        field.onChange(newDate)
+                      }
+                    }}
+                  />
+                </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -136,7 +163,7 @@ export function CreateEventForm() {
             <FormItem>
               <FormLabel>Event Images</FormLabel>
               <FormControl>
-              <MultiImageUpload
+                <MultiImageUpload
                   value={field.value}
                   onChange={field.onChange}
                   maxFiles={5}
@@ -147,20 +174,26 @@ export function CreateEventForm() {
           )}
         />
         {error && (
-            <Alert variant="destructive">
-              <ExclamationTriangleIcon className="h-6 w-6" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-6 w-6" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {success && (
+          <Alert>
+            <RocketIcon className="h-6 w-6"/>
+            <AlertTitle>Success</AlertTitle>
+            <AlertDescription>{success}</AlertDescription>
+          </Alert>
+        )}
+        <Button type="submit" disabled={loading}>
+          {loading ? (
+            <BeatLoader size={8} color="#4fa94d" />
+          ) : (
+            "Create Event"
           )}
-          {success && (
-            <Alert>
-              <RocketIcon className="h-6 w-6"/>
-              <AlertTitle>Success</AlertTitle>
-              <AlertDescription>{success}</AlertDescription>
-            </Alert>
-          )}
-        <Button type="submit">Create Event</Button>
+        </Button>
       </form>
     </Form>
   )

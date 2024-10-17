@@ -70,7 +70,7 @@ export async function createEvent(data: {
   title: string
   description: string
   type: string
-  dateTime: string
+  dateTime: Date
   location: string
   images: string[]
 }) {
@@ -84,7 +84,7 @@ export async function createEvent(data: {
       title: data.title,
       description: data.description,
       type: data.type,
-      dateTime: new Date(data.dateTime),
+      dateTime: data.dateTime,
       location: data.location,
       creatorId: session.user.id,
       images: data.images
@@ -102,7 +102,7 @@ export async function updateEvent(
     title: string
     description: string
     type: string
-    dateTime: string
+    dateTime: Date
     location: string
     images: string[]
   }
@@ -127,7 +127,7 @@ export async function updateEvent(
       title: data.title,
       description: data.description,
       type: data.type,
-      dateTime: new Date(data.dateTime),
+      dateTime: data.dateTime,
       location: data.location,
       images: data.images,
     },
@@ -180,4 +180,10 @@ export async function getMatchedEvents(searchParams: { [key: string]: string | s
   })
 
   return events
+}
+
+
+export async function deleteEvent (eventId: string, userId: string) {
+  if (!userId) return null
+  return await prisma.event.delete({where: {id: eventId}})
 }
