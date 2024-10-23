@@ -47,9 +47,6 @@ model User {
   assignmentsVoted AssignmentVote[]
   eventsCreated    Event[]            @relation("CreatorEvents")
   eventsAttended   EventAttendee[]
-  chats            ChatParticipant[]
-  messages         Message[]
-  notifications    Notification[]
   paymentsMade     Payment[]          @relation("PayerPayments")
   paymentsReceived Payment[]          @relation("ReceiverPayments")
 }
@@ -196,13 +193,14 @@ model StudyGroup {
 
   course     Course             @relation(fields: [courseId], references: [id])
   members    StudyGroupMember[]
-  chats      Chat[]
 }
 
 model StudyGroupMember {
   id           String @id @default(cuid())
   userId       String
   studyGroupId String
+  isAdmin Boolean @default(false)
+  joinRequestAccepted Boolean @default(false)
 
   user       User       @relation(fields: [userId], references: [id])
   studyGroup StudyGroup @relation(fields: [studyGroupId], references: [id])
@@ -236,38 +234,38 @@ model AssignmentVote {
   @@unique([assignmentId, userId])
 }
 
-model Chat {
-  id            String @id @default(cuid())
-  name          String
-  studyGroupId  String?
+// model Chat {
+//   id            String @id @default(cuid())
+//   name          String
+//   studyGroupId  String?
 
-  studyGroup   StudyGroup?       @relation(fields: [studyGroupId], references: [id])
-  participants ChatParticipant[]
-  messages     Message[]
-}
+//   studyGroup   StudyGroup?       @relation(fields: [studyGroupId], references: [id])
+//   participants ChatParticipant[]
+//   messages     Message[]
+// }
 
-model ChatParticipant {
-  id     String @id @default(cuid())
-  userId String
-  chatId String
+// model ChatParticipant {
+//   id     String @id @default(cuid())
+//   userId String
+//   chatId String
 
-  user User @relation(fields: [userId], references: [id])
-  chat Chat @relation(fields: [chatId], references: [id])
+//   user User @relation(fields: [userId], references: [id])
+//   chat Chat @relation(fields: [chatId], references: [id])
 
-  @@unique([userId, chatId])
-}
+//   @@unique([userId, chatId])
+// }
 
-model Message {
-  id       String   @id @default(cuid())
-  chatId   String
-  senderId String
-  content  String
-  files String[]
-  sendTime DateTime @default(now())
+// model Message {
+//   id       String   @id @default(cuid())
+//   chatId   String
+//   senderId String
+//   content  String
+//   files String[]
+//   sendTime DateTime @default(now())
 
-  chat   Chat @relation(fields: [chatId], references: [id])
-  sender User @relation(fields: [senderId], references: [id])
-}
+//   chat   Chat @relation(fields: [chatId], references: [id])
+//   sender User @relation(fields: [senderId], references: [id])
+// }
 
 
 // ------------------------------------------------------------------------------------------------------------------------ //
@@ -303,16 +301,16 @@ model EventAttendee {
 // ------------------------------------------------------------------------------------------------------------------------ //
 // PAYMENTS & NOTIFICATIONS//
 
-model Notification {
-  id        String   @id @default(cuid())
-  userId    String
-  content   String
-  type      String
-  timestamp DateTime @default(now())
-  isRead    Boolean  @default(false)
+// model Notification {
+//   id        String   @id @default(cuid())
+//   userId    String
+//   content   String
+//   type      String
+//   timestamp DateTime @default(now())
+//   isRead    Boolean  @default(false)
 
-  user User @relation(fields: [userId], references: [id])
-}
+//   user User @relation(fields: [userId], references: [id])
+// }
 
 model Payment {
   id          String   @id @default(cuid())

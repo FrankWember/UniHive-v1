@@ -30,6 +30,7 @@ export const Navbar = () => {
                 </Button>
             ))}
         </div>
+        <div className="flex w-full h-14"></div>
     </nav>
   )
 }

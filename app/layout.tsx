@@ -34,7 +34,7 @@ export default function RootLayout({
           <link rel="icon" href="/Unihive.png" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground w-screen h-screen`}
+          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
         >
           <ThemeProvider
             attribute="class"

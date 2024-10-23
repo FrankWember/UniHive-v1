@@ -1,94 +1,84 @@
 "use server"
 
-import { prisma } from "@/prisma/connection"
-import { auth } from "@/auth"
+import { currentUser } from '@/lib/auth'
+import { prisma } from '@/prisma/connection'
+import { revalidatePath } from 'next/cache'
 
-export async function getAssignments(courseId: string) {
-  return prisma.assignment.findMany({
-    where: { courseId },
-    include: {
-      uploader: {
-        select: { id: true, name: true },
-      },
-      votes: true,
-    },
-    orderBy: { uploadDate: 'desc' },
-  })
-}
 
-export async function createAssignment(data: {
-  courseId: string
-  title: string
-  description: string
-  filePath: string
-}) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    throw new Error("You must be logged in to create an assignment")
+export async function uploadAssignment(courseId: string, data: { title: string, description: string, file: string }) {
+  const user = await currentUser()
+  if (!user?.id) {
+    throw new Error('Unauthorized')
   }
 
-  return prisma.assignment.create({
+  const assignment = await prisma.assignment.create({
     data: {
-      ...data,
-      uploaderId: session.user.id,
-    },
+      title: data.title,
+      description: data.description,
+      filePath: data.file,
+      courseId: courseId,
+      uploaderId: user.id,
+    }
   })
+
+  revalidatePath(`/home/courses/${courseId}`)
+  return assignment
 }
 
-export async function updateAssignment(
-  id: string,
-  data: { title?: string; description?: string; filePath?: string }
-) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    throw new Error("You must be logged in to update an assignment")
+export async function voteAssignment(courseId: string, assignmentId: string, value: number) {
+  const user = await currentUser()
+  if (!user?.id) {
+    throw new Error('Unauthorized')
   }
 
-  const assignment = await prisma.assignment.findUnique({ where: { id } })
-  if (!assignment || assignment.uploaderId !== session.user.id) {
-    throw new Error("You can only update your own assignments")
-  }
-
-  return prisma.assignment.update({
-    where: { id },
-    data,
-  })
-}
-
-export async function deleteAssignment(id: string) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    throw new Error("You must be logged in to delete an assignment")
-  }
-
-  const assignment = await prisma.assignment.findUnique({ where: { id } })
-  if (!assignment || assignment.uploaderId !== session.user.id) {
-    throw new Error("You can only delete your own assignments")
-  }
-
-  return prisma.assignment.delete({
-    where: { id },
-  })
-}
-
-export async function voteAssignment(assignmentId: string, value: 1 | -1) {
-  const session = await auth()
-  if (!session?.user?.id) {
-    throw new Error("You must be logged in to vote on an assignment")
-  }
-
-  return prisma.assignmentVote.upsert({
+  const existingVote = await prisma.assignmentVote.findUnique({
     where: {
       assignmentId_userId: {
-        assignmentId,
-        userId: session.user.id,
+        assignmentId: assignmentId,
+        userId: user.id,
       },
     },
-    update: { value },
-    create: {
-      assignmentId,
-      userId: session.user.id,
-      value,
+  })
+
+  if (existingVote) {
+    if (existingVote.value === value) {
+      // Cancel the vote
+      await prisma.assignmentVote.delete({
+        where: {
+          id: existingVote.id,
+        },
+      })
+    } else {
+      // Change the vote
+      await prisma.assignmentVote.update({
+        where: {
+          id: existingVote.id,
+        },
+        data: {
+          value: value,
+        },
+      })
+    }
+  } else {
+    // Create a new vote
+    await prisma.assignmentVote.create({
+      data: {
+        assignmentId: assignmentId,
+        userId: user.id,
+        value: value,
+      },
+    })
+  }
+
+  const updatedAssignment = await prisma.assignment.findUnique({
+    where: {
+      id: assignmentId,
+    },
+    include: {
+      votes: true,
     },
   })
+
+  revalidatePath(`/home/courses/${courseId}`)
+  return updatedAssignment
 }
