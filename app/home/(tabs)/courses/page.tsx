@@ -6,8 +6,8 @@ import { RoleGate } from '@/components/role-gate'
 import { UserRole } from '@prisma/client'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { PlusCircle } from 'lucide-react'
 import { getCourses } from '@/actions/courses'
+import { PlusIcon } from '@radix-ui/react-icons'
 
 const CoursesPage = async () => {
   const courses = await getCourses()
@@ -19,19 +19,18 @@ const CoursesPage = async () => {
         <h1 className="text-2xl font-bold">Courses</h1>
         <div className="flex items-center space-x-3">
           <SearchBar courses={courses} />
-          <RoleGate allowedRoles={[UserRole.ADMIN]}>
-            <Link href="/home/courses/create-course" passHref>
-              <Button size="sm">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create Course
+          {/* <RoleGate allowedRoles={[UserRole.ADMIN]}> */}
+            <Link href="/home/courses/create" passHref>
+              <Button size="icon">
+                <PlusIcon />
               </Button>
             </Link>
-          </RoleGate>
+          {/* </RoleGate> */}
         </div>
       </div>
 
       {/* Content */}
-      <div className="w-full mt-20 px-6">
+      <div className="flex flex-col space-y-3 w-full mt-20 px-6">
         <Suspense fallback={<Skeleton className="w-full h-96" />}>
           <CourseList courses={courses} />
         </Suspense>

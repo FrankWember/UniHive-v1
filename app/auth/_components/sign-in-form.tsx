@@ -29,7 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EnvelopeClosedIcon, PersonIcon } from '@radix-ui/react-icons'
 import React from 'react'
 import { EmailLogin, IDLogin } from "@/actions/login";
-import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes";
+import { BeatLoader } from "react-spinners";
 
 export const SignInForm = () => {
   return (
@@ -168,7 +168,7 @@ const EmailForm = () => {
         )}
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending===true ? "Signing In...": "Submit"}
+          {isPending===true ? <BeatLoader />: "Submit"}
         </Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">
             <p>Don't have an Account? </p>

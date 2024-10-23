@@ -18,7 +18,7 @@ export const CourseList = async ({courses}: {courses: Course[]}) => {
           <CardContent>
             <Button asChild className="w-full">
               <Link href={`/home/courses/${course.id}`}>
-                View Study Group
+                Course details
               </Link>
             </Button>
           </CardContent>

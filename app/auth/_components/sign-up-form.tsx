@@ -26,6 +26,7 @@ import { useSearchParams } from 'next/navigation'
 import { Link2Icon } from "@radix-ui/react-icons"
 import { register } from "@/actions/register"
 import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes";
+import { BeatLoader } from "react-spinners";
 
 
 export const SignUpForm = () => {
@@ -162,7 +163,7 @@ export const SignUpForm = () => {
 
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending===true ? "Signing Up...": "Submit"}
+          {isPending===true ? <BeatLoader />: "Submit"}
         </Button>
         <div className="flex gap-2 items-center text-sm text-muted-foreground mt-6">
             <p>Already have an Account? </p>
