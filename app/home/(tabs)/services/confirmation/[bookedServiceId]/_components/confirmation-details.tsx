@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { reportScam } from '@/actions/services'
 import { BookedServices, Service } from '@prisma/client'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { BeatLoader } from 'react-spinners'
 

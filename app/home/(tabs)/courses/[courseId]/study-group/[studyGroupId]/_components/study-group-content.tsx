@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileIcon, SendIcon, PaperclipIcon } from 'lucide-react'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 interface Message {
   id: string
@@ -22,15 +23,16 @@ interface Message {
 
 interface StudyGroupContentProps {
   studyGroupId: string
-  currentUser: User
 }
 
-export function StudyGroupContent({ studyGroupId, currentUser }: StudyGroupContentProps) {
+export function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const chatRef = useRef<HTMLDivElement>(null)
+
+  const currentUser = useCurrentUser()
 
   useEffect(() => {
     const messagesRef = ref(db, `messages/${studyGroupId}`)
@@ -70,7 +72,7 @@ export function StudyGroupContent({ studyGroupId, currentUser }: StudyGroupConte
 
     await push(messagesRef, {
       text: newMessage,
-      userId: currentUser.id,
+      userId: currentUser!.id,
       timestamp: Date.now(),
       files: fileUrls,
     })
@@ -98,12 +100,12 @@ export function StudyGroupContent({ studyGroupId, currentUser }: StudyGroupConte
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
               className={`mb-4 ${
-                message.userId === currentUser.id ? 'text-right' : 'text-left'
+                message.userId === currentUser!.id ? 'text-right' : 'text-left'
               }`}
             >
               <div
                 className={`inline-block p-2 rounded-lg ${
-                  message.userId === currentUser.id
+                  message.userId === currentUser!.id
                     ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-800'
                 }`}
