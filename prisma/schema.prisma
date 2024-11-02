@@ -38,7 +38,7 @@ model User {
 
   services         Service[]
   serviceReviews   ServiceReview[]
-  servicesUsed     ServiceUsed[]      @relation("ServicesUsed")
+  servicesUsed     BookedServices[]      @relation("ServicesUsed")
   driver           Driver?
   ridesOffered     Ride[]             @relation("DriverRides")
   ridesRequested   Ride[]             @relation("PassengerRides")
@@ -120,7 +120,25 @@ model Service {
 
   provider  User            @relation(fields: [providerId], references: [id])
   reviews   ServiceReview[]
-  customers ServiceUsed[]   @relation("Customers")
+  customers BookedServices[]   @relation("Customers")
+}
+
+model BookedServices {
+  id        String  @id @default(uuid())
+  serviceId String
+  buyerId   String
+  dateTime DateTime @default(now())
+  status String @default("pending")
+  isPaid    Boolean @default(false)
+  isCompleted Boolean @default(false)
+  paidSeller Boolean @default(false)
+  updatedAt DateTime @updatedAt
+
+  paymentId String?
+
+  buyer   User     @relation("ServicesUsed", fields: [buyerId], references: [id])
+  service Service  @relation("Customers", fields: [serviceId], references: [id])
+  reciept Payment? @relation("ServiceReceipts", fields: [paymentId], references: [id])
 }
 
 model ServiceReview {
@@ -162,17 +180,7 @@ model Ride {
   reciept   Payment? @relation("RideReceipts", fields: [paymentId], references: [id])
 }
 
-model ServiceUsed {
-  id        String  @id @default(uuid())
-  serviceId String
-  buyerId   String
-  isPaid    Boolean @default(false)
-  paymentId String?
 
-  buyer   User     @relation("ServicesUsed", fields: [buyerId], references: [id])
-  service Service  @relation("Customers", fields: [serviceId], references: [id])
-  reciept Payment? @relation("ServiceReceipts", fields: [paymentId], references: [id])
-}
 
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
 // STUDY GROUPS //
@@ -324,6 +332,6 @@ model Payment {
   payer    User @relation("PayerPayments", fields: [payerId], references: [id])
   receiver User @relation("ReceiverPayments", fields: [receiverId], references: [id])
 
-  ServiceReceipts ServiceUsed[] @relation("ServiceReceipts")
+  ServiceReceipts BookedServices[] @relation("ServiceReceipts")
   RidesReceipts   Ride[]        @relation("RideReceipts")
 }

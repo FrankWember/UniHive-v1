@@ -7,6 +7,90 @@ import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage'
 import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
 import { currentUser } from "@/lib/auth";
+import { revalidatePath } from 'next/cache'
+
+export async function getServiceById(serviceId: string) {
+  return await prisma.service.findUnique({
+    where: { id: serviceId },
+    include: { provider: true }
+  })
+}
+
+export async function bookService(serviceId: string, userId: string, dateTime: Date) {
+  const bookedService = await prisma.bookedServices.create({
+    data: {
+      serviceId,
+      buyerId: userId,
+      dateTime,
+    },
+    include: { service: true }
+  })
+
+  revalidatePath(`/home/services/${serviceId}`)
+  return bookedService
+}
+
+export async function getBookedServiceById(bookedServiceId: string) {
+  return await prisma.bookedServices.findUnique({
+    where: { id: bookedServiceId },
+    include: { service: true }
+  })
+}
+
+export async function processPayment(bookedServiceId: string, userId: string, paymentMethod: string) {
+  // In a real-world scenario, you would integrate with a payment gateway here
+  // For this example, we'll just update the status and mark it as paid
+  const updatedBookedService = await prisma.bookedServices.update({
+    where: { id: bookedServiceId },
+    data: {
+      isPaid: true,
+      status: 'paid',
+      reciept: {
+        create: {
+          payerId: userId,
+          receiverId: (await getBookedServiceById(bookedServiceId))?.service.providerId || '',
+          amount: (await getBookedServiceById(bookedServiceId))?.service.price || 0,
+          paymentType: paymentMethod,
+          status: 'completed',
+        }
+      }
+    }
+  })
+
+  revalidatePath(`/home/services/payment/${bookedServiceId}`)
+  return updatedBookedService
+}
+
+export async function reportScam(bookedServiceId: string, userId: string) {
+  const updatedBookedService = await prisma.bookedServices.update({
+    where: { id: bookedServiceId },
+    data: {
+      status: 'reported',
+    }
+  })
+
+  // In a real-world scenario, you would create a separate scam report entry and notify administrators
+  // For this example, we'll just update the status
+
+  revalidatePath(`/home/services/confirmation/${bookedServiceId}`)
+  return updatedBookedService
+}
+
+export async function completeService(bookedServiceId: string) {
+  const updatedBookedService = await prisma.bookedServices.update({
+    where: { id: bookedServiceId },
+    data: {
+      isCompleted: true,
+      status: 'completed',
+    }
+  })
+
+  // In a real-world scenario, you would trigger the payment release to the seller here
+  // For this example, we'll just update the status
+
+  revalidatePath(`/home/services/${updatedBookedService.serviceId}`)
+  return updatedBookedService
+}
 
 interface MyService {
   name: string,
@@ -35,15 +119,6 @@ export async function createService(data: MyService) {
   return service
 }
 
-export async function getServiceById(id: string) {
-  const service = await prisma.service.findUnique({
-    where: { id },
-    include: {
-      provider: true
-    }
-  })
-  return service
-}
 
 export async function deleteService(id: string) {
   const session = await auth()

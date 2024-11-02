@@ -55,7 +55,7 @@ export function TimePicker({ date, setDate }: TimePickerProps) {
             <SelectTrigger className="w-[110px]">
               <SelectValue placeholder="Hour" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-h-[40vh]">
               {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
                 <SelectItem key={hour} value={hour.toString()}>
                   {hour.toString().padStart(2, '0')}

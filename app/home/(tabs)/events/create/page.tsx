@@ -16,7 +16,7 @@ const CreateEventPage = () => {
 
         {/* Content */}
         <div className="flex w-full px-6 justify-center">
-          <Card className='max-w-md h-fit my-20 mx-2'>
+          <Card className='max-w-md h-fit mt-24 pb-24 mx-2'>
             <CardHeader>
               <CardTitle>Create Event</CardTitle>
               <CardDescription>Create a new Campus event</CardDescription>

@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { DollarSign, Phone, Mail, User as UserIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 interface ServiceDetailsProps {
   service: {
@@ -72,7 +73,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
         <Separator />
         <div className="px-8 md:px-0">
           <h2 className="text-xl font-semibold mb-4">Service Images</h2>
-          <Carousel className="w-full max-w-[75vw]">
+          <Carousel className="w-full max-w-[75vw] sm:px-8">
             <CarouselContent>
               {service.images.map((image, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
@@ -93,7 +94,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
             <CarouselNext />
           </Carousel>
         </div>
-        <Button>Purchase</Button>
+        <Link href={`/home/services/${service.id}/book`}><Button>Purchase</Button></Link>
       </CardContent>
     </Card>
   )

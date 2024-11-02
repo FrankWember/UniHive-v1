@@ -18,7 +18,7 @@ const ServicesPage = ({ searchParams }: { searchParams: { [key: string]: string 
         </div>
 
         {/* Content */}
-        <div className="w-full mt-20">
+        <div className="w-full mt-20 pb-24">
           <MatchedServices searchParams={searchParams} />
         </div>
       </div>
