@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { useQuery } from '@tanstack/react-query'
-import { getCourseUsers } from '@/app/api/courses/[courseId]/users/route'
+import { getCourseUsers } from '@/utils/data/courses'
 
 interface UserSelectProps {
   value: string[]
