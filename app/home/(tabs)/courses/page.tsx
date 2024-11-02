@@ -30,7 +30,7 @@ const CoursesPage = async () => {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col space-y-3 w-full mt-20 px-6">
+      <div className="flex flex-col space-y-3 w-full mt-24 px-6">
         <Suspense fallback={<Skeleton className="w-full h-96" />}>
           <CourseList courses={courses} />
         </Suspense>

@@ -10,23 +10,19 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons"
 import { useRouter } from 'next/navigation'
-import { createStudyGroupChat } from '@/actions/chats'
+import { createStudyGroup } from '@/actions/study-groups'
 import { UserSelect } from './user-select'
 import { User } from '@prisma/client'
+import { ChatSchema } from '@/constants/zod'
 
-const ChatSchema = z.object({
-  name: z.string().min(1, "Chat name is required"),
-  participants: z.array(z.string()).min(1, "At least one participant is required")
-})
 
 type ChatFormValues = z.infer<typeof ChatSchema>
 
 interface CreateChatFormProps {
   courseId: string
-  users: User[]
 }
 
-export function CreateChatForm({ courseId, users }: CreateChatFormProps) {
+export function CreateChatForm({ courseId }: CreateChatFormProps) {
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
   const router = useRouter()
@@ -35,7 +31,6 @@ export function CreateChatForm({ courseId, users }: CreateChatFormProps) {
     resolver: zodResolver(ChatSchema),
     defaultValues: {
       name: "",
-      participants: [],
     },
   })
 
@@ -43,7 +38,7 @@ export function CreateChatForm({ courseId, users }: CreateChatFormProps) {
     setError("")
     setSuccess("")
     try {
-      await createStudyGroupChat(courseId, values)
+      await createStudyGroup(courseId, values.name)
       setSuccess("Group chat created successfully!")
       router.push(`/home/courses/${courseId}`)
       router.refresh()
@@ -64,23 +59,6 @@ export function CreateChatForm({ courseId, users }: CreateChatFormProps) {
               <FormLabel>Chat Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter chat name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="participants"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Participants</FormLabel>
-              <FormControl>
-                <UserSelect
-                  value={field.value}
-                  onChange={field.onChange}
-                  users={users}
-                />
               </FormControl>
               <FormMessage />
             </FormItem>

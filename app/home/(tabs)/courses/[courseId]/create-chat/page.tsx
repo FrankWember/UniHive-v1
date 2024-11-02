@@ -22,7 +22,7 @@ const CreateChatPage = async ({ params }: { params: { courseId: string } }) => {
             <CardTitle>Create New Group Chat</CardTitle>
           </CardHeader>
           <CardContent>
-            <CreateChatForm courseId={params.courseId} users={users} />
+            <CreateChatForm courseId={params.courseId} />
           </CardContent>
         </Card>
       </div>

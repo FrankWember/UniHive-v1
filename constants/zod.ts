@@ -42,6 +42,11 @@ export const ResetSchema = z.object({
   }),
 });
 
+export const ChatSchema = z.object({
+  name: z.string().min(1, "Chat name is required"),
+  participants: z.array(z.string()).min(1, "At least one participant is required")
+})
+
 export const NewPasswordSchema = z.object({
   password: z.string({required_error: "Please Enter your password"})
     .min(8, "Minimum 8 characters required!"),
