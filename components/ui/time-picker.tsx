@@ -2,15 +2,11 @@
 
 import * as React from "react"
 import { Clock } from "lucide-react"
-
-import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 
 interface TimePickerProps {
   date: Date | undefined
@@ -18,20 +14,52 @@ interface TimePickerProps {
 }
 
 export function TimePicker({ date, setDate }: TimePickerProps) {
-  const minuteOptions = Array.from({ length: 4 }, (_, i) => i * 15)
-    .map((minute) => ({ value: minute.toString().padStart(2, '0'), label: minute.toString().padStart(2, '0') }))
+  const minuteRef = React.useRef<HTMLInputElement>(null)
+  const hourRef = React.useRef<HTMLInputElement>(null)
+  const [hour, setHour] = React.useState(date ? date.getHours() : 0)
+  const [minute, setMinute] = React.useState(date ? date.getMinutes() : 0)
+  const [meridiem, setMeridiem] = React.useState<"AM" | "PM">(
+    date ? (date.getHours() >= 12 ? "PM" : "AM") : "AM"
+  )
 
-  const handleHourChange = (hour: string) => {
-    if (!date) return
-    const newDate = new Date(date)
-    newDate.setHours(parseInt(hour))
-    setDate(newDate)
+  React.useEffect(() => {
+    if (date) {
+      setHour(date.getHours())
+      setMinute(date.getMinutes())
+      setMeridiem(date.getHours() >= 12 ? "PM" : "AM")
+    }
+  }, [date])
+
+  const handleHourChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newHour = parseInt(event.target.value, 10)
+    if (newHour >= 0 && newHour <= 12) {
+      setHour(newHour)
+      updateDate(newHour, minute, meridiem)
+    }
   }
 
-  const handleMinuteChange = (minute: string) => {
-    if (!date) return
-    const newDate = new Date(date)
-    newDate.setMinutes(parseInt(minute))
+  const handleMinuteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newMinute = parseInt(event.target.value, 10)
+    if (newMinute >= 0 && newMinute < 60) {
+      setMinute(newMinute)
+      updateDate(hour, newMinute, meridiem)
+    }
+  }
+
+  const handleMeridiemChange = () => {
+    const newMeridiem = meridiem === "AM" ? "PM" : "AM"
+    setMeridiem(newMeridiem)
+    updateDate(hour, minute, newMeridiem)
+  }
+
+  const updateDate = (hour: number, minute: number, meridiem: "AM" | "PM") => {
+    const newDate = new Date()
+    newDate.setHours(
+      meridiem === "PM" ? (hour % 12) + 12 : hour % 12,
+      minute,
+      0,
+      0
+    )
     setDate(newDate)
   }
 
@@ -46,36 +74,53 @@ export function TimePicker({ date, setDate }: TimePickerProps) {
           )}
         >
           <Clock className="mr-2 h-4 w-4" />
-          {date ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : <span>Pick a time</span>}
+          {date ? date.toLocaleTimeString() : <span>Pick a time</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <div className="flex items-center space-x-2 p-3">
-          <Select onValueChange={handleHourChange} value={date ? date.getHours().toString() : undefined}>
-            <SelectTrigger className="w-[110px]">
-              <SelectValue placeholder="Hour" />
-            </SelectTrigger>
-            <SelectContent className="max-h-[40vh]">
-              {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                <SelectItem key={hour} value={hour.toString()}>
-                  {hour.toString().padStart(2, '0')}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <span>:</span>
-          <Select onValueChange={handleMinuteChange} value={date ? (Math.floor(date.getMinutes() / 15) * 15).toString().padStart(2, '0') : undefined}>
-            <SelectTrigger className="w-[110px]">
-              <SelectValue placeholder="Minute" />
-            </SelectTrigger>
-            <SelectContent>
-              {minuteOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <PopoverContent className="w-auto p-0">
+        <div className="flex items-end gap-2 p-3">
+          <div className="grid gap-1 text-center">
+            <Label htmlFor="hours" className="text-xs">
+              Hours
+            </Label>
+            <Input
+              id="hours"
+              className="w-[64px]"
+              value={hour}
+              onChange={handleHourChange}
+              ref={hourRef}
+              type="number"
+              min={1}
+              max={12}
+            />
+          </div>
+          <div className="grid gap-1 text-center">
+            <Label htmlFor="minutes" className="text-xs">
+              Minutes
+            </Label>
+            <Input
+              id="minutes"
+              className="w-[64px]"
+              value={minute.toString().padStart(2, "0")}
+              onChange={handleMinuteChange}
+              ref={minuteRef}
+              type="number"
+              min={0}
+              max={59}
+            />
+          </div>
+          <div className="grid gap-1 text-center">
+            <Label htmlFor="meridiem" className="text-xs">
+              AM/PM
+            </Label>
+            <Button
+              variant="outline"
+              className="w-[64px]"
+              onClick={handleMeridiemChange}
+            >
+              {meridiem}
+            </Button>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
