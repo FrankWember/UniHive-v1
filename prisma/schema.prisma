@@ -127,11 +127,15 @@ model BookedServices {
   id        String  @id @default(uuid())
   serviceId String
   buyerId   String
-  dateTime DateTime @default(now())
+  notes String?
+  price Float
+  startTime DateTime @default(now())
+  stopTime  DateTime @default(now())
   status String @default("pending")
+  isAgreed Boolean @default(false)
   isPaid    Boolean @default(false)
   isCompleted Boolean @default(false)
-  paidSeller Boolean @default(false)
+  isCanceled Boolean @default(false)
   updatedAt DateTime @updatedAt
 
   paymentId String?

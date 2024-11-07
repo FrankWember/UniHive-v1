@@ -98,3 +98,79 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
 
   await transporter.sendMail(mailOptions);
 };
+
+
+interface EmailOptions {
+  to: string
+  subject: string
+  text: string
+  html?: string
+}
+
+export async function sendEmail({ to, subject, text, html }: EmailOptions) {
+  const emailTemplate = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>${subject}</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background-color: #f4f4f4;
+          padding: 20px;
+          text-align: center;
+        }
+        .content {
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+          display: inline-block;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+          margin-top: 20px;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 0.8em;
+          color: #666;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>${subject}</h1>
+      </div>
+      <div class="content">
+        ${html || `<p>${text}</p>`}
+      </div>
+      <div class="footer">
+        <p>© ${new Date().getFullYear()} Unihive. All rights reserved.</p>
+      </div>
+    </body>
+    </html>
+  `
+
+  await transporter.sendMail({
+    from: process.env.EMAIL_FROM,
+    to,
+    subject,
+    text,
+    html: emailTemplate,
+  })
+}

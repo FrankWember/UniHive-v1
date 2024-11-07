@@ -8,6 +8,7 @@ import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from 'next/cache'
+import { sendEmail } from '@/lib/mail'
 
 export async function getServiceById(serviceId: string) {
   return await prisma.service.findUnique({
@@ -16,19 +17,6 @@ export async function getServiceById(serviceId: string) {
   })
 }
 
-export async function bookService(serviceId: string, userId: string, dateTime: Date) {
-  const bookedService = await prisma.bookedServices.create({
-    data: {
-      serviceId,
-      buyerId: userId,
-      dateTime,
-    },
-    include: { service: true }
-  })
-
-  revalidatePath(`/home/services/${serviceId}`)
-  return bookedService
-}
 
 export async function getBookedServiceById(bookedServiceId: string) {
   return await prisma.bookedServices.findUnique({
@@ -37,29 +25,6 @@ export async function getBookedServiceById(bookedServiceId: string) {
   })
 }
 
-export async function processPayment(bookedServiceId: string, userId: string, paymentMethod: string) {
-  // In a real-world scenario, you would integrate with a payment gateway here
-  // For this example, we'll just update the status and mark it as paid
-  const updatedBookedService = await prisma.bookedServices.update({
-    where: { id: bookedServiceId },
-    data: {
-      isPaid: true,
-      status: 'paid',
-      reciept: {
-        create: {
-          payerId: userId,
-          receiverId: (await getBookedServiceById(bookedServiceId))?.service.providerId || '',
-          amount: (await getBookedServiceById(bookedServiceId))?.service.price || 0,
-          paymentType: paymentMethod,
-          status: 'completed',
-        }
-      }
-    }
-  })
-
-  revalidatePath(`/home/services/payment/${bookedServiceId}`)
-  return updatedBookedService
-}
 
 export async function reportScam(bookedServiceId: string, userId: string) {
   const updatedBookedService = await prisma.bookedServices.update({
@@ -76,21 +41,6 @@ export async function reportScam(bookedServiceId: string, userId: string) {
   return updatedBookedService
 }
 
-export async function completeService(bookedServiceId: string) {
-  const updatedBookedService = await prisma.bookedServices.update({
-    where: { id: bookedServiceId },
-    data: {
-      isCompleted: true,
-      status: 'completed',
-    }
-  })
-
-  // In a real-world scenario, you would trigger the payment release to the seller here
-  // For this example, we'll just update the status
-
-  revalidatePath(`/home/services/${updatedBookedService.serviceId}`)
-  return updatedBookedService
-}
 
 interface MyService {
   name: string,
@@ -237,4 +187,174 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
   })
 
   return services
+}
+
+
+export async function getBookingsForService(serviceId: string) {
+  return await prisma.bookedServices.findMany({
+    where: { serviceId },
+    orderBy: { startTime: 'desc' },
+  })
+}
+
+export async function getBookingById(bookingId: string) {
+  return await prisma.bookedServices.findUnique({
+    where: { id: bookingId },
+    include: { service: true, buyer: true }
+  })
+}
+
+export async function bookService(serviceId: string, userId: string, startTime: Date, stopTime: Date, notes: string) {
+  const service = await getServiceById(serviceId)
+  if (!service) throw new Error("Service not found")
+
+  const booking = await prisma.bookedServices.create({
+    data: {
+      serviceId,
+      buyerId: userId,
+      startTime,
+      stopTime,
+      notes,
+      price: service.price,
+    },
+    include: { service: true, buyer: true }
+  })
+
+  await sendEmail({
+    to: service.provider.email,
+    subject: "New Booking Request",
+    text: `You have a new booking request for ${service.name}. Please check your dashboard to approve or reject the booking.`,
+    html: `
+      <h2>New Booking Request</h2>
+      <p>You have a new booking request for <strong>${service.name}</strong>.</p>
+      <p>Please check your dashboard to approve or reject the booking.</p>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/${serviceId}/bookings" class="button">View Booking</a>
+    `
+  })
+
+  revalidatePath(`/home/services/${serviceId}`)
+  return booking
+}
+
+export async function agreeBooking(bookingId: string) {
+  const booking = await prisma.bookedServices.update({
+    where: { id: bookingId },
+    data: { isAgreed: true, status: 'agreed' },
+    include: { service: true, buyer: true }
+  })
+
+  await sendEmail({
+    to: booking.buyer.email,
+    subject: "Booking Agreed",
+    text: `Your booking for ${booking.service.name} has been agreed. Please proceed with the payment.`,
+    html: `
+      <h2>Booking Agreed</h2>
+      <p>Your booking for <strong>${booking.service.name}</strong> has been agreed.</p>
+      <p>Please click the button below to proceed with the payment:</p>
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/payment/${booking.id}" class="button">Proceed to Payment</a>
+    `
+  })
+
+  revalidatePath(`/home/services/${booking.serviceId}/bookings/${bookingId}`)
+  return booking
+}
+
+export async function cancelBooking(bookingId: string) {
+  const booking = await prisma.bookedServices.update({
+    where: { id: bookingId },
+    data: { isCanceled: true, status: 'canceled' },
+    include: { service: true, buyer: true }
+  })
+
+  if (booking.isPaid) {
+    // Implement refund logic here
+  }
+
+  await sendEmail({
+    to: booking.buyer.email,
+    subject: "Booking Canceled",
+    text: `Your booking for ${booking.service.name} has been canceled. ${booking.isPaid ? 'A refund will be processed shortly.' : ''}`,
+    html: `
+      <h2>Booking Canceled</h2>
+      <p>Your booking for <strong>${booking.service.name}</strong> has been canceled.</p>
+      ${booking.isPaid ? '<p>A refund will be processed shortly.</p>' : ''}
+    `
+  })
+
+  revalidatePath(`/home/services/${booking.serviceId}/bookings/${bookingId}`)
+  return booking
+}
+
+export async function processPayment(bookingId: string, paymentMethod: string) {
+  const thisBooking = await prisma.bookedServices.findUnique({
+    where: { id: bookingId },
+    include: { service: true, buyer: true }
+  })
+  const booking = await prisma.bookedServices.update({
+    where: { id: bookingId },
+    data: { 
+      isPaid: true, 
+      status: 'paid',
+      reciept: {
+        create: {
+          payerId: thisBooking!.buyerId,
+          receiverId: thisBooking!.service.providerId,
+          amount: thisBooking!.price,
+          paymentType: paymentMethod,
+          status: 'completed'
+        }
+      }
+    },
+    include: { service: { include: { provider: true } }, buyer: true }
+  })
+
+  await sendEmail({
+    to: booking.service.provider.email,
+    subject: "Payment Received",
+    text: `Payment has been received for your service ${booking.service.name}.`,
+    html: `
+      <h2>Payment Received</h2>
+      <p>Payment has been received for your service <strong>${booking.service.name}</strong>.</p>
+      <p>Amount: $${booking.price.toFixed(2)}</p>
+      <p>Payment method: ${paymentMethod}</p>
+    `
+  })
+
+  revalidatePath(`/home/services/${booking.serviceId}/bookings/${bookingId}`)
+  return booking
+}
+
+export async function completeService(bookingId: string) {
+  const booking = await prisma.bookedServices.update({
+    where: { id: bookingId },
+    data: { isCompleted: true, status: 'completed' },
+    include: { service: { include: { provider: true } }, buyer: true }
+  })
+
+  const sellerPayment = booking.price * 0.8
+
+  await sendEmail({
+    to: booking.service.provider.email,
+    subject: "Service Completed",
+    text: `Your service ${booking.service.name} has been marked as completed. Payment of $${sellerPayment.toFixed(2)} will be transferred to your account.`,
+    html: `
+      <h2>Service Completed</h2>
+      <p>Your service <strong>${booking.service.name}</strong> has been marked as completed.</p>
+      <p>Payment of <strong>$${sellerPayment.toFixed(2)}</strong> will be transferred to your account.</p>
+    `
+  })
+
+  await sendEmail({
+    to: booking.buyer.email,
+    subject: "Service Completed",
+    text: `The service ${booking.service.name} has been marked as completed. Thank you for using our platform.`,
+    html: `
+      <h2>Service Completed</h2>
+      <p>The service <strong>${booking.service.name}</strong> has been marked as completed.</p>
+      <p>Thank you for using our platform.</p>
+    `
+  })
+
+  revalidatePath(`/home/services/${booking.serviceId}/bookings/${bookingId}`)
+  return booking
 }
