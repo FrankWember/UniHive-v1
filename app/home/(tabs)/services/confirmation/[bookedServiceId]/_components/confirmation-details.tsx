@@ -63,7 +63,7 @@ export function ConfirmationDetails({ bookedService, userId }: ConfirmationDetai
                 </TableRow>
                 <TableRow>
                     <TableCell>Date</TableCell>
-                    <TableCell>{bookedService.dateTime.toLocaleString()}</TableCell>
+                    <TableCell>{`${bookedService.startTime.toLocaleTimeString()} - ${bookedService.stopTime.toLocaleTimeString()}`}</TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell>Status</TableCell>
