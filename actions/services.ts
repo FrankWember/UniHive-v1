@@ -285,7 +285,7 @@ export async function cancelBooking(bookingId: string) {
   return booking
 }
 
-export async function processPayment(bookingId: string, paymentMethod: string) {
+export async function processPayment(bookingId: string, userId: string, paymentMethod: string) {
   const thisBooking = await prisma.bookedServices.findUnique({
     where: { id: bookingId },
     include: { service: true, buyer: true }
@@ -297,8 +297,8 @@ export async function processPayment(bookingId: string, paymentMethod: string) {
       status: 'paid',
       reciept: {
         create: {
-          payerId: thisBooking!.buyerId,
-          receiverId: thisBooking!.service.providerId,
+          payerId: userId,
+          receiverId: userId,
           amount: thisBooking!.price,
           paymentType: paymentMethod,
           status: 'completed'

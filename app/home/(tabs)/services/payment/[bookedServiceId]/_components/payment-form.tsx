@@ -57,7 +57,7 @@ export function PaymentForm({ bookedService, userId }: PaymentFormProps) {
                     </TableRow>
                     <TableRow>
                         <TableCell>Date</TableCell>
-                        <TableCell>{bookedService.dateTime.toLocaleString()}</TableCell>
+                        <TableCell>{bookedService.startTime.toLocaleString()} - {bookedService.stopTime.toLocaleString()}</TableCell>
                     </TableRow>
                 </TableBody>
               </Table>
