@@ -16,8 +16,9 @@ export default async function MyBookingsPage() {
       {/* Header */}
       <div className="flex items-center justify-start gap-3 h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <BackButton />
-        <h1 className="text-2xl font-bold">Service Bookings</h1>
+        <h1 className="text-2xl font-bold">My Bookings</h1>
       </div>
+      <div className="flex h-16 w-full"></div>
 
       {/* Content */}
       <div className="flex w-screen justify-center pb-24">
