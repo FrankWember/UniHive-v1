@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Button } from '@/components/ui/button'
-import { Component2Icon, PersonIcon, PlusIcon } from '@radix-ui/react-icons'
+import { Component2Icon, LayersIcon, PersonIcon, PlusIcon } from '@radix-ui/react-icons'
 import { useRouter } from 'next/navigation'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
@@ -70,6 +70,10 @@ export const SideMenu = () => {
               <Button onClick={() => router.push("/home/services?mine=true")} className="justify-start">
                 <PersonIcon className="mr-2 h-4 w-4" />
                 My Services
+              </Button>
+              <Button onClick={() => router.push("/home/services/my-bookings")} className="justify-start">
+                <LayersIcon className="mr-2 h-4 w-4" />
+                My Bookings
               </Button>
             </div>
           </div>
