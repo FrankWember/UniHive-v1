@@ -5,7 +5,12 @@ import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/mail'
 import { getServiceById } from './services'
 
-// ... (previous functions)
+export async function getBookedServiceById(bookedServiceId: string) {
+  return await prisma.bookedServices.findUnique({
+    where: { id: bookedServiceId },
+    include: { service: true }
+  })
+}
 
 export async function getBookingsByUserId(userId: string) {
   return await prisma.bookedServices.findMany({

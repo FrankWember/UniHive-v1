@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
-import { getServiceById, getBookingsForService } from '@/actions/services'
+import { getServiceById } from '@/actions/services'
+import { getBookingsForService } from '@/actions/service-bookings'
 import { currentUser } from '@/lib/auth'
 import { BackButton } from '@/components/back-button'
 import { BookingsTable } from './_components/bookings-table'
