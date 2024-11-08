@@ -38,6 +38,9 @@ export const ServiceActions: React.FC<ServiceActionsProps> = ({ serviceId, provi
     await deleteService(serviceId)
     router.push('/home/services')
   }
+  const handleReview = () => {
+    router.push(`/home/services/${serviceId}/review`)
+  }
 
   const handleBookings = () => {
     router.push(`/home/services/${serviceId}/bookings`)
@@ -45,25 +48,30 @@ export const ServiceActions: React.FC<ServiceActionsProps> = ({ serviceId, provi
 
   return (
     <div className="flex space-x-2">
-      <Button onClick={handleBookings}>Bookings</Button>
-      <Button onClick={handleEdit}>Edit</Button>
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive">Delete</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your service.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {providerId===currentUser.id && (
+        <div className="flex space-x-2">
+          <Button onClick={handleBookings}>Bookings</Button>
+          <Button onClick={handleEdit}>Edit</Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete your service.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
+      <Button onClick={handleReview}>Review</Button>
     </div>
   )
 }

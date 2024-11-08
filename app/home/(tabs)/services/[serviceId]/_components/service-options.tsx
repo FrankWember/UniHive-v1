@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { DotsVerticalIcon, PersonIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import {ServiceActions} from './service-actions';
+import { ServiceActions } from './service-actions';
 import { Service } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/use-current-user';
@@ -43,10 +43,11 @@ const ServiceOptions = ({ service }: {service: Service}) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}>View Provider</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}>Review</DropdownMenuItem>
             {currentUser?.id === service.providerId && (
                 <>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}>Bookings</DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}>Edit</DropdownMenuItem>
+                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}>Edit</DropdownMenuItem>           
                 <AlertDialog>
                     <AlertDialogTrigger>
                         <DropdownMenuItem>Delete</DropdownMenuItem>
