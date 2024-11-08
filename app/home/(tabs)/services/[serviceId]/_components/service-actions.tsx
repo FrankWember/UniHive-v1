@@ -39,8 +39,13 @@ export const ServiceActions: React.FC<ServiceActionsProps> = ({ serviceId, provi
     router.push('/home/services')
   }
 
+  const handleBookings = () => {
+    router.push(`/home/services/${serviceId}/bookings`)
+  }
+
   return (
     <div className="flex space-x-2">
+      <Button onClick={handleBookings}>Bookings</Button>
       <Button onClick={handleEdit}>Edit</Button>
       <AlertDialog>
         <AlertDialogTrigger asChild>

@@ -16,7 +16,7 @@ import { Calendar } from '@/components/ui/calendar'
 import { TimePicker } from '@/components/ui/time-picker'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { bookService } from '@/actions/services'
+import { bookService } from '@/actions/service-bookings'
 import { Service } from '@prisma/client'
 
 const formSchema = z.object({
@@ -78,7 +78,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <FormField
               control={form.control}
               name="startDate"

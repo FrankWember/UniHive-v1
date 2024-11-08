@@ -1,7 +1,7 @@
 "use client";
 
 import { BeatLoader } from "react-spinners";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 import { newVerification } from "@/actions/new-verification";
@@ -18,6 +18,7 @@ export const NewVerificationForm = () => {
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const router = useRouter()
 
   const onSubmit = useCallback(() => {
     if (success || error) return;
@@ -31,6 +32,7 @@ export const NewVerificationForm = () => {
       .then((data) => {
         setSuccess(data.success);
         setError(data.error);
+        router.push("/home")
       })
       .catch(() => {
         setError("Something went wrong!");

@@ -3,15 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { CheckCircle, AlertTriangle } from 'lucide-react'
+import { CheckCircle, AlertTriangle, Clock, DollarSign, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { reportScam } from '@/actions/services'
 import { BookedServices, Service } from '@prisma/client'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
-import { BeatLoader } from 'react-spinners'
-
+import { Badge } from '@/components/ui/badge'
 
 interface ConfirmationDetailsProps {
   bookedService: BookedServices & { service: Service }
@@ -39,49 +38,64 @@ export function ConfirmationDetails({ bookedService, userId }: ConfirmationDetai
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-md mx-auto pb-24"
+      className="max-w-3xl mx-auto"
     >
-      <Card className="p-4 space-y-4">
-        <Alert>
-          <CheckCircle />
-          <AlertTitle>Booking Confirmed</AlertTitle>
-          <AlertDescription className="text-muted-foreground">Your service has been successfully booked and paid for.</AlertDescription>
-        </Alert>
+      <Card>
         <CardHeader>
-          <CardTitle>Booking Details</CardTitle>
+          <CardTitle className="text-2xl">Booking Confirmation</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertTitle>Booking Confirmed</AlertTitle>
+            <AlertDescription>
+              Your service has been successfully booked and paid for.
+            </AlertDescription>
+          </Alert>
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold">Status</span>
+            <Badge variant="success">{bookedService.status}</Badge>
+          </div>
           <Table>
             <TableBody>
-                <TableRow>
-                    <TableCell>Services</TableCell>
-                    <TableCell>{bookedService.service.name}</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>Price</TableCell>
-                    <TableCell>${bookedService.service.price.toFixed(2)}</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>{`${bookedService.startTime.toLocaleTimeString()} - ${bookedService.stopTime.toLocaleTimeString()}`}</TableCell>
-                </TableRow>
-                <TableRow>
-                    <TableCell>Status</TableCell>
-                    <TableCell>{bookedService.status}</TableCell>
-                </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">Service</TableCell>
+                <TableCell>{bookedService.service.name}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">
+                  <DollarSign className="inline-block mr-2" /> Price
+                </TableCell>
+                <TableCell>${bookedService.service.price.toFixed(2)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">
+                  <Clock className="inline-block mr-2" /> Date and Time
+                </TableCell>
+                <TableCell>
+                  {bookedService.startTime.toLocaleString()} - {bookedService.stopTime.toLocaleString()}
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
+          <Alert>
+            <FileText className="h-4 w-4" />
+            <AlertTitle>Notes</AlertTitle>
+            <AlertDescription>
+              {bookedService.notes || 'No additional notes'}
+            </AlertDescription>
+          </Alert>
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Payment Information</AlertTitle>
+            <AlertDescription>
+              Please note that the payment will be held in escrow until the service is completed. If you believe you've been scammed, please report it immediately.
+            </AlertDescription>
+          </Alert>
         </CardContent>
-        <Alert>
-          <AlertTriangle />
-          <AlertTitle>Payment Information</AlertTitle>
-          <AlertDescription className="text-muted-foreground">
-            Please note that the payment will be held in escrow until the service is completed. If you believe you've been scammed, please report it immediately.
-          </AlertDescription>
-        </Alert>
         <CardFooter>
           <Button onClick={handleReportScam} variant="destructive" disabled={isReporting} className="w-full">
-            {isReporting ? <BeatLoader /> : "Report Scam"}
+            {isReporting ? "Reporting..." : "Report Scam"}
           </Button>
         </CardFooter>
       </Card>

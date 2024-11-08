@@ -1,46 +1,47 @@
 "use client"
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { BookedServices, Service, User } from '@prisma/client'
+import { BookedServices, Service } from '@prisma/client'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { agreeBooking, cancelBooking } from '@/actions/service-bookings'
+import { cancelBooking, processPayment } from '@/actions/service-bookings'
 import { useToast } from '@/hooks/use-toast'
-import { useCurrentUser } from '@/hooks/use-current-user'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Clock, DollarSign, FileText, User as UserIcon } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Clock, DollarSign, FileText } from 'lucide-react'
 
-interface BookingDetailsProps {
-  booking: BookedServices & { service: Service, buyer: User }
+interface MyBookingDetailsProps {
+  booking: BookedServices & { service: Service }
+  userId: string
 }
 
-export function BookingDetails({ booking }: BookingDetailsProps) {
+export function MyBookingDetails({ booking, userId }: MyBookingDetailsProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-  const currentUser = useCurrentUser()
+  const router = useRouter()
 
-  const handleAgree = async () => {
+  const handleCancel = async () => {
     setIsLoading(true)
     try {
-      await agreeBooking(booking.id)
-      toast({ title: "Booking agreed", description: "You have agreed to this booking." })
+      await cancelBooking(booking.id, userId)
+      toast({ title: "Booking cancelled", description: "Your booking has been cancelled." })
+      router.refresh()
     } catch (error) {
-      toast({ title: "Error", description: "Failed to agree to the booking.", variant: "destructive" })
+      toast({ title: "Error", description: "Failed to cancel the booking.", variant: "destructive" })
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleCancel = async () => {
+  const handlePay = async () => {
     setIsLoading(true)
     try {
-      await cancelBooking(booking.id, currentUser!.id!)
-      toast({ title: "Booking cancelled", description: "You have cancelled this booking." })
+      router.push(`/home/services/${booking.serviceId}/payment/${booking.id}`)
     } catch (error) {
-      toast({ title: "Error", description: "Failed to cancel the booking.", variant: "destructive" })
+      toast({ title: "Error", description: "Failed to process the payment.", variant: "destructive" })
     } finally {
       setIsLoading(false)
     }
@@ -73,15 +74,21 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell className="font-medium"><UserIcon className="inline-block mr-2" /> Customer</TableCell>
-                <TableCell>{booking.buyer.name}</TableCell>
+                <TableCell className="font-medium">Service</TableCell>
+                <TableCell>{booking.service.name}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium"><Clock className="inline-block mr-2" /> Date and Time</TableCell>
-                <TableCell>{booking.startTime.toLocaleString()} - {booking.stopTime.toLocaleString()}</TableCell>
+                <TableCell className="font-medium">
+                  <Clock className="inline-block mr-2" /> Date and Time
+                </TableCell>
+                <TableCell>
+                  {booking.startTime.toLocaleString()} - {booking.stopTime.toLocaleString()}
+                </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="font-medium"><DollarSign className="inline-block mr-2" /> Price</TableCell>
+                <TableCell className="font-medium">
+                  <DollarSign className="inline-block mr-2" /> Price
+                </TableCell>
                 <TableCell>${booking.price.toFixed(2)}</TableCell>
               </TableRow>
             </TableBody>
@@ -90,19 +97,19 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
             <FileText className="h-4 w-4" />
             <AlertTitle>Notes</AlertTitle>
             <AlertDescription>
-              {booking.notes || 'No notes provided'}
+              {booking.notes || 'No additional notes'}
             </AlertDescription>
           </Alert>
         </CardContent>
         <CardFooter className="flex justify-end space-x-4">
-          {!booking.isAgreed && booking.service.providerId === currentUser!.id && (
-            <Button onClick={handleAgree} disabled={isLoading}>
-              Agree to Booking
-            </Button>
-          )}
-          {!booking.isCanceled && (
+          {!booking.isCanceled && booking.status !== 'completed' && (
             <Button onClick={handleCancel} variant="destructive" disabled={isLoading}>
               Cancel Booking
+            </Button>
+          )}
+          {booking.status === 'agreed' && !booking.isPaid && (
+            <Button onClick={handlePay} disabled={isLoading}>
+              Pay Now
             </Button>
           )}
         </CardFooter>

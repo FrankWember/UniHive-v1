@@ -14,7 +14,7 @@ const AddServicePage = () => {
       </div>
 
       {/* Content */}
-      <div className="flex w-screen justify-center">
+      <div className="flex w-screen justify-center mt-5">
         <Card className='max-w-md h-fit my-20 mx-2'>
           <CardHeader>
             <CardTitle>Create Service</CardTitle>

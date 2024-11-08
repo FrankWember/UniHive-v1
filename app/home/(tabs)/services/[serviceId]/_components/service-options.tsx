@@ -45,6 +45,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
             <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}>View Provider</DropdownMenuItem>
             {currentUser?.id === service.providerId && (
                 <>
+                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}>Bookings</DropdownMenuItem>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}>Edit</DropdownMenuItem>
                 <AlertDialog>
                     <AlertDialogTrigger>

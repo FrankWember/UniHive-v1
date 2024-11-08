@@ -7,7 +7,7 @@ import { CreditCardIcon, AppleIcon, PaypalIcon } from 'hugeicons-react'
 import { Button } from '@/components/ui/button'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import { processPayment } from '@/actions/services'
+import { processPayment } from '@/actions/service-bookings'
 import { BookedServices, Service } from '@prisma/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '@/components/ui/table'
