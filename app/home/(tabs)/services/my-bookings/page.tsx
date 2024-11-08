@@ -18,10 +18,9 @@ export default async function MyBookingsPage() {
         <BackButton />
         <h1 className="text-2xl font-bold">My Bookings</h1>
       </div>
-      <div className="flex h-16 w-full"></div>
 
       {/* Content */}
-      <div className="flex w-screen justify-center pb-24">
+      <div className="container mx-auto px-4 mt-24 pb-24">
         <DataTable columns={columns} data={bookings} />
       </div>
     </div>
