@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { motion } from 'framer-motion'
@@ -18,6 +18,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { bookService } from '@/actions/service-bookings'
 import { Service } from '@prisma/client'
+import { LocationInput } from '@/components/location-input'
 
 const formSchema = z.object({
   startDate: z.date({
@@ -34,6 +35,7 @@ const formSchema = z.object({
   }),
   notes: z.string().optional(),
   price: z.number().min(0, "Price must be a positive number"),
+  location: z.string().min(1, "Location is required"),
 })
 
 interface BookingFormProps {
@@ -49,6 +51,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       price: service.price,
+      location: service.defaultLocation || '',
     },
   })
 
@@ -61,7 +64,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
       const endDateTime = new Date(values.endDate)
       endDateTime.setHours(values.endTime.getHours(), values.endTime.getMinutes())
 
-      const bookedService = await bookService(service.id, userId, startDateTime, endDateTime, values.notes || '', values.price)
+      const bookedService = await bookService(service.id, userId, startDateTime, endDateTime, values.notes || '', values.price, values.location)
       router.push(`/home/services/${service.id}/bookings/${bookedService.id}`)
     } catch (error) {
       console.error('Error booking service:', error)
@@ -218,6 +221,19 @@ export function BookingForm({ service, userId }: BookingFormProps) {
                     {...field}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Location</FormLabel>
+                <FormControl>
+                  <LocationInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -20,7 +20,7 @@ import { createService } from '@/actions/services'
 import { BeatLoader } from 'react-spinners'
 import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
-
+import { LocationInput } from '@/components/location-input'
 
 
 export const AddServiceForm = () => {
@@ -37,6 +37,7 @@ export const AddServiceForm = () => {
       price: 0,
       category: [], // Ensure this is initialized as an empty array
       images: [],
+      defaultLocation: "",
     },
   })
 
@@ -131,6 +132,19 @@ export const AddServiceForm = () => {
                 />
               </FormControl>
               <FormDescription>Upload up to 5 images for your service.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="defaultLocation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Default Location</FormLabel>
+              <FormControl>
+                <LocationInput {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

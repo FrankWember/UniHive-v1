@@ -35,7 +35,7 @@ export async function getBookingsForService(serviceId: string) {
   }
   
   
-  export async function bookService(serviceId: string, userId: string, startTime: Date, stopTime: Date, notes: string, proposedPrice: number) {
+  export async function bookService(serviceId: string, userId: string, startTime: Date, stopTime: Date, notes: string, proposedPrice: number, location: string) {
     const service = await getServiceById(serviceId)
     if (!service) throw new Error("Service not found")
   
@@ -47,6 +47,7 @@ export async function getBookingsForService(serviceId: string) {
         stopTime,
         notes,
         price: proposedPrice,
+        location
       },
       include: { service: true, buyer: true }
     })

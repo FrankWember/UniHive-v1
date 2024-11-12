@@ -47,7 +47,8 @@ interface MyService {
   description: string,
   price: number,
   category: string[],
-  images: string[]
+  images: string[],
+  defaultLocation: string | null
 }
 
 export async function createService(data: MyService) {
@@ -63,7 +64,8 @@ export async function createService(data: MyService) {
       price: data.price,
       category: data.category,
       providerId: session.user.id,
-      images: data.images
+      images: data.images,
+      defaultLocation: data.defaultLocation
     },
   })
   return service
