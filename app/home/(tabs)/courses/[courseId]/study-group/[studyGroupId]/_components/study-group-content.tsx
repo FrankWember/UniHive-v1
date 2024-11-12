@@ -23,7 +23,7 @@ interface StudyGroupContentProps {
   studyGroupId: string
 }
 
-export default function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
+export function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [files, setFiles] = useState<File[]>([])
