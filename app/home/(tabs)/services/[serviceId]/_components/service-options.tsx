@@ -14,9 +14,8 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { DotsVerticalIcon, PersonIcon } from '@radix-ui/react-icons';
+import { ChatBubbleIcon, DotsVerticalIcon, PersonIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { ServiceActions } from './service-actions';
 import { Service } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/use-current-user';
@@ -32,6 +31,18 @@ const ServiceOptions = ({ service }: {service: Service}) => {
     router.push('/home/services')
   }
 
+  const handleEdit = () => {
+    router.push(`/home/services/${service.id}/edit`)
+  }
+
+  const handleReview = () => {
+    router.push(`/home/services/${service.id}/review`)
+  }
+
+  const handleBookings = () => {
+    router.push(`/home/services/${service.id}/bookings`)
+  }
+
   return (
     <>
       {isMobile ? (
@@ -44,6 +55,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
           <DropdownMenuContent>
             <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}>View Provider</DropdownMenuItem>
             <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}>Review</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}>Chat</DropdownMenuItem>
             {currentUser?.id === service.providerId && (
                 <>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}>Bookings</DropdownMenuItem>
@@ -72,12 +84,39 @@ const ServiceOptions = ({ service }: {service: Service}) => {
       ) : (
         <div className="flex items-center space-x-4">
           <Link href={`/home/services/provider/${service.providerId}`}>
-            <Button variant="outline">
-              <PersonIcon className="mr-2 h-4 w-4" />
-              View Provider
+            <Button variant="outline" size="icon">
+              <PersonIcon />
             </Button>
           </Link>
-          <ServiceActions serviceId={service.id} providerId={service.providerId} />
+          <Link href={`/home/services/provider/${service.providerId}/chat`}>
+            <Button variant="outline" size="icon">
+              <ChatBubbleIcon />
+            </Button>
+          </Link>
+          {service.providerId===currentUser!.id && (
+            <div className="flex space-x-2">
+              <Button onClick={handleBookings}>Bookings</Button>
+              <Button onClick={handleEdit}>Edit</Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">Delete</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete your service.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
+          <Button onClick={handleReview}>Review</Button>
         </div>
       )}
     </>

@@ -116,6 +116,7 @@ model Service {
   images      String[]
   description String
   price       Float
+  defaultLocation String?
   category    String[]
 
   provider  User            @relation(fields: [providerId], references: [id])
@@ -129,6 +130,7 @@ model BookedServices {
   buyerId   String
   notes String?
   price Float
+  location String?
   startTime DateTime @default(now())
   stopTime  DateTime @default(now())
   status String @default("pending")

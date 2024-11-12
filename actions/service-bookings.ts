@@ -59,7 +59,7 @@ export async function getBookingsForService(serviceId: string) {
         <h2>New Booking Request</h2>
         <p>You have a new booking request for <strong>${service.name}</strong>.</p>
         <p>Please check your dashboard to approve or reject the booking.</p>
-        <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/${serviceId}/bookings" class="button">View Booking</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/services/${serviceId}/bookings" class="button">View Booking</a>
       `
     })
   
@@ -82,7 +82,7 @@ export async function getBookingsForService(serviceId: string) {
         <h2>Booking Agreed</h2>
         <p>Your booking for <strong>${booking.service.name}</strong> has been agreed.</p>
         <p>Please click the button below to proceed with the payment:</p>
-        <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/payment/${booking.id}" class="button">Proceed to Payment</a>
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/services/payment/${bookingId}" class="button">Proceed to Payment</a>
       `
     })
   
