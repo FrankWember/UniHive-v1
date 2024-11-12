@@ -1,12 +1,10 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from 'react'
-import { ref, push, onValue, off } from 'firebase/database'
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { db, storage } from '@/lib/firebase'
-import { User } from '@prisma/client'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -25,7 +23,7 @@ interface StudyGroupContentProps {
   studyGroupId: string
 }
 
-export function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
+export default function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [files, setFiles] = useState<File[]>([])
@@ -35,21 +33,18 @@ export function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
   const currentUser = useCurrentUser()
 
   useEffect(() => {
-    const messagesRef = ref(db, `messages/${studyGroupId}`)
-    onValue(messagesRef, (snapshot) => {
-      const data = snapshot.val()
-      if (data) {
-        const messageList = Object.entries(data).map(([key, value]) => ({
-          id: key,
-          ...(value as Omit<Message, 'id'>),
-        }))
-        setMessages(messageList)
-      }
+    const messagesRef = collection(db, `studyGroups/${studyGroupId}/messages`)
+    const q = query(messagesRef, orderBy('timestamp', 'asc'))
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const messageList = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Message))
+      setMessages(messageList)
     })
 
-    return () => {
-      off(messagesRef)
-    }
+    return () => unsubscribe()
   }, [studyGroupId])
 
   useEffect(() => {
@@ -61,16 +56,15 @@ export function StudyGroupContent({ studyGroupId }: StudyGroupContentProps) {
   const handleSendMessage = async () => {
     if (newMessage.trim() === '' && files.length === 0) return
 
-    const messagesRef = ref(db, `messages/${studyGroupId}`)
     const fileUrls = await Promise.all(
       files.map(async (file) => {
-        const fileRef = storageRef(storage, `studyGroups/${studyGroupId}/${file.name}`)
+        const fileRef = ref(storage, `studyGroups/${studyGroupId}/${file.name}`)
         await uploadBytes(fileRef, file)
         return getDownloadURL(fileRef)
       })
     )
 
-    await push(messagesRef, {
+    await addDoc(collection(db, `studyGroups/${studyGroupId}/messages`), {
       text: newMessage,
       userId: currentUser!.id,
       timestamp: Date.now(),
