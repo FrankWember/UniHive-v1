@@ -19,6 +19,7 @@ export const publicRoutes = [
     "/auth/sign-up",
      //"/auth/sign-out",
     "/auth/error",
+    "/auth/onboarding",
   ];
   
   /**
@@ -32,5 +33,5 @@ export const publicRoutes = [
    * The default redirect path after loggin in
    * @type {string}
    */
-  export const DEFAULT_SIGNIN_REDIRECT = "/home";
+  export const DEFAULT_SIGNIN_REDIRECT = "/home/services";
   

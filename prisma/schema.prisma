@@ -18,17 +18,16 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  studentId     String?   @unique
-  phone         String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          UserRole  @default(STUDENT)
-  major         String?
-  year          Int?
+  id             String    @id @default(cuid())
+  name           String?
+  studentId      String?   @unique
+  phone          String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  password       String?
+  role           UserRole  @default(STUDENT)
+  isOnboarded Boolean   @default(false)
 
   isTwoFactorEnabled      Boolean                @default(false)
   twoFactorConfirmation   TwoFactorConfirmation?
@@ -38,7 +37,7 @@ model User {
 
   services         Service[]
   serviceReviews   ServiceReview[]
-  servicesUsed     BookedServices[]      @relation("ServicesUsed")
+  servicesUsed     BookedServices[]   @relation("ServicesUsed")
   driver           Driver?
   ridesOffered     Ride[]             @relation("DriverRides")
   ridesRequested   Ride[]             @relation("PassengerRides")
@@ -110,35 +109,35 @@ model TwoFactorConfirmation {
 // SERVICES //
 
 model Service {
-  id          String   @id @default(cuid())
-  providerId  String
-  name        String
-  images      String[]
-  description String
-  price       Float
+  id              String   @id @default(cuid())
+  providerId      String
+  name            String
+  images          String[]
+  description     String
+  price           Float
   defaultLocation String?
-  category    String[]
+  category        String[]
 
-  provider  User            @relation(fields: [providerId], references: [id])
+  provider  User             @relation(fields: [providerId], references: [id])
   reviews   ServiceReview[]
-  customers BookedServices[]   @relation("Customers")
+  customers BookedServices[] @relation("Customers")
 }
 
 model BookedServices {
-  id        String  @id @default(uuid())
-  serviceId String
-  buyerId   String
-  notes String?
-  price Float
-  location String?
-  startTime DateTime @default(now())
-  stopTime  DateTime @default(now())
-  status String @default("pending")
-  isAgreed Boolean @default(false)
-  isPaid    Boolean @default(false)
-  isCompleted Boolean @default(false)
-  isCanceled Boolean @default(false)
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  serviceId   String
+  buyerId     String
+  notes       String?
+  price       Float
+  location    String?
+  startTime   DateTime @default(now())
+  stopTime    DateTime @default(now())
+  status      String   @default("pending")
+  isAgreed    Boolean  @default(false)
+  isPaid      Boolean  @default(false)
+  isCompleted Boolean  @default(false)
+  isCanceled  Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
 
   paymentId String?
 
@@ -186,8 +185,6 @@ model Ride {
   reciept   Payment? @relation("RideReceipts", fields: [paymentId], references: [id])
 }
 
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
 // STUDY GROUPS //
 
@@ -201,19 +198,19 @@ model Course {
 }
 
 model StudyGroup {
-  id         String @id @default(cuid())
-  name       String
-  courseId   String
+  id       String @id @default(cuid())
+  name     String
+  courseId String
 
-  course     Course             @relation(fields: [courseId], references: [id])
-  members    StudyGroupMember[]
+  course  Course             @relation(fields: [courseId], references: [id])
+  members StudyGroupMember[]
 }
 
 model StudyGroupMember {
-  id           String @id @default(cuid())
-  userId       String
-  studyGroupId String
-  isAdmin Boolean @default(false)
+  id                  String  @id @default(cuid())
+  userId              String
+  studyGroupId        String
+  isAdmin             Boolean @default(false)
   joinRequestAccepted Boolean @default(false)
 
   user       User       @relation(fields: [userId], references: [id])
@@ -231,16 +228,16 @@ model Assignment {
   filePath    String
   uploadDate  DateTime @default(now())
 
-  course   Course @relation(fields: [courseId], references: [id])
-  uploader User   @relation(fields: [uploaderId], references: [id])
+  course   Course           @relation(fields: [courseId], references: [id])
+  uploader User             @relation(fields: [uploaderId], references: [id])
   votes    AssignmentVote[]
 }
 
 model AssignmentVote {
-  id           String  @id @default(cuid())
+  id           String @id @default(cuid())
   assignmentId String
   userId       String
-  value        Int     // 1 for upvote, -1 for downvote
+  value        Int // 1 for upvote, -1 for downvote
 
   assignment Assignment @relation(fields: [assignmentId], references: [id])
   user       User       @relation(fields: [userId], references: [id])
@@ -281,7 +278,6 @@ model AssignmentVote {
 //   sender User @relation(fields: [senderId], references: [id])
 // }
 
-
 // ------------------------------------------------------------------------------------------------------------------------ //
 // EVENTS
 
@@ -310,8 +306,6 @@ model EventAttendee {
   @@unique([userId, eventId])
 }
 
-
-
 // ------------------------------------------------------------------------------------------------------------------------ //
 // PAYMENTS & NOTIFICATIONS//
 
@@ -339,5 +333,5 @@ model Payment {
   receiver User @relation("ReceiverPayments", fields: [receiverId], references: [id])
 
   ServiceReceipts BookedServices[] @relation("ServiceReceipts")
-  RidesReceipts   Ride[]        @relation("RideReceipts")
+  RidesReceipts   Ride[]           @relation("RideReceipts")
 }

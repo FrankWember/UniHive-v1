@@ -8,6 +8,7 @@ import { UserSettingsForm } from './_components/user-settings-form'
 import { currentUser } from '@/lib/auth'
 import { getUserById } from '@/utils/user'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ProfileImageForm } from './_components/profile-image-form'
 
 export default async function SettingsPage() {
   const user = await currentUser()
@@ -21,14 +22,15 @@ export default async function SettingsPage() {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center w-full space-y-8 py-20">
+      <div className="flex flex-col items-center w-full space-y-8 py-24">
         <Card className="w-full max-w-md mx-3">
           <CardHeader>
-            <CardTitle>User Settings</CardTitle>
-            <CardDescription>Update your user settings like your name, student ID, and phone number.</CardDescription>
+            <CardTitle>Profile</CardTitle>
+            <CardDescription>View and update your profile information.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4">
             <Suspense fallback={<Skeleton className="w-full h-full" />}>
+              <ProfileImageForm user={userData!} />
               <UserSettingsForm userData={userData!} />
             </Suspense>
           </CardContent>

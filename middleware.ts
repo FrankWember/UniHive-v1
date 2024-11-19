@@ -10,7 +10,7 @@ import {
 export default async function middleware(request: NextRequest) {
   try {
     const { nextUrl } = request;
-    const isLoggedIn = await getLoginStatus(request);
+    const session = await getSession(request);
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
@@ -21,34 +21,29 @@ export default async function middleware(request: NextRequest) {
     }
 
     if (isAuthRoute) {
-      if (isLoggedIn) {
+      if (session?.user) {
         return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
+      }
+      if (session?.user && !session.user.isOnboarded && nextUrl.pathname !== '/auth/onboarding') {
+        const callbackUrl = encodeURIComponent(nextUrl.pathname + nextUrl.search);
+        return NextResponse.redirect(new URL(`/auth/onboarding?callbackUrl=${callbackUrl}`, nextUrl));
       }
       return NextResponse.next();
     }
 
-    if (!isLoggedIn && !isPublicRoute) {
-      let callbackUrl = nextUrl.pathname;
-      if (nextUrl.search) {
-        callbackUrl += nextUrl.search;
-      }
-
-      const encodedCallbackUrl = encodeURIComponent(callbackUrl);
-
-      return NextResponse.redirect(
-        new URL(`/auth/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl)
-      );
+    if (!session?.user && !isPublicRoute) {
+      const callbackUrl = encodeURIComponent(nextUrl.pathname + nextUrl.search);
+      return NextResponse.redirect(new URL(`/auth/sign-in?callbackUrl=${callbackUrl}`, nextUrl));
     }
 
     return NextResponse.next();
   } catch (error) {
     console.error('Middleware error:', error);
-    // Log the error to your error tracking service here if you have one
     return NextResponse.next();
   }
 }
 
-async function getLoginStatus(request: NextRequest): Promise<boolean> {
+async function getSession(request: NextRequest) {
   try {
     const response = await fetch(new URL('/api/auth/session', request.url), {
       headers: {
@@ -57,15 +52,13 @@ async function getLoginStatus(request: NextRequest): Promise<boolean> {
     });
 
     if (response.ok) {
-      const session = await response.json();
-      return !!session.user;
+      return await response.json();
     }
 
-    return false;
+    return null;
   } catch (error) {
-    console.error('getLoginStatus error:', error);
-    // Log the error to your error tracking service here if you have one
-    return false;
+    console.error('getSession error:', error);
+    return null;
   }
 }
 

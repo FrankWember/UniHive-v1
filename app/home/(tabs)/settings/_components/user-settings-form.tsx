@@ -15,6 +15,7 @@ import {
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { updateUserSettings } from '@/actions/user'
 import { User } from '@prisma/client'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -58,78 +59,85 @@ export function UserSettingsForm({ userData }: { userData: User }) {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <div className="flex space-x-2">
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                    {isSubmitting ? "Updating..." : "Change"}
-                </Button>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="student_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Student ID</FormLabel>
-              <div className="flex space-x-2">
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                    {isSubmitting ? "Updating..." : "Change"}
-                </Button>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="phone_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Phone Number</FormLabel>
-              <div className="flex space-x-2">
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                    {isSubmitting ? "Updating..." : "Change"}
-                </Button>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <Card>
+      <CardHeader>
+        <CardTitle>Personal Information</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <div className="flex space-x-2">
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
+                        {isSubmitting ? "Updating..." : "Change"}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="student_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Student ID</FormLabel>
+                  <div className="flex space-x-2">
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
+                        {isSubmitting ? "Updating..." : "Change"}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number</FormLabel>
+                  <div className="flex space-x-2">
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
+                        {isSubmitting ? "Updating..." : "Change"}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        {error && (
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon className="h-6 w-6" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        {success && (
-          <Alert>
-            <RocketIcon className="h-6 w-6"/>
-            <AlertTitle>Success</AlertTitle>
-            <AlertDescription>{success}</AlertDescription>
-          </Alert>
-        )}
-      </form>
-    </Form>
+            {error && (
+              <Alert variant="destructive">
+                <ExclamationTriangleIcon className="h-6 w-6" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            {success && (
+              <Alert>
+                <RocketIcon className="h-6 w-6"/>
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>{success}</AlertDescription>
+              </Alert>
+            )}
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

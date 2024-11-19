@@ -2,6 +2,8 @@
 
 import {prisma} from "@/prisma/connection"
 import { auth } from "@/auth"
+import { revalidatePath } from "next/cache"
+import { currentUser } from "@/lib/auth"
 
 export async function updateUserSettings(data: {
   name?: string
@@ -23,4 +25,42 @@ export async function updateUserSettings(data: {
   })
 
   return updatedUser
+}
+
+export async function completeOnboarding(data: {
+  profileImage: string
+  agreeTerms: boolean
+}) {
+  const user = await currentUser()
+
+  if (!user) {
+    throw new Error("User not found")
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      image: data.profileImage,
+      isOnboarded: true,
+    },
+  })
+
+  revalidatePath('/home')
+}
+
+export async function updateProfileImage(url: string) {
+  const user = await currentUser()
+
+  if (!user) {
+    throw new Error("User not found")
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      image: url,
+    },
+  })
+
+  revalidatePath('/home/settings')
 }
