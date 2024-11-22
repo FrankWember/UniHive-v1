@@ -38,14 +38,22 @@ model User {
   services         Service[]
   serviceReviews   ServiceReview[]
   servicesUsed     BookedServices[]   @relation("ServicesUsed")
+
+  products Product[]
+  productsRequests ProductRequest[]
+  carts    Cart[]
+
   driver           Driver?
   ridesOffered     Ride[]             @relation("DriverRides")
   ridesRequested   Ride[]             @relation("PassengerRides")
+
   studyGroups      StudyGroupMember[]
   assignments      Assignment[]
   assignmentsVoted AssignmentVote[]
+
   eventsCreated    Event[]            @relation("CreatorEvents")
   eventsAttended   EventAttendee[]
+
   paymentsMade     Payment[]          @relation("PayerPayments")
   paymentsReceived Payment[]          @relation("ReceiverPayments")
 }
@@ -185,6 +193,89 @@ model Ride {
   reciept   Payment? @relation("RideReceipts", fields: [paymentId], references: [id])
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------- //
+// PRODUCTS MARKETPLACE //
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  images      String[]
+  categories  String[]
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  seller        User           @relation(fields: [sellerId], references: [id])
+  sellerId      String
+  cartItems     CartItem[]
+  productRequests ProductRequest[]
+
+  @@index([sellerId])
+}
+
+model ProductRequest {
+  id         String   @id @default(cuid())
+  price      Float
+  quantity   Int
+  isCanceled Boolean  @default(false)
+  isDenied   Boolean  @default(false)
+  deliveryTime DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
+  createdAt  DateTime @default(now())
+
+  // Relations
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  String
+  customer   User     @relation(fields: [customerId], references: [id])
+  customerId String
+
+  @@index([productId])
+  @@index([customerId])
+}
+
+model Cart {
+  id         String   @id @default(cuid())
+  totalPrice Float    @default(0)
+  isOrdered  Boolean  @default(false)
+  isPaid       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  customer   User       @relation(fields: [customerId], references: [id])
+  customerId String
+  payment     Payment?  @relation(fields: [paymentId], references: [id])
+  paymentId   String?
+  cartItems  CartItem[]
+
+  @@index([customerId])
+}
+
+model CartItem {
+  id           String  @id @default(cuid())
+  price        Float
+  quantity     Int
+  wasRequested Boolean @default(false)
+  isDelivered  Boolean @default(false)
+  isRefunded   Boolean  @default(false)
+  isCanceled   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  cartId    String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
 // STUDY GROUPS //
 
@@ -307,18 +398,8 @@ model EventAttendee {
 }
 
 // ------------------------------------------------------------------------------------------------------------------------ //
-// PAYMENTS & NOTIFICATIONS//
+// PAYMENTS //
 
-// model Notification {
-//   id        String   @id @default(cuid())
-//   userId    String
-//   content   String
-//   type      String
-//   timestamp DateTime @default(now())
-//   isRead    Boolean  @default(false)
-
-//   user User @relation(fields: [userId], references: [id])
-// }
 
 model Payment {
   id          String   @id @default(cuid())
@@ -334,4 +415,5 @@ model Payment {
 
   ServiceReceipts BookedServices[] @relation("ServiceReceipts")
   RidesReceipts   Ride[]           @relation("RideReceipts")
+  orders          Cart[]
 }

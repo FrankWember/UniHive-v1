@@ -71,18 +71,17 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
           <p className="text-muted-foreground">{service.description}</p>
         </div>
         <Separator />
-        <div className="px-8 md:px-0">
+        <div className="flex flex-col justifuy-center px-8 md:px-0">
           <h2 className="text-xl font-semibold mb-4">Service Images</h2>
-          <Carousel className="w-full max-w-[75vw] sm:px-8">
+          <Carousel className="w-5/6 max-w-[70vw] sm:px-8">
             <CarouselContent>
               {service.images.map((image, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <div className="aspect-video relative">
+                  <div className="aspect-square relative">
                     <Image
                       src={image}
                       alt={`Event image ${index + 1}`}
-                      height={300}
-                      width={300}
+                      fill
                       objectFit="cover"
                       className="rounded-lg"
                     />
@@ -94,7 +93,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
             <CarouselNext />
           </Carousel>
         </div>
-        <Link href={`/home/services/${service.id}/book`}><Button>Purchase</Button></Link>
+        <Link href={`/home/services/${service.id}/book`} className="mt-8"><Button>Purchase</Button></Link>
       </CardContent>
     </Card>
   )

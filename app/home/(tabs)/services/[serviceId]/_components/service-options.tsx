@@ -14,12 +14,13 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { ChatBubbleIcon, DotsVerticalIcon, PersonIcon } from '@radix-ui/react-icons';
+import { ChatBubbleIcon, DotsVerticalIcon, Pencil1Icon, Pencil2Icon, PersonIcon, TrashIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { Service } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { deleteService } from '@/actions/services';
+import { Money01Icon } from 'hugeicons-react';
 
 const ServiceOptions = ({ service }: {service: Service}) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -53,16 +54,16 @@ const ServiceOptions = ({ service }: {service: Service}) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}>View Provider</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}>Review</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}>Chat</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}><PersonIcon className="mr-2" />View Provider</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}><Pencil2Icon className="mr-2" />Review</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}><ChatBubbleIcon className="mr-2" />Chat</DropdownMenuItem>
             {currentUser?.id === service.providerId && (
                 <>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}>Bookings</DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}>Edit</DropdownMenuItem>           
+                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><Money01Icon className="mr-2" />Bookings</DropdownMenuItem>
+                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}><Pencil1Icon className="mr-2" />Edit</DropdownMenuItem>           
                 <AlertDialog>
                     <AlertDialogTrigger>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem><TrashIcon className="mr-2" />Delete</DropdownMenuItem>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                     <AlertDialogHeader>
@@ -99,7 +100,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
               <Button onClick={handleEdit}>Edit</Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive">Delete</Button>
+                  <Button variant="destructive" size="icon"><TrashIcon/></Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
