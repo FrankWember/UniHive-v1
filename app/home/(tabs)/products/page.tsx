@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { SearchBar } from './_components/product-search'
 import { SideMenu } from './_components/side-menu'
 import { ProductList } from './_components/product-list'
@@ -6,6 +6,7 @@ import { ProductsProvider } from '@/contexts/products-context'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const ProductsPage = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   return (
@@ -27,7 +28,9 @@ const ProductsPage = ({ searchParams }: { searchParams: { [key: string]: string 
 
         {/* Content */}
         <div className="w-full mt-20 pb-24">
-          <ProductList />
+          <Suspense fallback={<Skeleton className="w-full h-[200px]" />}>
+            <ProductList />
+          </Suspense>
         </div>
       </div>
     </ProductsProvider>
