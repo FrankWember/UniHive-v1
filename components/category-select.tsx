@@ -21,14 +21,16 @@ const defaultCategories = [
 ]
 
 export function CategorySelect({
+  options,
   value = [],
   onChange
 }: {
+  options?: { value: string; label: string }[]
   value?: string[]
   onChange: (value: string[]) => void
 }) {
   const [open, setOpen] = React.useState(false)
-  const [categories, setCategories] = React.useState(defaultCategories)
+  const [categories, setCategories] = React.useState(options || defaultCategories)
   const [newCategory, setNewCategory] = React.useState("")
 
   const handleToggle = (categoryValue: string) => {

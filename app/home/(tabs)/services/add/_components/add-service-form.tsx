@@ -14,7 +14,7 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
-import { CategorySelect } from './category-select'
+import { CategorySelect } from '@/components/category-select'
 import { useRouter } from 'next/navigation'
 import { createService } from '@/actions/services'
 import { BeatLoader } from 'react-spinners'

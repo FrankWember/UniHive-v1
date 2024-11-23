@@ -4,6 +4,7 @@ import React from 'react'
 import { Button } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
 import { CalendarSearch, CarTaxiFrontIcon, CogIcon, GraduationCap, StoreIcon } from 'lucide-react'
+import { CubeIcon } from '@radix-ui/react-icons'
 
 
 export const Navbar = () => {
@@ -11,6 +12,7 @@ export const Navbar = () => {
     const pathname = usePathname()
     const tabs = [
         {name: "Services", link: "/home/services", children: <StoreIcon className="w-6 h-6" />},
+        {name: "Products", link: "/home/products", children: <CubeIcon className="w-6 h-6" />},
         {name: "Rides", link: "/home/rides", children: <CarTaxiFrontIcon className="w-6 h-6"  />},
         {name: "Courses", link: "/home/courses", children: <GraduationCap className="w-6 h-6" />},
         {name: "Events", link: "/home/events", children: <CalendarSearch className="w-6 h-6" />},
