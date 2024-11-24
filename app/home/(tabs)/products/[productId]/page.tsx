@@ -4,6 +4,7 @@ import { RelatedProducts } from './_components/related-products'
 import { getProductById } from '@/utils/data/products'
 import { BackButton } from '@/components/back-button'
 import { Separator } from '@/components/ui/separator'
+import ProductOptions from './_components/product-options'
 
 export default async function ProductPage({ params }: { params: { productId: string } }) {
   const product = await getProductById(params.productId)
@@ -19,6 +20,7 @@ export default async function ProductPage({ params }: { params: { productId: str
         <div className="flex justify-start gap-3">
           <BackButton />
           <h1 className="text-2xl font-bold truncate">{product.name}</h1>
+          <ProductOptions product={product} />
         </div>
       </div>
 

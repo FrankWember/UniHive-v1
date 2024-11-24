@@ -221,7 +221,7 @@ model ProductRequest {
   id         String   @id @default(cuid())
   price      Float
   quantity   Int
-  isCanceled Boolean  @default(false)
+  isAccepted Boolean  @default(false)
   isDenied   Boolean  @default(false)
   deliveryTime DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
   createdAt  DateTime @default(now())

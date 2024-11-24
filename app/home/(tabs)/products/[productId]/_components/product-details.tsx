@@ -22,6 +22,10 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product }: ProductDetailsProps) {
+  const addToMyCart = async () => {
+    console.log("Added to cart:", product.name)
+  }
+
   return (
     <Card className="w-full max-w-2xl md:mx-auto shadow-lg">
       <CardContent className="flex flex-col space-y-6 p-6">
@@ -93,9 +97,21 @@ export function ProductDetails({ product }: ProductDetailsProps) {
           </Carousel>
         </div>
 
-        <Link href={`/home/products/${product.id}`} className="mt-8">
-          <Button>Purchase Now</Button>
-        </Link>
+        <Separator />
+        
+        <div className="flex flex-col">
+          <h2 className="text-xl font-semibold mb-4">Purchase</h2>
+          <p className="text-muted-foreground mb-2">
+            You can have a discussion with the seller in the chat and make requests to get a discount on the product. Or simply add to cart
+          </p>
+          <Button>Request Discount</Button>
+          <div className="flex gap-1 text-muted-foreground">
+            <Separator />
+            <span>or</span>
+            <Separator />
+          </div>
+          <Button onClick={addToMyCart}>Add to Cart</Button>
+        </div>
       </CardContent>
     </Card>
   )

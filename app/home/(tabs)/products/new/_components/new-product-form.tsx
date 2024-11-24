@@ -15,6 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { MultiImageUpload } from '@/components/multi-image-upload'
@@ -22,11 +28,14 @@ import { createProduct } from '@/actions/products'
 import { CategorySelect } from '@/components/category-select'
 import { productSchema } from '@/constants/zod'
 import { useCurrentUser } from '@/hooks/use-current-user'
+import { BeatLoader } from 'react-spinners'
 
 export function NewProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -41,12 +50,16 @@ export function NewProductForm() {
   })
 
   async function onSubmit(values: z.infer<typeof productSchema>) {
+    setError("")
+    setSuccess("")
     setIsSubmitting(true)
     try {
       await createProduct(values, user!.id!)
+      setSuccess("Product created successfully!")
       router.push('/home/products')
     } catch (error) {
       console.error('Failed to create product:', error)
+      setError("Failed to create product")
     } finally {
       setIsSubmitting(false)
     }
@@ -164,8 +177,22 @@ export function NewProductForm() {
             </FormItem>
           )}
         />
+        {error && (
+            <Alert variant="destructive">
+              <ExclamationTriangleIcon className="h-6 w-6" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {success && (
+            <Alert>
+              <RocketIcon className="h-6 w-6"/>
+              <AlertTitle>Success</AlertTitle>
+              <AlertDescription>{success}</AlertDescription>
+            </Alert>
+          )}
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creating...' : 'Create Product'}
+          {isSubmitting ? <BeatLoader /> : 'Create Product'}
         </Button>
       </form>
     </Form>
