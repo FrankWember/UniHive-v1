@@ -18,14 +18,14 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
           <Image
             src={service.images[0]}
             alt={service.name}
-            layout="fill"
+            fill
             objectFit="cover"
           />
         </div>
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle className="text-xl mb-2">{service.name}</CardTitle>
-        <CardDescription className="mb-4">
+        <CardDescription className="mb-2">
           {service.description.length > 100 ? `${service.description.substring(0, 100)}...` : service.description}
         </CardDescription>
         <div className="flex flex-wrap gap-2 mb-4">
@@ -37,8 +37,8 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
         </div>
         <p className="text-lg font-bold">${service.price.toFixed(2)}</p>
       </CardContent>
-      <CardFooter className="p-4">
-        <Link href={`/home/services/${service.id}`}><Button className="w-full">Book Now</Button></Link>
+      <CardFooter className="my-2">
+        <Link href={`/home/services/${service.id}`}><Button>Book Now</Button></Link>
       </CardFooter>
     </Card>
   )

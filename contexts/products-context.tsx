@@ -36,7 +36,7 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       try {
         // TODO: Replace with actual API call once implemented
         const response = await fetch('/api/products')
-        const fetchedProducts = await response.json()
+        const { products: fetchedProducts } = await response.json()
         setProducts(fetchedProducts)
       } catch (error) {
         console.error('Error fetching products:', error)

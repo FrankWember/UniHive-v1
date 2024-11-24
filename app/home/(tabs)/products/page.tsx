@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
-const ProductsPage = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
+const ProductsPage = () => {
   return (
     <ProductsProvider>
       <div className="flex flex-col min-h-screen w-full">
@@ -27,8 +27,17 @@ const ProductsPage = ({ searchParams }: { searchParams: { [key: string]: string 
         </div>
 
         {/* Content */}
-        <div className="w-full mt-20 pb-24">
-          <Suspense fallback={<Skeleton className="w-full h-[200px]" />}>
+        <div className="w-full mt-24 pb-24">
+          <Suspense fallback={(
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Skeleton className="w-full h-[200px]" />
+              <Skeleton className="w-full h-[200px]" />
+              <Skeleton className="w-full h-[200px]" />
+              <Skeleton className="w-full h-[200px]" />
+              <Skeleton className="w-full h-[200px]" />
+              <Skeleton className="w-full h-[200px]" />
+            </div>
+          )}>
             <ProductList />
           </Suspense>
         </div>

@@ -54,10 +54,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}><PersonIcon className="mr-2" />View Provider</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}><Pencil2Icon className="mr-2" />Review</DropdownMenuItem>
-            <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}><ChatBubbleIcon className="mr-2" />Chat</DropdownMenuItem>
-            {currentUser?.id === service.providerId && (
+            {currentUser?.id === service.providerId ? (
                 <>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><Money01Icon className="mr-2" />Bookings</DropdownMenuItem>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}><Pencil1Icon className="mr-2" />Edit</DropdownMenuItem>           
@@ -79,22 +76,18 @@ const ServiceOptions = ({ service }: {service: Service}) => {
                     </AlertDialogContent>
                 </AlertDialog>
                 </>
+            ):(
+              <>
+              <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}><PersonIcon className="mr-2" />View Provider</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}><Pencil2Icon className="mr-2" />Review</DropdownMenuItem>
+              <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}><ChatBubbleIcon className="mr-2" />Chat</DropdownMenuItem>
+              </>
             )}
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
         <div className="flex items-center space-x-4">
-          <Link href={`/home/services/provider/${service.providerId}`}>
-            <Button variant="outline" size="icon">
-              <PersonIcon />
-            </Button>
-          </Link>
-          <Link href={`/home/services/provider/${service.providerId}/chat`}>
-            <Button variant="outline" size="icon">
-              <ChatBubbleIcon />
-            </Button>
-          </Link>
-          {service.providerId===currentUser!.id && (
+          {service.providerId===currentUser!.id ? (
             <div className="flex space-x-2">
               <Button onClick={handleBookings}>Bookings</Button>
               <Button onClick={handleEdit}>Edit</Button>
@@ -116,8 +109,25 @@ const ServiceOptions = ({ service }: {service: Service}) => {
                 </AlertDialogContent>
               </AlertDialog>
             </div>
-          )}
-          <Button onClick={handleReview}>Review</Button>
+          ):(
+            <div className="flex space-x-2">
+              <Link href={`/home/services/provider/${service.providerId}`}>
+                <Button variant="outline" size="icon">
+                  <PersonIcon />
+                </Button>
+              </Link>
+              <Link href={`/home/services/provider/${service.providerId}/chat`}>
+                <Button variant="outline" size="icon">
+                  <ChatBubbleIcon />
+                </Button>
+              </Link>
+              <Link href={`/home/services/provider/${service.providerId}/review`}>
+                <Button variant="outline" size="icon">
+                  <Pencil2Icon />
+                </Button>
+              </Link>
+            </div>
+          )}         
         </div>
       )}
     </>

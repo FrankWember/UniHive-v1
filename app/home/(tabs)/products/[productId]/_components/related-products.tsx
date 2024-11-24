@@ -7,10 +7,14 @@ interface RelatedProductsProps {
 }
 
 export async function RelatedProducts({ productId, category }: RelatedProductsProps) {
-  const relatedProducts = await getRelatedProducts(category)
+  const relatedProducts = await getRelatedProducts(productId, category)
 
   if (relatedProducts.length === 0) {
-    return null
+    return (
+      <div className="mt-12">
+        <h2 className="text-lg text-muted-foreground mb-4">No related products found.</h2>
+      </div>
+    )
   }
 
   return (

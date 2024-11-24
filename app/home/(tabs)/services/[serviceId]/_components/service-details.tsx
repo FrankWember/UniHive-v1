@@ -25,14 +25,14 @@ interface ServiceDetailsProps {
 
 export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
   return (
-    <Card className="w-full max-w-2xl my-20 mx-2 md:mx-auto shadow-lg">
+    <Card className="w-full max-w-2xl md:mx-auto p-6 shadow-lg">
       <CardHeader className="space-y-4">
         <div className="flex justify-between items-start">
           <div>
             <CardTitle className="text-3xl font-bold">{service.name}</CardTitle>
             <CardDescription className="text-lg">
               <div className="flex items-center mt-2">
-                <DollarSign className="h-5 w-5 text-green-500 mr-1" />
+              <span className="text-green-500 mr-1">$</span>
                 <span className="font-semibold text-2xl">{service.price.toFixed(2)}</span>
               </div>
             </CardDescription>
@@ -47,14 +47,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
             <UserIcon className="h-5 w-5 mr-2 text-muted-foreground" />
             <span>{service.provider.name}</span>
           </div>
-          <div className="flex items-center">
-            <Phone className="h-5 w-5 mr-2 text-muted-foreground" />
-            <span>{service.provider.phone}</span>
-          </div>
-          <div className="flex items-center">
-            <Mail className="h-5 w-5 mr-2 text-muted-foreground" />
-            <span>{service.provider.email}</span>
-          </div>
+          <Badge variant="success">Account Verified</Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -71,29 +64,32 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service }) => {
           <p className="text-muted-foreground">{service.description}</p>
         </div>
         <Separator />
-        <div className="flex flex-col justifuy-center px-8 md:px-0">
+        <div className="flex flex-col justifuy-center px-8 md:px-0 pb-8">
           <h2 className="text-xl font-semibold mb-4">Service Images</h2>
-          <Carousel className="w-5/6 max-w-[70vw] sm:px-8">
+          <Carousel className="w-full mx-auto">
             <CarouselContent>
               {service.images.map((image, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                <CarouselItem key={index}>
                   <div className="aspect-square relative">
                     <Image
                       src={image}
-                      alt={`Event image ${index + 1}`}
+                      alt={`${service.name} - Image ${index + 1}`}
                       fill
-                      objectFit="cover"
-                      className="rounded-lg"
+                      className="object-cover rounded-lg"
                     />
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <div className="absolute bottom-8 right-14 flex gap-2">
+              <CarouselPrevious />
+              <CarouselNext />
+            </div>
           </Carousel>
         </div>
-        <Link href={`/home/services/${service.id}/book`} className="mt-8"><Button>Purchase</Button></Link>
+        <Link href={`/home/services/${service.id}/book`} className="mt-8">
+          <Button>Purchase</Button>
+        </Link>
       </CardContent>
     </Card>
   )

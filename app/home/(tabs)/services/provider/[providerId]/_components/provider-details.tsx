@@ -23,16 +23,6 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
         </Avatar>
         <div>
           <CardTitle className="text-3xl">{provider.name}</CardTitle>
-          <div className="flex items-center space-x-2 text-muted-foreground">
-            <Mail className="h-4 w-4" />
-            <span>{provider.email}</span>
-          </div>
-          {provider.phone && (
-            <div className="flex items-center space-x-2 text-muted-foreground">
-              <Phone className="h-4 w-4" />
-              <span>{provider.phone}</span>
-            </div>
-          )}
         </div>
       </CardHeader>
       <CardContent>

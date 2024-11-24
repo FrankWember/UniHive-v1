@@ -16,9 +16,14 @@ export async function getProductById (id: string) {
     return await prisma.product.findUnique({ where: { id }, include: { seller: true } })
 }
 
-export async function getRelatedProducts (category: string) {
+export async function getRelatedProducts(productId: string, category: string) {
     return await prisma.product.findMany({
-        where: { categories: { has: category } },
+        where: {
+            AND: [
+                { categories: { has: category } },
+                { id: { not: productId } }
+            ]
+        },
         take: 4
     })
 }
