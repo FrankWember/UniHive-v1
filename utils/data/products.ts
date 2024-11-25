@@ -34,3 +34,9 @@ export async function getProductReviews (productId: string) {
         include: {reviewer: true}
     })
 }
+
+export async function getMyProductReview (productId: string, userId: string) {
+    return await prisma.productReview.findFirst({
+        where: {productId: productId, reviewerId: userId}
+    })
+}

@@ -9,7 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { DollarSign, UserIcon, Star, MessageSquare, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import {
@@ -22,6 +21,10 @@ import {
 } from "@/components/ui/dialog"
 import { ProductRequest } from './product-request'
 import { Product, User } from '@prisma/client'
+import { updateProductReview, makeProductReview } from '@/actions/products'
+import { useRouter } from 'next/navigation'
+import { addItemToCart } from '@/actions/cart'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 interface ProductDetailsProps {
   product: Product & {seller: User}
@@ -39,7 +42,11 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product, reviews }: ProductDetailsProps) {
-  const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
+  const my_review = reviews.find(review => review.reviewer.id === product.seller.id)
+  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const user = useCurrentUser()
 
   const averageRating = reviews.length > 0
     ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
@@ -50,13 +57,25 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
   }, {} as Record<number, number>)
 
   const handleSubmitReview = async () => {
-    // TODO: Implement review submission logic
-    console.log('Submitting review:', newReview)
+    setIsSubmitting(true)
+    if (!my_review) {
+      await makeProductReview(product.id, newReview.rating, newReview.comment, product.seller.id)
+    } else {
+      await updateProductReview(my_review.reviewer.id, newReview.rating, newReview.comment)
+    }
+    router.push(`/home/products/${product.id}`)
+    setIsSubmitting(false)
   }
 
   const addToCart = async () => {
-    // TODO: Implement add to cart logic
-    console.log('Adding to cart:', product.name)
+    try {
+      setIsSubmitting(true)
+      await addItemToCart(product, user!.id!)
+    } catch (error) {
+      console.error('Error adding item to cart:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -216,13 +235,15 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
                 value={newReview.comment}
                 onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
               />
-              <Button onClick={handleSubmitReview}>Submit Review</Button>
+              <Button onClick={handleSubmitReview} disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : 'Submit Review'}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
         <Separator />
         <div className="flex gap-3">
-          <Button onClick={addToCart} disabled={product.stock === 0}>
+          <Button onClick={addToCart} disabled={product.stock === 0 || isSubmitting}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
           </Button>
