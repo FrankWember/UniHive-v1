@@ -1,6 +1,6 @@
 import React from 'react'
 import { ServiceCard } from './service-card'
-import { getMatchedServices } from '@/actions/services'
+import { getMatchedServices } from '@/utils/data/services'
 
 interface MatchedServicesProps {
   searchParams: { [key: string]: string | string[] | undefined }

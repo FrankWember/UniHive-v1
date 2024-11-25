@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { getAllServices } from '@/actions/services'
+import { getAllServices } from '@/utils/data/services'
 
 type Service = {
   id: string

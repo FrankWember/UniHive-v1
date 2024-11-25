@@ -65,11 +65,11 @@ export const ProductRequest = ({ product }: { product: Product & { seller: User 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Request Discount: {product.name}</Button>
+        <Button variant="secondary">Request Discount</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Request Discount</DialogTitle>
+          <DialogTitle>Request Discount: {product.name}</DialogTitle>
           <DialogDescription>This would send an offer to the seller with the details below. Once the offer is accepted, the discount will be applied to your cart.</DialogDescription>
         </DialogHeader>
         <Form {...form}>

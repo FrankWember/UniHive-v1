@@ -2,7 +2,7 @@ import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { ProviderDetails } from './_components/provider-details'
 import { ProviderServices } from './_components/provider-services'
-import { getProviderById } from '@/actions/services'
+import { getProviderById } from '@/utils/data/services'
 import { Skeleton } from "@/components/ui/skeleton"
 import { BackButton } from '@/components/back-button'
 

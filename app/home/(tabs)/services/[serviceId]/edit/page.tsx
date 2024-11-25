@@ -1,7 +1,7 @@
 import React from 'react'
 import { notFound } from 'next/navigation'
 import { EditServiceForm } from '@/app/home/(tabs)/services/[serviceId]/edit/_components/edit-service-form'
-import { getServiceById } from '@/actions/services'
+import { getServiceById } from '@/utils/data/services'
 import { BackButton } from '@/components/back-button'
 
 const EditServicePage = async ({ params }: { params: { serviceId: string } }) => {

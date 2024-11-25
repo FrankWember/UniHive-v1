@@ -27,3 +27,10 @@ export async function getRelatedProducts(productId: string, category: string) {
         take: 4
     })
 }
+
+export async function getProductReviews (productId: string) {
+    return await prisma.productReview.findMany({
+        where: {productId: productId},
+        include: {reviewer: true}
+    })
+}

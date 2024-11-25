@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { getProviderServices } from '@/actions/services'
+import { getProviderServices } from '@/utils/data/services'
 import Link from 'next/link'
 import { DollarSign, Star } from 'lucide-react'
 

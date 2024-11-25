@@ -3,7 +3,6 @@
 import { prisma } from '@/prisma/connection'
 import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/mail'
-import { getServiceById } from './services'
 
 export async function getBookedServiceById(bookedServiceId: string) {
   return await prisma.bookedServices.findUnique({
@@ -36,7 +35,10 @@ export async function getBookingsForService(serviceId: string) {
   
   
   export async function bookService(serviceId: string, userId: string, startTime: Date, stopTime: Date, notes: string, proposedPrice: number, location: string) {
-    const service = await getServiceById(serviceId)
+    const service = await prisma.service.findUnique({
+      where: { id: serviceId },
+      include: { provider: true }
+    })
     if (!service) throw new Error("Service not found")
   
     const booking = await prisma.bookedServices.create({

@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { getBookedServiceById } from '@/actions/service-bookings'
+import { getBookedServiceById } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
 import { ConfirmationDetails } from './_components/confirmation-details'
 import { Skeleton } from "@/components/ui/skeleton"
