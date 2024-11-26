@@ -73,7 +73,7 @@ export async function requestDiscount(product: Product & { seller: User }, price
                 <li>Total Discount: $${(product.price * quantity - price * quantity).toFixed(2)}</li>
             </ul>
             <p>Login to your account to respond to this request.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${product.id}/requests/${discount.id}" class="button">View Discount Request</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${product.id}/requests" class="button">View Discount Request</a>
         `
     })
 

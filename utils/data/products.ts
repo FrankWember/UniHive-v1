@@ -1,6 +1,7 @@
 "server only"
 
 import { prisma } from "@/prisma/connection"
+import { currentUser } from "@/lib/auth"
 
 export async function getAllProducts () {
     return await prisma.product.findMany()
@@ -38,5 +39,18 @@ export async function getProductReviews (productId: string) {
 export async function getMyProductReview (productId: string, userId: string) {
     return await prisma.productReview.findFirst({
         where: {productId: productId, reviewerId: userId}
+    })
+}
+
+
+export async function getSellerById (id: string) {
+    return await prisma.user.findUnique({ where: { id }, include: { products: true } })
+}
+
+export async function getSellerRequests () {
+    const user = await currentUser()
+    return await prisma.productRequest.findMany({
+        where: { product: { sellerId: user!.id } },
+        include: { product: true, customer: true }
     })
 }

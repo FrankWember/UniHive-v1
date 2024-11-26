@@ -18,16 +18,18 @@ enum UserRole {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  studentId      String?   @unique
-  phone          String?
-  email          String    @unique
-  emailVerified  DateTime?
-  image          String?
-  password       String?
-  role           UserRole  @default(STUDENT)
-  isOnboarded Boolean   @default(false)
+  id            String    @id @default(cuid())
+  name          String?
+  studentId     String?   @unique
+  phone         String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(STUDENT)
+  isOnboarded   Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
 
   isTwoFactorEnabled      Boolean                @default(false)
   twoFactorConfirmation   TwoFactorConfirmation?
@@ -35,28 +37,28 @@ model User {
 
   accounts Account[]
 
-  services         Service[]
-  serviceReviews   ServiceReview[]
-  servicesUsed     BookedServices[]   @relation("ServicesUsed")
+  services       Service[]
+  serviceReviews ServiceReview[]
+  servicesUsed   BookedServices[] @relation("ServicesUsed")
 
-  products Product[]
+  products         Product[]
   productsRequests ProductRequest[]
-  productReviews ProductReview[]
-  carts    Cart[]
+  productReviews   ProductReview[]
+  carts            Cart[]
 
-  driver           Driver?
-  ridesOffered     Ride[]             @relation("DriverRides")
-  ridesRequested   Ride[]             @relation("PassengerRides")
+  driver         Driver?
+  ridesOffered   Ride[]  @relation("DriverRides")
+  ridesRequested Ride[]  @relation("PassengerRides")
 
   studyGroups      StudyGroupMember[]
   assignments      Assignment[]
   assignmentsVoted AssignmentVote[]
 
-  eventsCreated    Event[]            @relation("CreatorEvents")
-  eventsAttended   EventAttendee[]
+  eventsCreated  Event[]         @relation("CreatorEvents")
+  eventsAttended EventAttendee[]
 
-  paymentsMade     Payment[]          @relation("PayerPayments")
-  paymentsReceived Payment[]          @relation("ReceiverPayments")
+  paymentsMade     Payment[] @relation("PayerPayments")
+  paymentsReceived Payment[] @relation("ReceiverPayments")
 }
 
 model Account {
@@ -158,7 +160,7 @@ model BookedServices {
 model ServiceReview {
   id         String   @id @default(cuid())
   serviceId  String
-  reviewerId String @unique
+  reviewerId String   @unique
   rating     Int
   comment    String
   reviewDate DateTime @default(now())
@@ -210,21 +212,21 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   // Relations
-  seller        User           @relation(fields: [sellerId], references: [id])
-  sellerId      String
-  cartItems     CartItem[]
+  seller          User             @relation(fields: [sellerId], references: [id])
+  sellerId        String
+  cartItems       CartItem[]
   productRequests ProductRequest[]
-  reviews ProductReview[]
+  reviews         ProductReview[]
 
   @@index([sellerId])
 }
 
 model ProductReview {
-  id String @id @default(cuid())
-  productId String
-  reviewerId String @unique
-  rating Int
-  comment String
+  id         String   @id @default(cuid())
+  productId  String
+  reviewerId String   @unique
+  rating     Int
+  comment    String
   reviewDate DateTime @default(now())
 
   product  Product @relation(fields: [productId], references: [id])
@@ -232,18 +234,18 @@ model ProductReview {
 }
 
 model ProductRequest {
-  id         String   @id @default(cuid())
-  price      Float
-  quantity   Int
-  isAccepted Boolean  @default(false)
-  isDenied   Boolean  @default(false)
+  id           String   @id @default(cuid())
+  price        Float
+  quantity     Int
+  isAccepted   Boolean  @default(false)
+  isDenied     Boolean  @default(false)
   deliveryTime DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
-  createdAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
 
   // Relations
-  product    Product  @relation(fields: [productId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
   productId  String
-  customer   User     @relation(fields: [customerId], references: [id])
+  customer   User    @relation(fields: [customerId], references: [id])
   customerId String
 
   @@index([productId])
@@ -254,26 +256,26 @@ model Cart {
   id         String   @id @default(cuid())
   totalPrice Float    @default(0)
   isOrdered  Boolean  @default(false)
-  isPaid       Boolean  @default(false)
+  isPaid     Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Relations
   customer   User       @relation(fields: [customerId], references: [id])
   customerId String
-  payment     Payment?  @relation(fields: [paymentId], references: [id])
-  paymentId   String?
+  payment    Payment?   @relation(fields: [paymentId], references: [id])
+  paymentId  String?
   cartItems  CartItem[]
 
   @@index([customerId])
 }
 
 model CartItem {
-  id           String  @id @default(cuid())
+  id           String   @id @default(cuid())
   price        Float
   quantity     Int
-  wasRequested Boolean @default(false)
-  isDelivered  Boolean @default(false)
+  wasRequested Boolean  @default(false)
+  isDelivered  Boolean  @default(false)
   isRefunded   Boolean  @default(false)
   isCanceled   Boolean  @default(false)
   createdAt    DateTime @default(now())
@@ -288,7 +290,6 @@ model CartItem {
   @@index([cartId])
   @@index([productId])
 }
-
 
 // -------------------------------------------------------------------------------------------------------------------------------------------- //
 // STUDY GROUPS //
@@ -413,7 +414,6 @@ model EventAttendee {
 
 // ------------------------------------------------------------------------------------------------------------------------ //
 // PAYMENTS //
-
 
 model Payment {
   id          String   @id @default(cuid())
