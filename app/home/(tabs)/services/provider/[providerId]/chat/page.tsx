@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { getProviderById } from "@/actions/services"
+import { getProviderById } from "@/utils/data/services"
 import { ChatInterface } from "./_components/chat-interface"
 import { BackButton } from "@/components/back-button"
 import { currentUser } from "@/lib/auth"
