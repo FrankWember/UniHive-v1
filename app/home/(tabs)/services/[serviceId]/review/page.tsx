@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { getServiceById } from "@/actions/services"
+import { getServiceById } from "@/utils/data/services"
 import { ReviewForm } from "./_components/review-form"
 import { BackButton } from "@/components/back-button"
 import { currentUser } from "@/lib/auth"
