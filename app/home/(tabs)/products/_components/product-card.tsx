@@ -42,7 +42,7 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   return (
     <Link href={`/home/products/${product.id}`}>
-      <Card className="flex flex-col border-none bg-background/70 hover:bg-background/40 focus:bg-background/40">
+      <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 shadow-sm border-none">
         <div className="relative w-full min-h-48 h-full">
           <Image
             src={product.images[0] || '/placeholder.png'}
@@ -76,9 +76,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 <span className='text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
               </div>
             ):(
-              <p className="text-base">${product.price.toFixed(2)}</p>
+              <p className="text-base font-semibold py-1">${product.price.toFixed(2)}</p>
             )}
-            <Button onClick={addToCart} disabled={isSubmitting} className="rounded-full" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
+            <Button onClick={addToCart} disabled={isSubmitting} className="rounded-full bg-yellow-500 hover:bg-yellow-600" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
           </div>
         </CardContent>
       </Card>

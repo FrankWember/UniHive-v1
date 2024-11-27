@@ -25,6 +25,7 @@ export async function getRelatedProducts(productId: string, category: string) {
                 { id: { not: productId } }
             ]
         },
+        include: { reviews: true },
         take: 4
     })
 }

@@ -27,14 +27,14 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
   return (
     <Link href={`/home/services/${service.id}`}>
-      <Card className="flex flex-col border-none bg-background/70 hover:bg-background/40 focus:bg-background/40">
+      <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 shadow-sm border-none">
         <CardHeader className="p-0">
           <div className="relative h-48 w-full">
             <Image
               src={service.images[0]}
               alt={service.name}
               fill
-              objectFit="cover"
+              className="object-cover rounded"
             />
           </div>
         </CardHeader>
@@ -63,10 +63,10 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
                 <span className='text-muted-foreground line-through'>${service.price.toFixed(2)}</span>
               </div>
             ):(
-              <p className="text-base">${service.price.toFixed(2)}</p>
+              <p className="text-base font-semibold py-1">${service.price.toFixed(2)}</p>
             )}
             <Link href={`/home/services/${service.id}/book`} className="block">
-              <Button disabled={isSubmitting} className="rounded-full" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
+              <Button disabled={isSubmitting} className="rounded-full bg-amber-500 hover:bg-amber-600" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
             </Link>
           </div>
         </CardContent>
