@@ -2,17 +2,11 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { getAllServices } from '@/utils/data/services'
+import { User, Service as GeneralService, ServiceReview } from '@prisma/client'
 
-type Service = {
-  id: string
-  name: string
-  description: string
-  providerId: string
-  provider: {
-    id: string
-    name: string | null
-  }
-  category: string[]
+type Service = GeneralService & {
+  provider: User,
+  reviews: ServiceReview[]
 }
 
 type ServicesContextType = {
@@ -28,7 +22,8 @@ export const ServicesProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   useEffect(() => {
     const fetchServices = async () => {
-      const fetchedServices = await getAllServices()
+      const response = await fetch('/api/services')
+      const { services: fetchedServices } = await response.json()
       setServices(fetchedServices)
       setIsLoading(false)
     }

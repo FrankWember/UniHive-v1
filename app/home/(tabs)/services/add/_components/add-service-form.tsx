@@ -35,6 +35,7 @@ export const AddServiceForm = () => {
       name: "",
       description: "",
       price: 0,
+      discount: 0,
       category: [], // Ensure this is initialized as an empty array
       images: [],
       defaultLocation: "",
@@ -87,19 +88,35 @@ export const AddServiceForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price ($)</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex space-x-3">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price ($)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="50.00" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="discount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Discount (%)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="5%" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        
         <FormField
           control={form.control}
           name="category"

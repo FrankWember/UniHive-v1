@@ -28,16 +28,7 @@ const ProductsPage = () => {
 
         {/* Content */}
         <div className="w-full mt-24 pb-24">
-          <Suspense fallback={(
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Skeleton className="w-full h-[200px]" />
-              <Skeleton className="w-full h-[200px]" />
-              <Skeleton className="w-full h-[200px]" />
-              <Skeleton className="w-full h-[200px]" />
-              <Skeleton className="w-full h-[200px]" />
-              <Skeleton className="w-full h-[200px]" />
-            </div>
-          )}>
+          <Suspense>
             <ProductList />
           </Suspense>
         </div>

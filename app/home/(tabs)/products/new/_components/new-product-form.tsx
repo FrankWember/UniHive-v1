@@ -43,6 +43,7 @@ export function NewProductForm() {
       name: '',
       description: '',
       price: 0,
+      discount: 0,
       stock: 1,
       images: [],
       categories: [],
@@ -111,6 +112,24 @@ export function NewProductForm() {
                     placeholder="0.00"
                     {...field}
                     onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="discount"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Discount</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="5%"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                   />
                 </FormControl>
                 <FormMessage />

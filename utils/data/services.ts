@@ -79,7 +79,8 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
             name: true,
             image: true
           }
-        }
+        },
+        reviews: true
       }
     })
   

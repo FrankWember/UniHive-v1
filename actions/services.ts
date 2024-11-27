@@ -28,6 +28,7 @@ interface MyService {
   name: string,
   description: string,
   price: number,
+  discount?: number,
   category: string[],
   images: string[],
   defaultLocation: string | null
@@ -44,6 +45,7 @@ export async function createService(data: MyService) {
       name: data.name,
       description: data.description,
       price: data.price,
+      discount: data.discount || 0,
       category: data.category,
       providerId: session.user.id,
       images: data.images,
@@ -98,6 +100,7 @@ export async function updateService(
       name: data.name,
       description: data.description,
       price: data.price,
+      discount: data.discount || 0,
       category: data.category,
       images: data.images,
     },

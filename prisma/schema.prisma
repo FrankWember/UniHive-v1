@@ -126,6 +126,7 @@ model Service {
   images          String[]
   description     String
   price           Float
+  discount        Int @default(0)
   defaultLocation String?
   category        String[]
 
@@ -204,6 +205,7 @@ model Product {
   name        String
   description String
   price       Float
+  discount    Int @default(0)
   stock       Int
   images      String[]
   categories  String[]

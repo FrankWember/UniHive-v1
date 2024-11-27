@@ -3,7 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET (req: NextRequest) {
     try {
-        const services = await prisma.service.findMany()
+        const services = await prisma.service.findMany({
+            include: {
+                provider: true,
+                reviews: true
+            }
+        })
         return NextResponse.json({services: services}, {status: 200})
     } catch (error) {
         return NextResponse.json({error: error}, {status: 500})

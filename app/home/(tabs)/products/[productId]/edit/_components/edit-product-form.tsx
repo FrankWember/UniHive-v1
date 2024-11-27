@@ -34,6 +34,8 @@ export function EditProductForm({ product }: EditProductFormProps) {
             name: product.name,
             description: product.description,
             price: product.price,
+            stock: product.stock,
+            discount: product.discount,
             images: product.images,
             categories: product.categories,
         },
@@ -85,19 +87,62 @@ export function EditProductForm({ product }: EditProductFormProps) {
                         </FormItem>
                     )}
                 />
-                <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                        <FormItem>
+                <div className="flex gap-4">
+                    <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                        <FormItem className="flex-1">
                             <FormLabel>Price</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                            <Input
+                                type="number"
+                                placeholder="0.00"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
-                    )}
-                />
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="discount"
+                        render={({ field }) => (
+                        <FormItem className="flex-1">
+                            <FormLabel>Discount</FormLabel>
+                            <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="5%"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                            />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="stock"
+                        render={({ field }) => (
+                        <FormItem className="flex-1">
+                            <FormLabel>Stock</FormLabel>
+                            <FormControl>
+                            <Input
+                                type="number"
+                                placeholder="1"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                            />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    </div>
                 <FormField
                     control={form.control}
                     name="images"

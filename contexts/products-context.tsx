@@ -1,23 +1,11 @@
 "use client"
 
+import { ProductReview, User, Product as GeneralProduct } from '@prisma/client'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-type Product = {
-  id: string
-  name: string
-  description: string
-  price: number
-  categories: string[]
-  stock: number
-  images: string[]
-  createdAt: Date
-  updatedAt: Date
-  isAvailable: boolean
-  sellerId: string
-  seller: {
-    id: string,
-    name: string
-  }
+type Product = GeneralProduct & {
+  seller: User
+  reviews: ProductReview[]
 }
 
 type ProductsContextType = {
@@ -34,7 +22,6 @@ export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // TODO: Replace with actual API call once implemented
         const response = await fetch('/api/products')
         const { products: fetchedProducts } = await response.json()
         setProducts(fetchedProducts)

@@ -44,6 +44,7 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
       name: service.name,
       description: service.description,
       price: service.price,
+      discount: service.discount,
       category: service.category,
       images: service.images,
     },
@@ -95,19 +96,34 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="price"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Price</FormLabel>
-              <FormControl>
-                <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex space-x-3">
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price ($)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="50.00" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="discount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Discount (%)</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="5%" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="category"
