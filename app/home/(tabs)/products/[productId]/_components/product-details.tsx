@@ -186,7 +186,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
   }
 
   return (
-    <Card className="w-full min-w-[60vw] max-w-4xl mx-auto shadow-lg md:p-6 lg:p-8">
+    <Card className="w-full min-w-[96vw] max-w-4xl mx-auto shadow-lg md:p-6 lg:p-8">
       <CardHeader className="space-y-4">
         <div className="flex justify-between items-start">
           <div>
