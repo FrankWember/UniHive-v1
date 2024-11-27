@@ -19,17 +19,11 @@ import { useRouter } from 'next/navigation'
 import { updateService } from '@/actions/services'
 import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
+import { Service } from '@prisma/client'
 
 
 interface EditServiceFormProps {
-  service: {
-    id: string
-    name: string
-    description: string
-    price: number
-    category: string[]
-    images: string[]
-  }
+  service: Service
 }
 
 export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => {
