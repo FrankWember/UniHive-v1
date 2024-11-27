@@ -1,3 +1,4 @@
+import { ProductState } from "@prisma/client";
 import * as z from "zod"
 
 export const IDSignInSchema = z.object({
@@ -100,6 +101,8 @@ export const EventSchema = z.object({
     }),
 })
 
+const states = [ProductState.NEW, ProductState.USED, ProductState.DAMAGED, ProductState.REFURBISHED]
+
 export const productSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   description: z.string().min(10, 'Description must be at least 10 characters long'),
@@ -108,4 +111,5 @@ export const productSchema = z.object({
   stock: z.number().int().positive('Stock must be a positive integer'),
   images: z.array(z.string().url()).min(1, 'At least one image is required'),
   categories: z.array(z.string()).min(1, 'At least one category is required'),
+  state: z.string().default(ProductState.NEW),
 })

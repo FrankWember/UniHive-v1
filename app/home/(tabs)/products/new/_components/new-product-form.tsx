@@ -20,6 +20,13 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -29,6 +36,7 @@ import { CategorySelect } from '@/components/category-select'
 import { productSchema } from '@/constants/zod'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
+import { ProductState } from '@prisma/client'
 
 export function NewProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,6 +44,8 @@ export function NewProductForm() {
   const user = useCurrentUser()
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+
+  const states = [ProductState.NEW, ProductState.USED, ProductState.DAMAGED, ProductState.REFURBISHED]
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -47,6 +57,7 @@ export function NewProductForm() {
       stock: 1,
       images: [],
       categories: [],
+      state: ProductState.NEW
     },
   })
 
@@ -173,29 +184,55 @@ export function NewProductForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="categories"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Categories</FormLabel>
-              <FormControl>
-                <CategorySelect
-                  options={[
-                    { value: 'electronics', label: 'Electronics' },
-                    { value: 'books', label: 'Books' },
-                    { value: 'clothing', label: 'Clothing' },
-                    { value: 'home-and-garden', label: 'Home & Garden' },
-                    { value: 'sports', label: 'Sports' },
-                  ]}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className='flex gap-4'>
+          <FormField
+            control={form.control}
+            name="categories"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categories</FormLabel>
+                <FormControl>
+                  <CategorySelect
+                    options={[
+                      { value: 'electronics', label: 'Electronics' },
+                      { value: 'books', label: 'Books' },
+                      { value: 'clothing', label: 'Clothing' },
+                      { value: 'home-and-garden', label: 'Home & Garden' },
+                      { value: 'sports', label: 'Sports' },
+                    ]}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="state"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Product State</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="New, Used, Damaged ?" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {states.map((state) => (
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         {error && (
             <Alert variant="destructive">
               <ExclamationTriangleIcon className="h-6 w-6" />

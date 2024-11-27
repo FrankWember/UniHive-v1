@@ -21,37 +21,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Service, ServiceReview, User } from '@prisma/client'
+import { useRouter } from 'next/navigation'
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { submitReview, updateReview } from '@/actions/service-reviews'
 
 interface ServiceDetailsProps {
-  service: {
-    id: string
-    name: string
-    description: string
-    price: number
-    category: string[]
-    images: string[]
-    providerId: string
-    provider: {
-      id: string
-      name: string | null
-      image: string | null
-    }
+  service: Service & {
+    provider: User
   }
-  reviews: {
-    id: string
-    rating: number
-    comment: string
-    reviewDate: Date
-    reviewer: {
-      id: string
-      name: string | null
-      image: string | null
-    }
-  }[]
+  reviews: (ServiceReview & {
+    reviewer: User
+  })[]
 }
 
 export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews }) => {
-  const [newReview, setNewReview] = useState({ rating: 0, comment: '' })
+  const my_review = reviews.find(review => review.reviewer.id === service.provider.id)
+  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const user = useCurrentUser()
 
   const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
   const ratingCounts = reviews.reduce((acc, review) => {
@@ -60,8 +49,19 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   }, {} as Record<number, number>)
 
   const handleSubmitReview = async () => {
-    // TODO: Implement review submission logic
-    console.log('Submitting review:', newReview)
+    setIsSubmitting(true)
+    if (!user) {
+      const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
+      router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+      return
+    }
+    if (!my_review) {
+      await submitReview(service.id, user!.id!, newReview.rating, newReview.comment)
+    } else {
+      await updateReview(my_review.id, newReview.rating, newReview.comment)
+    }
+    router.push(`/home/services/${service.id}`)
+    setIsSubmitting(false)
   }
 
   return (

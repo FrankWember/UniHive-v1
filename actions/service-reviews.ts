@@ -33,6 +33,17 @@ export async function submitReview(serviceId: string, reviewerId: string, rating
   return review
 }
 
+export async function updateReview(reviewId: string, rating: number, comment: string) {
+  const review = await prisma.serviceReview.update({
+    where: { id: reviewId },
+    data: {
+      rating,
+      comment,
+    },
+  })
+  return review
+}
+
 export async function getReviewsByServiceId(serviceId: string) {
   return await prisma.serviceReview.findMany({
     where: { serviceId },

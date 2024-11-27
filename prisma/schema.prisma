@@ -209,6 +209,7 @@ model Product {
   stock       Int
   images      String[]
   categories  String[]
+  state       ProductState @default(NEW)
   isAvailable Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -221,6 +222,13 @@ model Product {
   reviews         ProductReview[]
 
   @@index([sellerId])
+}
+
+enum ProductState {
+  NEW
+  USED
+  REFURBISHED
+  DAMAGED
 }
 
 model ProductReview {
