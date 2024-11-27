@@ -80,7 +80,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
       <div className="space-y-2">
         {[5, 4, 3, 2, 1].map((rating) => (
           <div key={rating} className="flex items-center space-x-2">
-            <span className="text-sm w-12 text-muted-foreground">{rating} stars</span>
+            <span className="flex text-sm w-14 text-muted-foreground">{rating} stars</span>
             <Progress value={((ratingCounts[rating] || 0) / reviews.length * 100) || 0} className="h-2 w-full" />
             <span className="w-12 text-sm text-muted-foreground text-right">
               {(((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0}%
@@ -283,12 +283,16 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               </div>
 
               <div className="flex gap-3">
-                <Button>
-                  Book Service
-                </Button>
-                <Button variant="outline">
-                  Contact Provider
-                </Button>
+                <Link href={`/home/services/${service.id}/book`}>
+                  <Button>
+                    Book Service
+                  </Button>
+                </Link>
+                <Link href={`/home/services/provider/${service.providerId}`}>
+                  <Button variant="outline">
+                    Contact Provider
+                  </Button>
+                </Link>
               </div>
             </div>
             <Separator />
@@ -313,7 +317,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   } else {
     // Mobile view
     return (
-      <Card className="w-full min-w-[96vw] max-w-4xl mx-auto shadow-lg md:p-6 lg:p-8">
+      <Card className="w-full min-w-[90vw] max-w-4xl mx-auto shadow-lg md:p-6 lg:p-8">
         <CardHeader className="space-y-4">
           <div className="flex justify-between items-start">
             <div>
