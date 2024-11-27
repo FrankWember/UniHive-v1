@@ -26,7 +26,7 @@ export default async function ProductPage({ params }: { params: { productId: str
       </div>
 
       {/* Content */}
-      <div className="flex flex-col mx-auto px-4 md:px-10 lg:px-20 mt-28 pb-24 space-y-3">
+      <div className="flex flex-col mx-auto px-4 mt-28 pb-24 space-y-3">
         <ProductDetails product={product} reviews={reviews} />
         <Separator />
         <RelatedProducts productId={product.id} category={product.categories[0]} />
