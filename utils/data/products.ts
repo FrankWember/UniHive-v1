@@ -45,7 +45,14 @@ export async function getMyProductReview (productId: string, userId: string) {
 
 
 export async function getSellerById (id: string) {
-    return await prisma.user.findUnique({ where: { id }, include: { products: true } })
+    return await prisma.user.findUnique({ 
+        where: { id }, 
+        include: { 
+            products: { 
+                include: { reviews: true } 
+            } 
+        }
+    })
 }
 
 export async function getSellerRequests () {

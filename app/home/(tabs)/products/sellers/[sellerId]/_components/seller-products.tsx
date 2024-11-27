@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { ProductCard } from '../../../_components/product-card'
-import { Product, User } from '@prisma/client'
+import { Product, User, ProductReview } from '@prisma/client'
 
 interface SellerProductsProps {
-  seller: User & {products: Product[]}
+  seller: User & {products: (Product & { reviews: ProductReview[] })[]}
 }
 
 export function SellerProducts({ seller }: SellerProductsProps) {
-  const [products, setProducts] = useState<Product[]>(seller.products)
+  const [products, setProducts] = useState<(Product & { reviews: ProductReview[] })[]>(seller.products)
 
   return (
     <div>
