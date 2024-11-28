@@ -17,13 +17,9 @@ export default async function CartPage() {
 
       {/* Content */}
       <div className="container mx-auto py-10 mt-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
-            <CartContent cart={cart} />
-          </div>
-          <div>
-            <CartSummary cart={cart} />
-          </div>
+        <div className="flex flex-col justify-center max-w-6xl mx-4 gap-6">
+          <CartContent cart={cart} />
+          <CartSummary cart={cart} />
         </div>
       </div>
     </div>

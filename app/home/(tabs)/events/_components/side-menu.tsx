@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import { cn } from "@/lib/utils"
 import {
   Sheet,
   SheetContent,
@@ -9,15 +10,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
-import { Component2Icon, PersonIcon, PlusIcon, CalendarIcon } from '@radix-ui/react-icons'
 import { useRouter } from 'next/navigation'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { RoleGate } from '@/components/role-gate'
-import { UserRole } from '@prisma/client'
+import {
+  LayoutGrid,
+  ShoppingBag,
+  UserCircle,
+  PlusCircle,
+  Package,
+  BarChart3,
+  ClipboardList,
+  ChevronDown,
+  PanelRight
+} from "lucide-react"
 
 export const SideMenu = () => {
   const router = useRouter()
+  const [openCategories, setOpenCategories] = React.useState(true)
+  const [openSeller, setOpenSeller] = React.useState(true)
+  const [openCustomer, setOpenCustomer] = React.useState(true)
 
   const eventTypes = [
     { name: 'All Events', path: '/home/events' },
@@ -31,54 +43,93 @@ export const SideMenu = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button size="icon" variant="outline">
-          <Component2Icon className="h-4 w-4" />
+          <PanelRight className="h-4 w-4" />
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
           <SheetTitle className="text-2xl font-bold">Campus Events</SheetTitle>
           <SheetDescription>
-            Discover and create events to enhance your campus experience.
+            Discover and organise events within your campus community.
           </SheetDescription>
         </SheetHeader>
-        <div className="mt-6 space-y-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="eventTypes">
-              <AccordionTrigger>Event Types</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col space-y-2">
-                  {eventTypes.map((type) => (
+        <ScrollArea className="w-full h-[80vh]">
+          <div className="space-y-4 py-4">
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenCategories(!openCategories)}
+                >
+                  <LayoutGrid className="mr-2 h-4 w-4" />
+                  Categories
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCategories ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openCategories && (
+                <div className="ml-4 mt-2 space-y-1">
+                  {eventTypes.map((event) => (
                     <Button
-                      key={type.name}
+                      key={event.name}
                       variant="ghost"
-                      className="justify-start"
-                      onClick={() => router.push(type.path)}
+                      className="w-full justify-start"
+                      onClick={() => router.push(event.path)}
                     >
-                      {type.name}
+                      {event.name}
                     </Button>
                   ))}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Manage Events</h3>
-            <div className="flex flex-col space-y-2">
-              <Button onClick={() => router.push('/home/events/create')} className="justify-start">
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Create Event
-              </Button>
-              <Button onClick={() => router.push("/home/events?mine=true")} className="justify-start">
-                <PersonIcon className="mr-2 h-4 w-4" />
-                My Events
-              </Button>
-              <Button onClick={() => router.push("/home/events?attending=true")} className="justify-start">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                Events I'm Attending
-              </Button>
+              )}
+            </div>
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenSeller(!openSeller)}
+                >
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  Admins
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openSeller ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openSeller && (
+                <div className="space-y-1">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push('/home/events/add')}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create event
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/events?mine=true")}>
+                    <Package className="mr-2 h-4 w-4" />
+                    My events
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenCustomer(!openCustomer)}
+                >
+                  <ShoppingBag className="mr-2 h-4 w-4" />
+                  Users
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCustomer ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openCustomer && (
+                <div className="space-y-1">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/events?attending=true")}>
+                    <ClipboardList className="mr-2 h-4 w-4" />
+                    Events I am attending
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )

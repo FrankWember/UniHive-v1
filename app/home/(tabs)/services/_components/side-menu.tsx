@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import { cn } from "@/lib/utils"
 import {
   Sheet,
   SheetContent,
@@ -9,13 +10,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
-import { Component2Icon, LayersIcon, PersonIcon, PlusIcon } from '@radix-ui/react-icons'
 import { useRouter } from 'next/navigation'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import {
+  LayoutGrid,
+  ShoppingBag,
+  UserCircle,
+  PlusCircle,
+  Package,
+  BarChart3,
+  ClipboardList,
+  ChevronDown,
+  PanelRight
+} from "lucide-react"
 
-export const SideMenu = () => {
+interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
+  const [openCategories, setOpenCategories] = React.useState(true)
+  const [openSeller, setOpenSeller] = React.useState(true)
+  const [openCustomer, setOpenCustomer] = React.useState(true)
 
   const categories = [
     { name: 'All', path: '/home/services' },
@@ -30,54 +46,101 @@ export const SideMenu = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button size="icon" variant="outline">
-          <Component2Icon className="h-4 w-4" />
+          <PanelRight className="h-4 w-4" />
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle className="text-2xl font-bold">Campus Services</SheetTitle>
+          <SheetTitle className="text-2xl font-bold">Campus Marketplace</SheetTitle>
           <SheetDescription>
-            Discover and offer services to enhance your campus experience.
+            Discover and sell services within your campus community.
           </SheetDescription>
         </SheetHeader>
-        <div className="mt-6 space-y-6">
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="categories">
-              <AccordionTrigger>Categories</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col space-y-2">
+        <ScrollArea className="w-full h-[80vh]">
+          <div className="space-y-4 py-4">
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenCategories(!openCategories)}
+                >
+                  <LayoutGrid className="mr-2 h-4 w-4" />
+                  Categories
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCategories ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openCategories && (
+                <div className="ml-4 mt-2 space-y-1">
                   {categories.map((category) => (
                     <Button
                       key={category.name}
                       variant="ghost"
-                      className="justify-start"
+                      className="w-full justify-start"
                       onClick={() => router.push(category.path)}
                     >
                       {category.name}
                     </Button>
                   ))}
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium">Manage Services</h3>
-            <div className="flex flex-col space-y-2">
-              <Button onClick={() => router.push('/home/services/add')} className="justify-start">
-                <PlusIcon className="mr-2 h-4 w-4" />
-                Add Service
-              </Button>
-              <Button onClick={() => router.push("/home/services?mine=true")} className="justify-start">
-                <PersonIcon className="mr-2 h-4 w-4" />
-                My Services
-              </Button>
-              <Button onClick={() => router.push("/home/services/my-bookings")} className="justify-start">
-                <LayersIcon className="mr-2 h-4 w-4" />
-                My Bookings
-              </Button>
+              )}
+            </div>
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenSeller(!openSeller)}
+                >
+                  <UserCircle className="mr-2 h-4 w-4" />
+                  Seller
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openSeller ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openSeller && (
+                <div className="space-y-1">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push('/home/services/add')}>
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Service
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services?mine=true")}>
+                    <Package className="mr-2 h-4 w-4" />
+                    My services
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/orders")}>
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Bookings
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/analytics")}>
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    Analytics
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className="px-3 py-2">
+              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start"
+                  onClick={() => setOpenCustomer(!openCustomer)}
+                >
+                  <ShoppingBag className="mr-2 h-4 w-4" />
+                  Customer
+                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCustomer ? "rotate-180" : "")} />
+                </Button>
+              </h2>
+              {openCustomer && (
+                <div className="space-y-1">
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/my-orders")}>
+                    <ClipboardList className="mr-2 h-4 w-4" />
+                    My Bookings
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )

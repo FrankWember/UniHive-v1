@@ -24,3 +24,27 @@ export async function getCart () {
 
     return my_cart
 }
+
+export async function getCartItemsNumber () {
+    const customer = await currentUser()
+    if (!customer) return 0
+    let my_cart = null
+    const cart = await prisma.cart.findFirst({
+        where: { customerId: customer?.id, isOrdered: false },
+        include: { cartItems: true }
+    })
+     
+    if (!cart) {
+        my_cart = await prisma.cart.create({
+            data: {
+                customerId: customer!.id!,
+                totalPrice: 0,
+            },
+            include: { cartItems: true }
+        })
+    } else {
+        my_cart = cart
+    }
+
+    return my_cart.cartItems.length
+}

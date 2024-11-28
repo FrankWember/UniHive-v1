@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation'
 import { EditServiceForm } from '@/app/home/(tabs)/services/[serviceId]/edit/_components/edit-service-form'
 import { getServiceById } from '@/utils/data/services'
 import { BackButton } from '@/components/back-button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+
 
 const EditServicePage = async ({ params }: { params: { serviceId: string } }) => {
   const service = await getServiceById(params.serviceId)
@@ -20,8 +22,16 @@ const EditServicePage = async ({ params }: { params: { serviceId: string } }) =>
       </div>
 
       {/* Content */}
-      <div className="w-full mt-20">
-        <EditServiceForm service={service} />
+      <div className="flex w-screen justify-center mt-5">
+        <Card className='max-w-md h-fit my-20 mx-2'>
+          <CardHeader>
+            <CardTitle>Edit Service</CardTitle>
+            <CardDescription>Edit an existing service to sell or offer</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <EditServiceForm service={service} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

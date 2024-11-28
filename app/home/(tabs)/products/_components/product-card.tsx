@@ -3,14 +3,14 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Product, ProductReview } from '@prisma/client'
-import { Card, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { ShoppingCart, Star } from 'lucide-react'
 import { useState } from 'react'
 import { addItemToCart } from '@/actions/cart'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/use-toast'
 
 interface ProductCardProps {
   product: Product & { reviews: ProductReview[] }
@@ -21,6 +21,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const router = useRouter()
   const user = useCurrentUser()
   const callbackUrl = encodeURIComponent(`/home/products/${product.id}`)
+  const {toast} = useToast()
 
   const averageRating = product.reviews.length > 0
     ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
@@ -34,6 +35,10 @@ export function ProductCard({ product }: ProductCardProps) {
           return
         }
         await addItemToCart(product, user!.id!)
+        toast({
+          title: "Product Added to Cart",
+          description: `${product.name} has been added to your shopping cart.`,
+        })
       } catch (error) {
         console.error('Error adding item to cart:', error)
       } finally {
@@ -78,7 +83,14 @@ export function ProductCard({ product }: ProductCardProps) {
             ):(
               <p className="text-base font-semibold py-1">${product.price.toFixed(2)}</p>
             )}
-            <Button onClick={addToCart} disabled={isSubmitting} className="rounded-full bg-yellow-500 hover:bg-yellow-600" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
+            <Button 
+              onClick={addToCart} 
+              disabled={isSubmitting} 
+              className="rounded-full bg-yellow-500 hover:bg-yellow-600" 
+              size="icon"
+              >
+                <ShoppingCart className="w-4 h-4"/>
+            </Button>
           </div>
         </CardContent>
       </Card>

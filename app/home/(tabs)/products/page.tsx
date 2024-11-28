@@ -7,8 +7,10 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getCartItemsNumber } from '@/utils/data/cart'
 
-const ProductsPage = () => {
+const ProductsPage = async() => {
+  const number_of_items = await getCartItemsNumber()
   return (
     <ProductsProvider>
       <div className="flex flex-col min-h-screen w-full">
@@ -17,9 +19,14 @@ const ProductsPage = () => {
           <h1 className="text-2xl font-bold">Products</h1>
           <div className="flex items-center space-x-3">
             <SearchBar />
-            <Link href={`/home/products/cart`}>
-              <Button variant="outline" size="icon">
+            <Link href="/home/products/cart">
+              <Button variant="outline" size="icon" className="relative">
                 <ShoppingCart className="h-4 w-4" />
+                {number_of_items > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                    {number_of_items}
+                  </span>
+                )}
               </Button>
             </Link>
             <SideMenu />
