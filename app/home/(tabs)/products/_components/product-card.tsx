@@ -77,12 +77,12 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex justify-between">
             {product.discount>0 ? (
               <div className='flex items-center space-x-2'>
-                <p className="font-bold text-base">${(product.price * (1 - product.discount)).toFixed(2)}</p>
+                <p className="font-bold text-base">${(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</p>
                 <span className='text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
               </div>
-            ):(
+            ):((
               <p className="text-base font-semibold py-1">${product.price.toFixed(2)}</p>
-            )}
+            ))}
             <Button 
               onClick={addToCart} 
               disabled={isSubmitting} 

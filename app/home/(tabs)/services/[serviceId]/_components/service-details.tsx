@@ -251,7 +251,10 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               <h2 className='text-2xl font-bold'>{service.name}</h2>
               <div className='flex items-center gap-2'>
                 <span className='text-green-500 font-semibold text-xl'>$</span>
-                <span className='font-semibold text-xl'>{service.price.toFixed(2)}</span>
+                <span className='font-semibold text-xl'>{(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</span>
+                {service.discount > 0 && (
+                  <span className='text-sm text-muted-foreground line-through'>${service.price.toFixed(2)}</span>
+                )}
                 <Badge variant="secondary" className="ml-3">
                   {service.category}
                 </Badge>
@@ -324,7 +327,10 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               <CardTitle className="text-xl md:text-3xl font-bold truncate">{service.name}</CardTitle>
               <div className="flex items-center mt-2">
                 <span className='text-green-500 font-semibold text-xl'>$</span>
-                <span className="font-semibold text-xl">{service.price.toFixed(2)}</span>
+                <span className="font-semibold text-xl">{(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</span>
+                {service.discount > 0 && (
+                  <span className="text-sm text-muted-foreground line-through">${service.price.toFixed(2)}</span>
+                )}
               </div>
               <div className="flex items-center space-x-3">
                 <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>

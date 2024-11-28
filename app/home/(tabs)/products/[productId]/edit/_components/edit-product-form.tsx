@@ -122,7 +122,7 @@ export function EditProductForm({ product }: EditProductFormProps) {
                         name="discount"
                         render={({ field }) => (
                         <FormItem className="flex-1">
-                            <FormLabel>Discount</FormLabel>
+                            <FormLabel>Discount (%)</FormLabel>
                             <FormControl>
                             <Input
                                 type="number"

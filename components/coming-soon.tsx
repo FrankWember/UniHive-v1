@@ -6,7 +6,7 @@ import { Button } from './ui/button'
 export const ComingSoon = () => {
   return (
     <div className="w-full h-full flex items-center justify-center">
-        <Card>
+        <Card className='p-3'>
             <CardTitle>Coming Soon</CardTitle>
             <CardDescription>This feature is currently under development.</CardDescription>
             <CardFooter>

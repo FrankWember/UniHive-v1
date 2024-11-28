@@ -134,7 +134,7 @@ export function NewProductForm() {
             name="discount"
             render={({ field }) => (
               <FormItem className="flex-1">
-                <FormLabel>Discount</FormLabel>
+                <FormLabel>Discount (%)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
@@ -213,7 +213,7 @@ export function NewProductForm() {
             name="state"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Product State</FormLabel>
+                <FormLabel>State</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>

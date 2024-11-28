@@ -59,7 +59,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
           <div className="flex justify-between">
             {service.discount>0 ? (
               <div className='flex items-center space-x-2'>
-                <p className="font-bold text-base">${(service.price * (1 - service.discount)).toFixed(2)}</p>
+                <p className="font-bold text-base">${(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</p>
                 <span className='text-muted-foreground line-through'>${service.price.toFixed(2)}</span>
               </div>
             ):(

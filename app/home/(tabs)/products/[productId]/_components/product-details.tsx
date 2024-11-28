@@ -105,16 +105,28 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
         <div className='flex space-x-8'>
 
           {/* Product Images */}
-          <div className='grid grid-cols-8 max-w-[60vw] gap-3 m-4'>
+          <div className='grid grid-cols-8 max-w-[55vw] gap-3 m-4'>
             <div className='col-span-1 flex flex-col gap-4'>
               {product.images.map((image, index) => (
                 <div key={index} className={`w-full rounded ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} onClick={() => setCurrentImageIndex(index)}>
-                  <Image src={image} alt={`Product Image ${index + 1}`} className='object-cover aspect-square rounded' width={200} height={200} />
+                  <Image 
+                    src={image} 
+                    alt={`Product Image ${index + 1}`} 
+                    className='object-cover aspect-square rounded' 
+                    width={200} 
+                    height={200} 
+                    />
                 </div>
               ))}
             </div>
             <div className='col-span-7'>
-              <Image src={product.images[currentImgIndex]} alt={`Product Image ${currentImgIndex + 1}`} className='object-cover aspect-square rounded' width={1400} height={1400} />
+              <Image 
+                src={product.images[currentImgIndex]} 
+                alt={`Product Image ${currentImgIndex + 1}`} 
+                className='object-cover aspect-square rounded' 
+                width={1000} 
+                height={1000} 
+                />
             </div>
           </div>
 
@@ -124,7 +136,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
               <h2 className='text-2xl font-bold'>{product.name}</h2>
               <div className='flex items-center gap-2'>
                 <span className='text-green-500 font-semibold text-xl'>$</span>
-                <span className='font-semibold text-xl'>{product.price.toFixed(2)}</span>
+                <span className='font-semibold text-xl'>{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>
+                {product.discount > 0 && (
+                  <span className='text-sm text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
+                )}
                 <Badge variant={product.stock > 0 ? "warning" : "destructive"} className="ml-3">
                   {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
                 </Badge>
@@ -193,7 +208,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
             <CardTitle className="text-xl md:text-3xl font-bold truncate">{product.name}</CardTitle>
             <div className="flex items-center mt-2">
               <span className='text-green-500 font-semibold text-xl'>$</span>
-              <span className="font-semibold text-xl">{product.price.toFixed(2)}</span>
+              <span className="font-semibold text-xl">{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>
+              {product.discount > 0 && (
+                  <span className='text-sm text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
+                )}
               <Badge variant={product.stock > 0 ? "warning" : "destructive"} className="ml-3">
                 {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
               </Badge>
