@@ -40,6 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
             description: `${product.name} is currently out of stock.`,
             variant: "destructive"
           })
+          router.push("/home/products")
           return
         }
         await addItemToCart(product, user!.id!)
@@ -47,6 +48,7 @@ export function ProductCard({ product }: ProductCardProps) {
           title: "Product Added to Cart",
           description: `${product.name} has been added to your shopping cart.`,
         })
+        router.push("/home/products/cart")
       } catch (error) {
         console.error('Error adding item to cart:', error)
       } finally {
