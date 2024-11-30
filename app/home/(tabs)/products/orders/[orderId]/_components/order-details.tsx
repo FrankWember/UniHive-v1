@@ -6,54 +6,27 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
+import { Cart, CartItem, Product, User } from '@prisma/client'
+import { updateDeliveryStatus } from '@/actions/cart'
 
-type OrderItem = {
-  id: string
-  productName: string
-  quantity: number
-  price: number
+type Order = CartItem & {
+  cart: Cart & {
+    customer: User
+  }
+  product: Product
 }
 
-type Order = {
-  id: string
-  customerName: string
-  totalAmount: number
-  orderDate: string
-  status: string
-  items: OrderItem[]
-}
-
-export function OrderDetails({ orderId }: { orderId: string }) {
-  const [order, setOrder] = useState<Order | null>(null)
+export function OrderDetails({ order }: { order: Order }) {
   const {toast} = useToast()
-
-  useEffect(() => {
-    // Fetch order details from API
-    const fetchOrderDetails = async () => {
-      const response = await fetch(`/api/orders/${orderId}`)
-      const data = await response.json()
-      setOrder(data)
-    }
-    fetchOrderDetails()
-  }, [orderId])
 
   const handleMarkAsDelivered = async () => {
     try {
-      const response = await fetch(`/api/orders/${orderId}/deliver`, {
-        method: 'POST',
-      })
+      await updateDeliveryStatus(order.id, true)
 
-      if (!response.ok) {
-        throw new Error('Failed to mark order as delivered')
-      }
-
-      setOrder((prevOrder) => prevOrder ? { ...prevOrder, status: 'Delivered' } : null)
       toast({
         title: 'Order Updated',
         description: 'The order has been marked as delivered.',
@@ -73,37 +46,29 @@ export function OrderDetails({ orderId }: { orderId: string }) {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-2">Order Information</h2>
-        <p><strong>Customer:</strong> {order.customerName}</p>
-        <p><strong>Order Date:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
-        <p><strong>Status:</strong> {order.status}</p>
-        <p><strong>Total Amount:</strong> ${order.totalAmount.toFixed(2)}</p>
-      </div>
-
       <Table>
         <TableCaption>Order Items</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Product</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Total</TableHead>
-          </TableRow>
-        </TableHeader>
         <TableBody>
-          {order.items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.productName}</TableCell>
-              <TableCell>{item.quantity}</TableCell>
-              <TableCell>${item.price.toFixed(2)}</TableCell>
-              <TableCell>${(item.quantity * item.price).toFixed(2)}</TableCell>
-            </TableRow>
-          ))}
+          <TableRow>
+            <TableCell>Product</TableCell>
+            <TableCell>{order.product.name}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Quantity</TableCell>
+            <TableCell>{order.quantity}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Price</TableCell>
+            <TableCell>${order.price.toFixed(2)}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Total</TableCell>
+            <TableCell>${(order.quantity * order.price).toFixed(2)}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
 
-      {order.status !== 'Delivered' && (
+      {!order.isDelivered && (
         <Button onClick={handleMarkAsDelivered} className="mt-6">
           Mark as Delivered
         </Button>

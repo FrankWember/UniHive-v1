@@ -7,6 +7,8 @@ import { createCheckoutSession } from '@/actions/cart'
 import { CartItem, Product, Cart } from '@prisma/client'
 import { useToast } from '@/hooks/use-toast'
 import { BeatLoader } from 'react-spinners'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {product: Product})[]}}) {
   const [subtotal, setSubtotal] = useState(cart.totalPrice)
@@ -14,6 +16,7 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
   const [total, setTotal] = useState(cart.totalPrice)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const router = useRouter()
 
   const handleCheckout = async () => {
     try{
@@ -23,6 +26,7 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
         title: "Checkout Started!",
         description: "You will be redirected to the payments page.",
       })
+      router.push("/home/products/my-orders")
     } catch {
       toast({
         title: "Error",
@@ -53,10 +57,15 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
           </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className='flex gap-3'>
         <Button onClick={handleCheckout} disabled={isLoading}>
           {isLoading ? <BeatLoader /> : "Proceed to Checkout"}
         </Button>
+        <Link href="/home/products">
+          <Button variant="secondary">
+            Add more products
+          </Button>
+        </Link>
       </CardFooter>
     </Card>
   )

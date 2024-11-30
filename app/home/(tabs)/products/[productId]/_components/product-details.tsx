@@ -27,6 +27,7 @@ import { addItemToCart } from '@/actions/cart'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { useToast } from '@/hooks/use-toast'
 
 interface ProductDetailsProps {
   product: Product & {seller: User}
@@ -42,10 +43,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
   const router = useRouter()
   const user = useCurrentUser()
   const isMobile = useMediaQuery("(max-width: 768px)")
+  const { toast } = useToast()
 
   // Image stuff
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
-
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()
@@ -93,8 +94,18 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
     try {
       setIsSubmitting(true)
       await addItemToCart(product, user!.id!)
+      toast({
+        title: "Product Added to Cart",
+        description: `${product.name} has been added to your shopping cart.`,
+      })
+      router.push("/home/products/cart")
     } catch (error) {
       console.error('Error adding item to cart:', error)
+      toast({
+        title: "An Error Occured!",
+        description: "Sorry! We couldn't add the product to your cart. Please try again.",
+        variant: "destructive"
+      })
     } finally {
       setIsSubmitting(false)
     }

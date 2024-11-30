@@ -15,6 +15,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
+import { useRouter } from 'next/navigation'
 
 type CartItemWithProduct = CartItem & {
   product: Product
@@ -24,6 +25,7 @@ export function CartContent({cart}: {cart: Cart & {cartItems: CartItemWithProduc
   const [cartItems, setCartItems] = useState<CartItemWithProduct[]>(cart.cartItems)
   const [open, setOpen] = useState(false)
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+  const router = useRouter()
 
   const handleUpdateQuantity = async (id: string, newQuantity: number) => {
     await updateCartItemQuantity(id, newQuantity)
@@ -31,11 +33,13 @@ export function CartContent({cart}: {cart: Cart & {cartItems: CartItemWithProduc
       item.id === id ? { ...item, quantity: newQuantity } : item
     ))
     setOpen(false)
+    router.refresh()
   }
 
   const handleRemoveItem = async (id: string) => {
     await removeCartItem(id)
     setCartItems(cartItems.filter(item => item.id !== id))
+    router.refresh()
   }
 
   const openDialog = (itemId: string) => {

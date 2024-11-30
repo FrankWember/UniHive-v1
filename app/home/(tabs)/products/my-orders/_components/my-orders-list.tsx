@@ -15,20 +15,12 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Cart, CartItem, Product } from '@prisma/client'
 
-type OrderItem = {
-  id: string
-  productName: string
-  quantity: number
-  price: number
-}
-
-type Order = {
-  id: string
-  orderDate: string
-  status: string
-  totalAmount: number
-  items: OrderItem[]
+type Order = Cart & {
+  cartItems: (CartItem & {
+    product: Product
+  })[]
 }
 
 export function MyOrdersList() {
@@ -49,7 +41,7 @@ export function MyOrdersList() {
       {orders.map((order) => (
         <AccordionItem key={order.id} value={order.id}>
           <AccordionTrigger>
-            Order #{order.id} - {new Date(order.orderDate).toLocaleDateString()} - ${order.totalAmount.toFixed(2)}
+            Order - {new Date(order.createdAt).toLocaleDateString()} - ${order.totalPrice.toFixed(2)}
           </AccordionTrigger>
           <AccordionContent>
             <Table>
@@ -62,9 +54,9 @@ export function MyOrdersList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {order.items.map((item) => (
+                {order.cartItems.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell>{item.productName}</TableCell>
+                    <TableCell>{item.product.name}</TableCell>
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>${item.price.toFixed(2)}</TableCell>
                     <TableCell>${(item.quantity * item.price).toFixed(2)}</TableCell>
@@ -73,7 +65,7 @@ export function MyOrdersList() {
               </TableBody>
             </Table>
             <div className="mt-4">
-              <strong>Status:</strong> {order.status}
+              <strong>Status:</strong> {order.isPaid ? 'Paid' : 'Unpaid'}
             </div>
           </AccordionContent>
         </AccordionItem>

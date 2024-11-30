@@ -12,13 +12,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Cart, CartItem, Product, User } from '@prisma/client'
 
-type Order = {
-  id: string
-  customerName: string
-  totalAmount: number
-  orderDate: string
-  status: string
+type Order = CartItem & {
+  cart: Cart & {
+    customer: User
+  },
+  product: Product
 }
 
 export function OrdersList() {
@@ -56,10 +56,10 @@ export function OrdersList() {
         {orders.map((order) => (
           <TableRow key={order.id}>
             <TableCell>{order.id}</TableCell>
-            <TableCell>{order.customerName}</TableCell>
-            <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
-            <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-            <TableCell>{order.status}</TableCell>
+            <TableCell>{order.cart.customer.name}</TableCell>
+            <TableCell>${order.price.toFixed(2)}</TableCell>
+            <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+            <TableCell>{order.isDelivered ? 'Delivered' : 'Pending'}</TableCell>
             <TableCell>
               <Button onClick={() => handleViewOrder(order.id)}>View Details</Button>
             </TableCell>

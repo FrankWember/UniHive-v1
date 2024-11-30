@@ -2,6 +2,7 @@
 
 import { prisma } from "@/prisma/connection"
 import { Product } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 export async function addItemToCart(product: Product, customerId: string) {
     let my_cart = null
@@ -60,10 +61,12 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
         }
     });
 
-    return await prisma.cartItem.update({
+    const updatedCartItem = await prisma.cartItem.update({
         where: { id: cartItemId },
         data: { quantity }
     });
+    revalidatePath("/home/products/cart")
+    return updatedCartItem;
 }
 
 export async function removeCartItem(cartItemId: string) {
@@ -80,10 +83,11 @@ export async function removeCartItem(cartItemId: string) {
             totalPrice: cartItem.cart.totalPrice - (cartItem.price * cartItem.quantity)
         }
     });
-
-    return await prisma.cartItem.delete({
+    const deletedCartItem = await prisma.cartItem.delete({
         where: { id: cartItemId }
     });
+    revalidatePath("/home/products/cart")
+    return deletedCartItem;
 }
 
 export async function createCheckoutSession(cartId: string) {
@@ -102,4 +106,11 @@ export async function createCheckoutSession(cartId: string) {
         },
         include: { cartItems: true }
     });
+}
+
+export async function updateDeliveryStatus (cartItemId: string, isDelivered: boolean) {
+    return await prisma.cartItem.update({
+        where: { id: cartItemId },
+        data: { isDelivered }
+    })
 }

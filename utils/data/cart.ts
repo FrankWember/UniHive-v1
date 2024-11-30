@@ -48,3 +48,18 @@ export async function getCartItemsNumber () {
 
     return my_cart.cartItems.length
 }
+
+
+export async function getCartItem (orderId: string) {
+    return await prisma.cartItem.findUnique({
+        where: { id: orderId },
+        include: {
+            cart: {
+                include: {
+                    customer: true
+                }
+            },
+            product: true
+        }
+    });
+}
