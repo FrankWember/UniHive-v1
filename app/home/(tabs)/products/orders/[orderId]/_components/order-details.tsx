@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { Cart, CartItem, Product, User } from '@prisma/client'
 import { updateDeliveryStatus } from '@/actions/cart'
+import { BeatLoader } from 'react-spinners'
 
 type Order = CartItem & {
   cart: Cart & {
@@ -22,9 +23,11 @@ type Order = CartItem & {
 
 export function OrderDetails({ order }: { order: Order }) {
   const {toast} = useToast()
+  const [loading, setLoading] = useState(false)
 
   const handleMarkAsDelivered = async () => {
     try {
+      setLoading(true)
       await updateDeliveryStatus(order.id, true)
 
       toast({
@@ -37,6 +40,8 @@ export function OrderDetails({ order }: { order: Order }) {
         description: 'There was an error updating the order status.',
         variant: 'destructive',
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -49,6 +54,26 @@ export function OrderDetails({ order }: { order: Order }) {
       <Table>
         <TableCaption>Order Items</TableCaption>
         <TableBody>
+          <TableRow>
+            <TableCell>Order ID</TableCell>
+            <TableCell>{order.id}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Customer</TableCell>
+            <TableCell>{order.cart.customer.name}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Contact</TableCell>
+            <TableCell>{order.cart.customer.phone}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Order Date</TableCell>
+            <TableCell>{order.createdAt.toLocaleDateString()}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Delivery Status</TableCell>
+            <TableCell>{order.isDelivered ? 'Delivered' : 'Not Delivered'}</TableCell>
+          </TableRow>
           <TableRow>
             <TableCell>Product</TableCell>
             <TableCell>{order.product.name}</TableCell>
@@ -69,8 +94,8 @@ export function OrderDetails({ order }: { order: Order }) {
       </Table>
 
       {!order.isDelivered && (
-        <Button onClick={handleMarkAsDelivered} className="mt-6">
-          Mark as Delivered
+        <Button onClick={handleMarkAsDelivered} className="mt-6" disabled={loading}>
+          {loading ? <BeatLoader /> : 'Mark as Delivered'}
         </Button>
       )}
     </div>

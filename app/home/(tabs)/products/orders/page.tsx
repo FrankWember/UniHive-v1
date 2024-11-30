@@ -13,7 +13,7 @@ export default function OrdersPage() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto py-10 mt-16">
+      <div className="container mx-auto px-4 py-10 mt-16">
         <OrdersList />
       </div>
     </div>

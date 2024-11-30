@@ -91,20 +91,32 @@ export async function removeCartItem(cartItemId: string) {
 }
 
 export async function createCheckoutSession(cartId: string) {
+    // Get cart items first to know quantities
     const cart = await prisma.cart.findUnique({
         where: { id: cartId },
-        include: { cartItems: true }
+        include: { cartItems: { include: { product: true } } }
     });
 
-    if (!cart) throw new Error("Cart not found");
+    if (!cart) throw new Error('Cart not found');
     if (cart.cartItems.length === 0) throw new Error("Cart is empty");
 
-    return await prisma.cart.update({
-        where: { id: cartId },
-        data: { 
-            isOrdered: true,
-        },
-        include: { cartItems: true }
+    return await prisma.$transaction(async (tx) => {
+        // Update each product's stock
+        for (const item of cart.cartItems) {
+            await tx.product.update({
+                where: { id: item.productId },
+                data: { 
+                    stock: { decrement: item.quantity }
+                }
+            });
+        }
+
+        // Mark cart as ordered
+        return await tx.cart.update({
+            where: { id: cartId },
+            data: { isOrdered: true },
+            include: { cartItems: true }
+        });
     });
 }
 

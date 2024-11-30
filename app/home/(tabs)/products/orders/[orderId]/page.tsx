@@ -15,7 +15,7 @@ export default async function OrderPage({ params }: { params: { orderId: string 
       </div>
 
       {/* Content */}
-      <div className="container mx-auto py-10 mt-16">
+      <div className="container mx-auto px-4 py-10 mt-16 max-w-5xl">
         <OrderDetails order={order!} />
         </div>
     </div>
