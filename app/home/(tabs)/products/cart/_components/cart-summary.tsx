@@ -18,6 +18,12 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
   const { toast } = useToast()
   const router = useRouter()
 
+  useEffect(() => {
+    const newSubtotal = cart.cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
+    setSubtotal(newSubtotal)
+    setTotal(newSubtotal + tax)
+  }, [cart.cartItems, tax])
+
   const handleCheckout = async () => {
     try{
       setIsLoading(true)

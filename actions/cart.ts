@@ -3,6 +3,7 @@
 import { prisma } from "@/prisma/connection"
 import { Product } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import { sendEmail } from "@/lib/mail"
 
 export async function addItemToCart(product: Product, customerId: string) {
     let my_cart = null
@@ -42,6 +43,7 @@ export async function addItemToCart(product: Product, customerId: string) {
             }
         })
     }
+    return my_cart
 }
 
 export async function updateCartItemQuantity(cartItemId: string, quantity: number) {
@@ -94,7 +96,7 @@ export async function createCheckoutSession(cartId: string) {
     // Get cart items first to know quantities
     const cart = await prisma.cart.findUnique({
         where: { id: cartId },
-        include: { cartItems: { include: { product: true } } }
+        include: { cartItems: { include: { product: true } }, customer: true }
     });
 
     if (!cart) throw new Error('Cart not found');
@@ -109,6 +111,22 @@ export async function createCheckoutSession(cartId: string) {
                     stock: { decrement: item.quantity }
                 }
             });
+            sendEmail({
+                to: cart.customer.email!,
+                subject: "Order Confirmation",
+                text: `Your order has been confirmed. Here are the details:`,
+                html: `
+                    <h2>Order Confirmation</h2>
+                    <p>Thank you for your order!</p>
+                    <p>Here are the details of your order:</p>
+                    <ul>
+                        <li>Product: ${item.product.name}</li>
+                        <li>Quantity: ${item.quantity}</li>
+                        <li>Price: $${item.price}</li>
+                    </ul>
+                    <p>Thank you for shopping with us!</p>
+                `
+            })
         }
 
         // Mark cart as ordered
@@ -121,8 +139,26 @@ export async function createCheckoutSession(cartId: string) {
 }
 
 export async function updateDeliveryStatus (cartItemId: string, isDelivered: boolean) {
-    return await prisma.cartItem.update({
+    const cartItem = await prisma.cartItem.update({
         where: { id: cartItemId },
-        data: { isDelivered }
+        data: { isDelivered },
+        include: { cart: { include: { customer: true } }, product: true }
     })
+    sendEmail({
+        to: cartItem.cart.customer.email!,
+        subject: "Product(s) Delivered",
+        text: `Your order has been confirmed. Here are the details:`,
+        html: `
+            <h2>Order Delivered</h2>
+            <p>Thank you for your order!</p>
+            <p>Here are the details of your order:</p>
+            <ul>
+                <li>Product: ${cartItem.product.name}</li>
+                <li>Quantity: ${cartItem.quantity}</li>
+                <li>Price: $${cartItem.price}</li>
+            </ul>
+            <p>Thank you for shopping with us!</p>
+        `
+    })
+    return cartItem
 }

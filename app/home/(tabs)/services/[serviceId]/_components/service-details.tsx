@@ -27,6 +27,7 @@ import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { submitReview, updateReview } from '@/actions/service-reviews'
 import { useMediaQuery } from '@/hooks/use-media-query'
+import { BeatLoader } from 'react-spinners'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -58,6 +59,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   isSubmitting,
   handleSubmitReview,
 }) => {
+  
   return (
     <div className='flex flex-col gap-2'>
       <h3 className='text-xl font-bold'>Reviews</h3>
@@ -148,7 +150,9 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
               value={newReview.comment}
               onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
             />
-            <Button onClick={handleSubmitReview}>Submit Review</Button>
+            <Button onClick={handleSubmitReview} disabled={isSubmitting}>
+              {isSubmitting ? <BeatLoader /> : "Send Review"}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -160,6 +164,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const my_review = reviews.find(review => review.reviewer.id === service.provider.id)
   const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [sending, setSending] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
@@ -208,6 +213,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
       console.error(error)
     } finally {
       setIsSubmitting(false)
+      router.refresh()
     }
   }
 

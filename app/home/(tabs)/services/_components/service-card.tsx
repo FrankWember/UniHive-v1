@@ -60,7 +60,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             {service.discount>0 ? (
               <div className='flex items-center space-x-2'>
                 <p className="font-bold text-base">${(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</p>
-                <span className='text-muted-foreground line-through'>${service.price.toFixed(2)}</span>
+                <span className='text-muted-foreground line-through text-sm'>${service.price.toFixed(2)}</span>
               </div>
             ):(
               <p className="text-base font-semibold py-1">${service.price.toFixed(2)}</p>

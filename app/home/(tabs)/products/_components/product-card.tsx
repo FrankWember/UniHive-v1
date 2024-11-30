@@ -34,6 +34,14 @@ export function ProductCard({ product }: ProductCardProps) {
           router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
           return
         }
+        if (product.stock === 0) {
+          toast({
+            title: "Product Out of Stock",
+            description: `${product.name} is currently out of stock.`,
+            variant: "destructive"
+          })
+          return
+        }
         await addItemToCart(product, user!.id!)
         toast({
           title: "Product Added to Cart",
@@ -78,7 +86,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.discount>0 ? (
               <div className='flex items-center space-x-2'>
                 <p className="font-bold text-base">${(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</p>
-                <span className='text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
+                <span className='text-muted-foreground line-through text-sm'>${product.price.toFixed(2)}</span>
               </div>
             ):((
               <p className="text-base font-semibold py-1">${product.price.toFixed(2)}</p>
