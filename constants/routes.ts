@@ -7,6 +7,13 @@ export const publicRoutes = [
     "/auth/new-verification",
     "/api/uploadthing",
     "/",
+    "/home",
+    "/home/services",
+    "/home/services/:serviceId",
+    "/home/products",
+    "/home/products/:productId",
+    "/home/events",
+    "/home/events/:eventId",
   ];
   
   /**

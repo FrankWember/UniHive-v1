@@ -49,7 +49,7 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                        {currentUser?.id === product.sellerId ? (
+                        {currentUser && currentUser?.id === product.sellerId ? (
                             <>
                                 <DropdownMenuItem onClick={handleEdit}>
                                     <Pencil1Icon className="mr-2" />Edit
@@ -88,7 +88,7 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
                 </DropdownMenu>
             ) : (
                 <div className="flex items-center space-x-4">
-                    {currentUser?.id === product.sellerId ? (
+                    {currentUser && currentUser?.id === product.sellerId ? (
                         <div className="flex space-x-2">
                             <Button onClick={handleEdit}>Edit</Button>
                             <AlertDialog>

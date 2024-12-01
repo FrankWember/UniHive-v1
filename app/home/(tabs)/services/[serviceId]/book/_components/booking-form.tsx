@@ -19,6 +19,7 @@ import { Input } from '@/components/ui/input'
 import { bookService } from '@/actions/service-bookings'
 import { Service } from '@prisma/client'
 import { LocationInput } from '@/components/location-input'
+import { BeatLoader } from 'react-spinners'
 
 const formSchema = z.object({
   startDate: z.date({
@@ -80,8 +81,8 @@ export function BookingForm({ service, userId }: BookingFormProps) {
       transition={{ duration: 0.5 }}
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="grid grid-cols-1 gap-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-2 space-x-3 space-y-6">
             <FormField
               control={form.control}
               name="startDate"
@@ -240,7 +241,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
             )}
           />
           <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? "Booking..." : "Book Service"}
+            {isLoading ? <BeatLoader /> : "Book Service"}
           </Button>
         </form>
       </Form>

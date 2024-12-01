@@ -76,7 +76,7 @@ const EventOptions = ({ event }: {event: Event}) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuItem onClick={handleAttendeeAction}>{isAttending ? 'Cancel Attendance' : 'Attend Event'}</DropdownMenuItem>
-                {currentUser?.id === event.creatorId && (
+                {currentUser && currentUser?.id === event.creatorId && (
                     <>
                     <DropdownMenuItem onClick={()=>router.push(`/home/events/${event.id}/edit`)}>Edit</DropdownMenuItem>
                     <AlertDialog>
@@ -107,7 +107,7 @@ const EventOptions = ({ event }: {event: Event}) => {
                         {isAttending ? 'Cancel Attendance' : 'Attend Event'}
                     </Button>
                 </Suspense>
-                {currentUser?.id===event.creatorId && (
+                {currentUser && currentUser?.id===event.creatorId && (
                     <>
                         <Link href={`/home/events/${event.id}/edit`} passHref>
                             <Button variant="outline" size="sm">

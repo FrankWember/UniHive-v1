@@ -36,10 +36,6 @@ const ServiceOptions = ({ service }: {service: Service}) => {
     router.push(`/home/services/${service.id}/edit`)
   }
 
-  const handleReview = () => {
-    router.push(`/home/services/${service.id}/review`)
-  }
-
   const handleBookings = () => {
     router.push(`/home/services/${service.id}/bookings`)
   }
@@ -54,7 +50,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {currentUser?.id === service.providerId ? (
+            {currentUser && currentUser?.id === service.providerId ? (
                 <>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><Money01Icon className="mr-2" />Bookings</DropdownMenuItem>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}><Pencil1Icon className="mr-2" />Edit</DropdownMenuItem>           
@@ -87,7 +83,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
         </DropdownMenu>
       ) : (
         <div className="flex items-center space-x-4">
-          {service.providerId===currentUser!.id ? (
+          {currentUser && service.providerId===currentUser!.id ? (
             <div className="flex space-x-2">
               <Button onClick={handleBookings}>Bookings</Button>
               <Button onClick={handleEdit}>Edit</Button>

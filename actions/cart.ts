@@ -102,6 +102,25 @@ export async function createCheckoutSession(cartId: string) {
     if (!cart) throw new Error('Cart not found');
     if (cart.cartItems.length === 0) throw new Error("Cart is empty");
 
+    cart.cartItems.map(item=>{
+        sendEmail({
+            to: cart.customer.email!,
+            subject: "Order Confirmation",
+            text: `Your order has been confirmed. Here are the details:`,
+            html: `
+                <h2>Order Confirmation</h2>
+                <p>Thank you for your order!</p>
+                <p>Here are the details of your order:</p>
+                <ul>
+                    <li>Product: ${item.product.name}</li>
+                    <li>Quantity: ${item.quantity}</li>
+                    <li>Price: $${item.price}</li>
+                </ul>
+                <p>Thank you for shopping with us!</p>
+            `
+        })
+    })
+
     return await prisma.$transaction(async (tx) => {
         // Update each product's stock
         for (const item of cart.cartItems) {
@@ -111,24 +130,8 @@ export async function createCheckoutSession(cartId: string) {
                     stock: { decrement: item.quantity }
                 }
             });
-            sendEmail({
-                to: cart.customer.email!,
-                subject: "Order Confirmation",
-                text: `Your order has been confirmed. Here are the details:`,
-                html: `
-                    <h2>Order Confirmation</h2>
-                    <p>Thank you for your order!</p>
-                    <p>Here are the details of your order:</p>
-                    <ul>
-                        <li>Product: ${item.product.name}</li>
-                        <li>Quantity: ${item.quantity}</li>
-                        <li>Price: $${item.price}</li>
-                    </ul>
-                    <p>Thank you for shopping with us!</p>
-                `
-            })
+            
         }
-
         // Mark cart as ordered
         return await tx.cart.update({
             where: { id: cartId },

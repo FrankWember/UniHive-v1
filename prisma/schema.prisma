@@ -128,6 +128,7 @@ model Service {
   price           Float
   discount        Int @default(0)
   defaultLocation String?
+  isMobileService Boolean @default(false)
   category        String[]
 
   provider  User             @relation(fields: [providerId], references: [id])
@@ -286,6 +287,8 @@ model CartItem {
   quantity     Int
   wasRequested Boolean  @default(false)
   isDelivered  Boolean  @default(false)
+  deliveryDate DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
+  deliveryLocation String?
   isRefunded   Boolean  @default(false)
   isCanceled   Boolean  @default(false)
   createdAt    DateTime @default(now())
