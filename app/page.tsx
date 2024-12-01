@@ -5,8 +5,10 @@ import { HowItWorksSection } from "@/app/_components/how-it-works-section"
 import { TestimonialsSection } from "@/app/_components/testimonials-section"
 import { CallToActionSection } from "@/app/_components/call-to-action"
 import { Footer } from "@/app/_components/footer"
+import { redirect } from "next/navigation"
 
 export default function LandingPage() {
+  redirect("/home/services")
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header />
