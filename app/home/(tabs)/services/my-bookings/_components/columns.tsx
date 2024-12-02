@@ -5,6 +5,7 @@ import { BookedServices } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { MapIcon } from "lucide-react"
 
 export const columns: ColumnDef<BookedServices>[] = [
   {
@@ -54,6 +55,31 @@ export const columns: ColumnDef<BookedServices>[] = [
         </Badge>
       )
     },
+  },
+  {
+    accessorKey: "location",
+    header: "Location",
+    cell: ({ row }) => {
+      const location = row.getValue("location") as string
+      if (!location) return null
+
+      const openInMaps = () => {
+        // Google Maps URL that works across devices
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+        window.open(mapsUrl, '_blank')
+      }
+
+      return (
+        <Button 
+          variant="outline" 
+          size="icon"
+          onClick={openInMaps}
+          title={location}
+        >
+          <MapIcon className="h-4 w-4" />
+        </Button>
+      )
+    }
   },
   {
     id: "actions",

@@ -13,6 +13,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import { Checkbox } from "@/components/ui/checkbox"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { CategorySelect } from '@/components/category-select'
 import { useRouter } from 'next/navigation'
@@ -39,6 +40,7 @@ export const AddServiceForm = () => {
       category: [], // Ensure this is initialized as an empty array
       images: [],
       defaultLocation: "",
+      isMobile: false
     },
   })
 
@@ -163,6 +165,28 @@ export const AddServiceForm = () => {
                 <LocationInput {...field} />
               </FormControl>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isMobile"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Set Mobility for delivering services
+                </FormLabel>
+                <FormDescription>
+                  If you accept this, you will offer your services to customers at their desired location if asked.
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />

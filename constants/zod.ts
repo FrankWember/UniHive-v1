@@ -76,6 +76,7 @@ export const ServiceSchema = z.object({
   }),
   defaultLocation: z.string()
   .min(1, "Default location is required"),
+  isMobile: z.boolean().default(false),
 })
 
 export const EventSchema = z.object({

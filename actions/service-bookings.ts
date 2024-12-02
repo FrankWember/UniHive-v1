@@ -53,6 +53,16 @@ export async function getBookingsForService(serviceId: string) {
       },
       include: { service: true, buyer: true }
     })
+
+    await sendEmail({
+      to: booking.buyer.email,
+      subject: "New Booking Request",
+      text: `You made a new booking request for ${service.name} service. You will be notified when the provider accepts or rejects the booking.`,
+      html: `
+        <h2>New Booking Request</h2>
+        <p>You made a new booking request for <strong>${service.name}</strong>. You will be notified when the provider accepts or rejects the booking.</p>
+      `
+    })
   
     await sendEmail({
       to: service.provider.email,

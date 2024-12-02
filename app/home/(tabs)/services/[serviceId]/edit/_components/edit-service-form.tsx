@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation'
 import { updateService } from '@/actions/services'
 import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
+import { LocationInput } from '@/components/location-input'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Service } from '@prisma/client'
 
 
@@ -41,6 +43,8 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
       discount: service.discount,
       category: service.category,
       images: service.images,
+      defaultLocation: service.defaultLocation || "",
+      isMobile: service.isMobileService
     },
   })
 
@@ -146,6 +150,41 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
               </FormControl>
               <FormDescription>Upload up to 5 images for your service.</FormDescription>
               <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="defaultLocation"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Default Location</FormLabel>
+              <FormControl>
+                <LocationInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isMobile"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>
+                  Set Mobility for delivering services
+                </FormLabel>
+                <FormDescription>
+                  If you accept this, you will offer your services to customers at their desired location if asked.
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />

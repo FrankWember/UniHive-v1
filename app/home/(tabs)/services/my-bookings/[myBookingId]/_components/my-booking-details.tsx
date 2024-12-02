@@ -107,11 +107,11 @@ export function MyBookingDetails({ booking, userId }: MyBookingDetailsProps) {
               Cancel Booking
             </Button>
           )}
-          {booking.status === 'agreed' && !booking.isPaid && (
+          {/* {booking.status === 'agreed' && !booking.isPaid && (
             <Button onClick={handlePay} disabled={isLoading}>
               Pay Now
             </Button>
-          )}
+          )} */}
         </CardFooter>
       </Card>
     </motion.div>

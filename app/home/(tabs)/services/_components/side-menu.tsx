@@ -107,7 +107,7 @@ export function SideMenu({ className }: SidebarProps) {
                     <Package className="mr-2 h-4 w-4" />
                     My services
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/orders")}>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/bookings")}>
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     Bookings
                   </Button>
@@ -132,7 +132,7 @@ export function SideMenu({ className }: SidebarProps) {
               </h2>
               {openCustomer && (
                 <div className="space-y-1">
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/my-orders")}>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/my-bookings")}>
                     <ClipboardList className="mr-2 h-4 w-4" />
                     My Bookings
                   </Button>

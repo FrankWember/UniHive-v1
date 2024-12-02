@@ -20,6 +20,7 @@ import { bookService } from '@/actions/service-bookings'
 import { Service } from '@prisma/client'
 import { LocationInput } from '@/components/location-input'
 import { BeatLoader } from 'react-spinners'
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 
 const formSchema = z.object({
   startDate: z.date({
@@ -38,6 +39,7 @@ const formSchema = z.object({
   price: z.number().min(0, "Price must be a positive number"),
   location: z.string().min(1, "Location is required"),
 })
+
 
 interface BookingFormProps {
   service: Service
@@ -66,7 +68,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
       endDateTime.setHours(values.endTime.getHours(), values.endTime.getMinutes())
 
       const bookedService = await bookService(service.id, userId, startDateTime, endDateTime, values.notes || '', values.price, values.location)
-      router.push(`/home/services/${service.id}/bookings/${bookedService.id}`)
+      router.push(`/home/services/${service.id}/my-bookings`)
     } catch (error) {
       console.error('Error booking service:', error)
     } finally {
@@ -82,7 +84,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-2 space-x-3 space-y-6">
+          <div className="grid grid-cols-2 gap-3 items-center">
             <FormField
               control={form.control}
               name="startDate"
@@ -227,19 +229,29 @@ export function BookingForm({ service, userId }: BookingFormProps) {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <LocationInput {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {service.isMobileService ? (
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <LocationInput {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ):(
+            <Alert>
+              <AlertTitle>No mobility availbable</AlertTitle>
+              <AlertDescription>
+                This service is not available for mobility. You would have to meetup at the default location set by the Provider.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? <BeatLoader /> : "Book Service"}
           </Button>
