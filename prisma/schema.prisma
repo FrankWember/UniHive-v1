@@ -126,9 +126,9 @@ model Service {
   images          String[]
   description     String
   price           Float
-  discount        Int @default(0)
+  discount        Int      @default(0)
   defaultLocation String?
-  isMobileService Boolean @default(false)
+  isMobileService Boolean  @default(false)
   category        String[]
 
   provider  User             @relation(fields: [providerId], references: [id])
@@ -171,6 +171,9 @@ model ServiceReview {
   reviewer User    @relation(fields: [reviewerId], references: [id])
 }
 
+// -----------------------------------------------------------------------------------------------------------------------------------------------------------//
+// Rides Features
+
 model Driver {
   id            String @id @default(cuid())
   userId        String @unique
@@ -202,18 +205,18 @@ model Ride {
 // PRODUCTS MARKETPLACE //
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   name        String
   description String
   price       Float
-  discount    Int @default(0)
+  discount    Int          @default(0)
   stock       Int
   images      String[]
   categories  String[]
   state       ProductState @default(NEW)
-  isAvailable Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isAvailable Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   // Relations
   seller          User             @relation(fields: [sellerId], references: [id])
@@ -282,17 +285,17 @@ model Cart {
 }
 
 model CartItem {
-  id           String   @id @default(cuid())
-  price        Float
-  quantity     Int
-  wasRequested Boolean  @default(false)
-  isDelivered  Boolean  @default(false)
-  deliveryDate DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
+  id               String   @id @default(cuid())
+  price            Float
+  quantity         Int
+  wasRequested     Boolean  @default(false)
+  isDelivered      Boolean  @default(false)
+  deliveryDate     DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
   deliveryLocation String?
-  isRefunded   Boolean  @default(false)
-  isCanceled   Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isRefunded       Boolean  @default(false)
+  isCanceled       Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   cart      Cart    @relation(fields: [cartId], references: [id])
