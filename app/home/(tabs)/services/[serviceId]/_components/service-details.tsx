@@ -164,7 +164,6 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const my_review = reviews.find(review => review.reviewer.id === service.provider.id)
   const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [sending, setSending] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)

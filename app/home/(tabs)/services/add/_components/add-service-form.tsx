@@ -13,7 +13,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { CategorySelect } from '@/components/category-select'
 import { useRouter } from 'next/navigation'
@@ -172,13 +172,7 @@ export const AddServiceForm = () => {
           control={form.control}
           name="isMobile"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
+            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 shadow">
               <div className="space-y-1 leading-none">
                 <FormLabel>
                   Set Mobility for delivering services
@@ -187,6 +181,12 @@ export const AddServiceForm = () => {
                   If you accept this, you will offer your services to customers at their desired location if asked.
                 </FormDescription>
               </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
             </FormItem>
           )}
         />

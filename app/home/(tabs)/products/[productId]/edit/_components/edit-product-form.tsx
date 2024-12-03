@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Product, User } from '@prisma/client'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import {
     Select,
@@ -15,6 +15,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons'
@@ -24,6 +25,7 @@ import { MultiImageUpload } from '@/components/multi-image-upload'
 import { CategorySelect } from '@/components/category-select'
 import { updateProduct } from '@/actions/products'
 import { ProductState } from '@prisma/client'
+import { LocationInput } from '@/components/location-input'
 import * as z from 'zod'
 
 interface EditProductFormProps {
@@ -200,7 +202,7 @@ export function EditProductForm({ product }: EditProductFormProps) {
                         name="state"
                         render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Product State</FormLabel>
+                            <FormLabel>State</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                                 <SelectTrigger>
@@ -220,6 +222,62 @@ export function EditProductForm({ product }: EditProductFormProps) {
                         )}
                     />
                 </div>
+                <FormField
+                    control={form.control}
+                    name="defaultDeliveryLocation"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Default Location</FormLabel>
+                        <FormControl>
+                        <LocationInput {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="delivery"
+                    render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                        <FormLabel>
+                            Delivery
+                        </FormLabel>
+                        <FormDescription>
+                            {field.value
+                            ? 'You will offer delivery to customers.'
+                            : 'Customers will have to pick up the product.'}
+                        </FormDescription>
+                        </div>
+                        <FormControl>
+                        <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                    </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="averageDeliveryTime"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Average Delivery Time (days)</FormLabel>
+                        <FormControl>
+                        <Input
+                            type="number"
+                            placeholder="7"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                            disabled={!form.getValues("delivery")}
+                        />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                />
                 {error && (
                     <Alert variant="destructive">
                         <ExclamationTriangleIcon className="h-6 w-6" />

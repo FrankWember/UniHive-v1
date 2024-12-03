@@ -162,7 +162,7 @@ model BookedServices {
 model ServiceReview {
   id         String   @id @default(cuid())
   serviceId  String
-  reviewerId String   
+  reviewerId String
   rating     Int
   comment    String
   reviewDate DateTime @default(now())
@@ -205,18 +205,21 @@ model Ride {
 // PRODUCTS MARKETPLACE //
 
 model Product {
-  id          String       @id @default(cuid())
-  name        String
-  description String
-  price       Float
-  discount    Int          @default(0)
-  stock       Int
-  images      String[]
-  categories  String[]
-  state       ProductState @default(NEW)
-  isAvailable Boolean      @default(true)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id                      String       @id @default(cuid())
+  name                    String
+  description             String
+  price                   Float
+  discount                Int          @default(0)
+  stock                   Int
+  images                  String[]
+  categories              String[]
+  state                   ProductState @default(NEW)
+  isAvailable             Boolean      @default(true)
+  delivery                Boolean      @default(true)
+  defaultDeliveryLocation String?
+  averageDeliveryTime     Int?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
 
   // Relations
   seller          User             @relation(fields: [sellerId], references: [id])
@@ -238,7 +241,7 @@ enum ProductState {
 model ProductReview {
   id         String   @id @default(cuid())
   productId  String
-  reviewerId String   
+  reviewerId String
   rating     Int
   comment    String
   reviewDate DateTime @default(now())
@@ -248,13 +251,14 @@ model ProductReview {
 }
 
 model ProductRequest {
-  id           String   @id @default(cuid())
-  price        Float
-  quantity     Int
-  isAccepted   Boolean  @default(false)
-  isDenied     Boolean  @default(false)
-  deliveryTime DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
-  createdAt    DateTime @default(now())
+  id               String   @id @default(cuid())
+  price            Float
+  quantity         Int
+  isAccepted       Boolean  @default(false)
+  isDenied         Boolean  @default(false)
+  deliveryTime     DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
+  deliveryLocation String?
+  createdAt        DateTime @default(now())
 
   // Relations
   product    Product @relation(fields: [productId], references: [id])
@@ -267,12 +271,13 @@ model ProductRequest {
 }
 
 model Cart {
-  id         String   @id @default(cuid())
-  totalPrice Float    @default(0)
-  isOrdered  Boolean  @default(false)
-  isPaid     Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id               String   @id @default(cuid())
+  totalPrice       Float    @default(0)
+  isOrdered        Boolean  @default(false)
+  isPaid           Boolean  @default(false)
+  deliveryLocation String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   customer   User       @relation(fields: [customerId], references: [id])
@@ -285,17 +290,17 @@ model Cart {
 }
 
 model CartItem {
-  id               String   @id @default(cuid())
-  price            Float
-  quantity         Int
-  wasRequested     Boolean  @default(false)
-  isDelivered      Boolean  @default(false)
-  deliveryDate     DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
-  deliveryLocation String?
-  isRefunded       Boolean  @default(false)
-  isCanceled       Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id           String   @id @default(cuid())
+  price        Float
+  quantity     Int
+  wasRequested Boolean  @default(false)
+  isDelivered  Boolean  @default(false)
+  deliveryDate DateTime @default(dbgenerated("NOW() + INTERVAL '1 week'"))
+
+  isRefunded Boolean  @default(false)
+  isCanceled Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
   cart      Cart    @relation(fields: [cartId], references: [id])

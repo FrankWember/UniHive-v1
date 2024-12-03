@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Switch } from '@/components/ui/switch'
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons"
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -37,6 +38,7 @@ import { productSchema } from '@/constants/zod'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
 import { ProductState } from '@prisma/client'
+import { LocationInput } from '@/components/location-input'
 
 export function NewProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,7 +59,10 @@ export function NewProductForm() {
       stock: 1,
       images: [],
       categories: [],
-      state: ProductState.NEW
+      state: ProductState.NEW,
+      delivery: false,
+      defaultDeliveryLocation: "",
+      averageDeliveryTime: 0
     },
   })
 
@@ -233,6 +238,62 @@ export function NewProductForm() {
             )}
           />
         </div>
+        <FormField
+            control={form.control}
+            name="defaultDeliveryLocation"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Default Location</FormLabel>
+                <FormControl>
+                  <LocationInput {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="delivery"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    Delivery
+                  </FormLabel>
+                  <FormDescription>
+                    {field.value
+                      ? 'You will offer delivery to customers.'
+                      : 'Customers will have to pick up the product.'}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        <FormField
+            control={form.control}
+            name="averageDeliveryTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Average Delivery Time (days)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="7"
+                    {...field}
+                    onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    disabled={!form.getValues("delivery")}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         {error && (
             <Alert variant="destructive">
               <ExclamationTriangleIcon className="h-6 w-6" />

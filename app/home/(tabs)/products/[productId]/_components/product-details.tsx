@@ -3,7 +3,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
@@ -84,7 +84,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
     if (!my_review) {
       await makeProductReview(product.id, newReview.rating, newReview.comment, user!.id!)
     } else {
-      await updateProductReview(my_review.reviewer.id, newReview.rating, newReview.comment)
+      await updateProductReview(my_review.id, newReview.rating, newReview.comment)
     }
     router.push(`/home/products/${product.id}`)
     setIsSubmitting(false)
@@ -144,7 +144,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
           {/* Product Details */}
           <div className='flex flex-col gap-4'>
             <div className='flex flex-col gap-2'>
-              <h2 className='text-2xl font-bold'>{product.name}</h2>
+              <p className='text-2xl font-bold'>{product.name}</p>
               <div className='flex items-center gap-2'>
                 <span className='text-green-500 font-semibold text-xl'>$</span>
                 <span className='font-semibold text-xl'>{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>
@@ -216,7 +216,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
       <CardHeader className="space-y-4">
         <div className="flex justify-between items-start">
           <div>
-            <CardTitle className="text-xl md:text-3xl font-bold truncate">{product.name}</CardTitle>
+            <p className="text-xl md:text-3xl font-bold truncate">{product.name}</p>
             <div className="flex items-center mt-2">
               <span className='text-green-500 font-semibold text-xl'>$</span>
               <span className="font-semibold text-xl">{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>

@@ -113,4 +113,20 @@ export const productSchema = z.object({
   images: z.array(z.string().url()).min(1, 'At least one image is required'),
   categories: z.array(z.string()).min(1, 'At least one category is required'),
   state: z.string().default(ProductState.NEW),
+  delivery: z.boolean().default(false),
+  defaultDeliveryLocation: z.string(),
+  averageDeliveryTime: z.number().optional(),
 })
+
+export const checkoutSchema = z.object({
+  deliveryAddress: z.string().min(1, "Delivery address is required"),
+})
+
+export const deliveryDateSchema = z.object({
+  deliveryDate: z.date({
+    required_error: "Please select a delivery date",
+  }),
+})
+
+export type CheckoutFormValues = z.infer<typeof checkoutSchema>
+export type DeliveryDateFormValues = z.infer<typeof deliveryDateSchema>

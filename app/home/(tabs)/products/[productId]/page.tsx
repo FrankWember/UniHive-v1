@@ -18,9 +18,9 @@ export default async function ProductPage({ params }: { params: { productId: str
     <div className="flex flex-col min-h-screen w-full">
       {/* Header */}
       <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
-        <div className="flex justify-start gap-3">
+        <div className="flex justify-start items-center gap-3">
           <BackButton />
-          <h1 className="text-2xl font-bold truncate">{product.name}</h1>
+          <h1 className="text-xl md:text-2xl font-bold max-w-[250px] truncate">{product.name}</h1>
         </div>
         <ProductOptions product={product} />
       </div>

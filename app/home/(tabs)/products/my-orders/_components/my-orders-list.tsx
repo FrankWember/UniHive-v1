@@ -16,6 +16,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Cart, CartItem, Product } from '@prisma/client'
+import { Button } from '@/components/ui/button'
+import { MapIcon } from 'lucide-react'
 
 type Order = Cart & {
   cartItems: (CartItem & {
@@ -35,6 +37,14 @@ export function MyOrdersList() {
     }
     fetchOrders()
   }, [])
+
+  const openInMaps = (location: string | null) => {
+    if (!location) {
+      return
+    }
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+    window.open(mapsUrl, '_blank')
+  }
 
   return (
     <Accordion type="single" collapsible className="w-full">
@@ -65,7 +75,14 @@ export function MyOrdersList() {
               </TableBody>
             </Table>
             <div className="mt-4">
-              <strong>Status:</strong> {order.isPaid ? 'Paid' : 'Unpaid'}
+              <Button 
+                variant="outline" 
+                className='flex'
+                onClick={()=>openInMaps(order.deliveryLocation)}
+                >
+                  Location 
+                  <MapIcon className='h-4 w-4 ml-2' />
+              </Button>
             </div>
           </AccordionContent>
         </AccordionItem>

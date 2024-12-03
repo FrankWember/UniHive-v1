@@ -17,7 +17,10 @@ export async function createProduct(values: z.infer<typeof productSchema>, selle
             stock: values.stock,
             images: values.images,
             categories: values.categories,
-            sellerId: sellerId
+            sellerId: sellerId,
+            delivery: values.delivery,
+            defaultDeliveryLocation: values.defaultDeliveryLocation,
+            averageDeliveryTime: values.averageDeliveryTime
         }
     })
     return product
@@ -36,6 +39,9 @@ export async function updateProduct(id: string, values: z.infer<typeof productSc
             stock: values.stock,
             images: values.images,
             categories: values.categories,
+            delivery: values.delivery,
+            defaultDeliveryLocation: values.defaultDeliveryLocation,
+            averageDeliveryTime: values.averageDeliveryTime
         }
     })
     return product
@@ -196,9 +202,9 @@ export async function makeProductReview (productId: string, rating: number, comm
 }
 
 
-export async function updateProductReview (reviewerId: string, rating: number, comment: string) {
+export async function updateProductReview (reviewId: string, rating: number, comment: string) {
     const review = await prisma.productReview.update({
-        where: { reviewerId: reviewerId },
+        where: { id: reviewId },
         data: {
             rating: rating,
             comment: comment

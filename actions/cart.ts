@@ -92,7 +92,7 @@ export async function removeCartItem(cartItemId: string) {
     return deletedCartItem;
 }
 
-export async function createCheckoutSession(cartId: string) {
+export async function createCheckoutSession(cartId: string, deliveryAddress: string) {
     // Get cart items first to know quantities
     const cart = await prisma.cart.findUnique({
         where: { id: cartId },
@@ -101,6 +101,12 @@ export async function createCheckoutSession(cartId: string) {
 
     if (!cart) throw new Error('Cart not found');
     if (cart.cartItems.length === 0) throw new Error("Cart is empty");
+
+    // Update cart with delivery address
+    await prisma.cart.update({
+        where: { id: cartId },
+        data: { deliveryLocation: deliveryAddress }
+    });
 
     cart.cartItems.map(item=>{
         sendEmail({
@@ -115,6 +121,7 @@ export async function createCheckoutSession(cartId: string) {
                     <li>Product: ${item.product.name}</li>
                     <li>Quantity: ${item.quantity}</li>
                     <li>Price: $${item.price}</li>
+                    <li>Delivery Address: ${deliveryAddress}</li>
                 </ul>
                 <p>Thank you for shopping with us!</p>
             `
@@ -164,4 +171,34 @@ export async function updateDeliveryStatus (cartItemId: string, isDelivered: boo
         `
     })
     return cartItem
+}
+
+
+export async function updateDeliveryDate (cartItemId: string, deliveryDate: Date) {
+    const cartItem = await prisma.cartItem.update({
+        where: { id: cartItemId },
+        data: { deliveryDate },
+        include: { cart: { include: { customer: true } }, product: true }
+    })
+
+    sendEmail({
+        to: cartItem.cart.customer.email,
+        subject: `You order ${cartItem.product.name} will be delivered on ${deliveryDate.toLocaleDateString()}`,
+        text: `Your order has been confirmed. Here are the details:`,
+        html: `
+            <h2>Order Delivered</h2>
+            <p>Thank you for your order!</p>
+            <p>Here are the details of your order:</p>
+            <ul>
+                <li>Product: ${cartItem.product.name}</li>
+                <li>Quantity: ${cartItem.quantity}</li>
+                <li>Price: $${cartItem.price}</li>
+                <li>Delivery Date: ${deliveryDate.toLocaleDateString()}</li>
+            </ul>
+            <p>Thank you for shopping with us!</p>
+        `
+    })
+
+    return cartItem
+
 }

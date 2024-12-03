@@ -9,6 +9,12 @@ import { useToast } from '@/hooks/use-toast'
 import { BeatLoader } from 'react-spinners'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { LocationInput } from '@/components/location-input'
+import { checkoutSchema } from '@/constants/zod'
 
 export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {product: Product})[]}}) {
   const [subtotal, setSubtotal] = useState(cart.totalPrice)
@@ -18,17 +24,24 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
   const { toast } = useToast()
   const router = useRouter()
 
+  const form = useForm<z.infer<typeof checkoutSchema>>({
+    resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      deliveryAddress: '',
+    },
+  })
+
   useEffect(() => {
     const newSubtotal = cart.cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0)
     setSubtotal(newSubtotal)
     setTotal(newSubtotal + tax)
   }, [cart.cartItems, tax])
 
-  const handleCheckout = async () => {
-    try{
+  const handleCheckout = async (values: z.infer<typeof checkoutSchema>) => {
+    try {
       setIsLoading(true)
-      await createCheckoutSession(cart.id)
-      toast ({
+      await createCheckoutSession(cart.id, values.deliveryAddress)
+      toast({
         title: "Checkout Started!",
         description: "You will be redirected to the payments page.",
       })
@@ -46,33 +59,50 @@ export function CartSummary({cart}: {cart: Cart & {cartItems: (CartItem & {produ
 
   return (
     <Card>
-      <CardContent className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between font-semibold">
-            <span>Total</span>
-            <span>${total.toFixed(2)}</span>
-          </div>
-        </div>
-      </CardContent>
-      <CardFooter className='flex gap-3'>
-        <Button onClick={handleCheckout} disabled={isLoading}>
-          {isLoading ? <BeatLoader /> : "Proceed to Checkout"}
-        </Button>
-        <Link href="/home/products">
-          <Button variant="secondary">
-            Add more products
-          </Button>
-        </Link>
-      </CardFooter>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(handleCheckout)}>
+          <CardContent className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Tax</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between font-semibold">
+                <span>Total</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+            </div>
+            <div className="mt-6">
+              <FormField
+                control={form.control}
+                name="deliveryAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Delivery Address</FormLabel>
+                    <FormControl>
+                      <LocationInput {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" asChild>
+              <Link href="/home/products">Continue Shopping</Link>
+            </Button>
+            <Button type="submit" disabled={isLoading || cart.cartItems.length === 0}>
+              {isLoading ? <BeatLoader /> : 'Checkout'}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }
