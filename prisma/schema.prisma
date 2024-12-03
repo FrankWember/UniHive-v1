@@ -162,7 +162,7 @@ model BookedServices {
 model ServiceReview {
   id         String   @id @default(cuid())
   serviceId  String
-  reviewerId String   @unique
+  reviewerId String   
   rating     Int
   comment    String
   reviewDate DateTime @default(now())
@@ -238,7 +238,7 @@ enum ProductState {
 model ProductReview {
   id         String   @id @default(cuid())
   productId  String
-  reviewerId String   @unique
+  reviewerId String   
   rating     Int
   comment    String
   reviewDate DateTime @default(now())
