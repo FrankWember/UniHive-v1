@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from "@/components/ui/command"
 import {
   Popover,
@@ -33,10 +34,6 @@ export function LocationInput({
 }: LocationInputProps) {
   const [open, setOpen] = React.useState(false)
 
-  const selectedLocation = SuieLocations.find(
-    location => location === value
-  )
-
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -46,34 +43,36 @@ export function LocationInput({
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
         >
-          {selectedLocation ? selectedLocation : placeholder}
+          {value || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search location..." />
-          <CommandEmpty>No location found.</CommandEmpty>
-          <CommandGroup>
-            {SuieLocations.map((location) => (
-              <CommandItem
-                key={location}
-                value={location}
-                onSelect={(currentValue) => {
-                  onChange?.(currentValue === value ? "" : currentValue)
-                  setOpen(false)
-                }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    value === location ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                <span>{location}</span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandList>
+            <CommandEmpty>No location found.</CommandEmpty>
+            <CommandGroup>
+              {SuieLocations.map((location, index) => (
+                <CommandItem
+                  key={index}
+                  value={location}
+                  onSelect={(currentValue) => {
+                    onChange?.(currentValue === value ? "" : currentValue)
+                    setOpen(false)
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === location ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {location}
+                </CommandItem>
+              ))}
+              </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

@@ -53,5 +53,5 @@ export const SuieLocations: string[] = [
     "Baseball Complex", 
     "The Gardens Support Center",
     "The \"e\" Sculpture"
-];
+]
 

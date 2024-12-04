@@ -260,9 +260,11 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                 {service.discount > 0 && (
                   <span className='text-sm text-muted-foreground line-through'>${service.price.toFixed(2)}</span>
                 )}
-                <Badge variant="secondary" className="ml-3">
-                  {service.category}
-                </Badge>
+                {service.category.map((category, index) => (
+                  <Badge key={index} variant="secondary">
+                    {category}
+                  </Badge>
+                ))}
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
