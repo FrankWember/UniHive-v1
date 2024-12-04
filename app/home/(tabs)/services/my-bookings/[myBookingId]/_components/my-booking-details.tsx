@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from '@/components/ui/badge'
-import { Clock, DollarSign, FileText } from 'lucide-react'
+import { Clock, DollarSign, FileText, MapIcon } from 'lucide-react'
 
 interface MyBookingDetailsProps {
   booking: BookedServices & { service: Service }
@@ -90,6 +90,12 @@ export function MyBookingDetails({ booking, userId }: MyBookingDetailsProps) {
                   <DollarSign className="inline-block mr-2" /> Price
                 </TableCell>
                 <TableCell>${booking.price.toFixed(2)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium">
+                  <MapIcon className="inline-block mr-2" /> Location
+                </TableCell>
+                <TableCell>{booking.location || booking.service.defaultLocation}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

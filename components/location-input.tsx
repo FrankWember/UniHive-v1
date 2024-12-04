@@ -1,80 +1,81 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { MapPin } from 'lucide-react'
-import { 
+import * as React from "react"
+import { Check, ChevronsUpDown } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { SuieLocations } from "@/constants/locations"
 
 interface LocationInputProps {
-  value: string
-  onChange: (value: string) => void
+  value?: string
+  onChange?: (value: string) => void
+  className?: string
+  placeholder?: string
 }
 
-export function LocationInput({ value, onChange }: LocationInputProps) {
-  const [location, setLocation] = useState(value)
-  const [isLoading, setIsLoading] = useState(false)
+export function LocationInput({
+  value,
+  onChange,
+  className,
+  placeholder = "Select location..."
+}: LocationInputProps) {
+  const [open, setOpen] = React.useState(false)
 
-  useEffect(() => {
-    setLocation(value)
-  }, [value])
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(e.target.value)
-    onChange(e.target.value)
-  }
-
-  const handleGetCurrentLocation = () => {
-    if ('geolocation' in navigator) {
-      setIsLoading(true)
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords
-          setLocation(`${latitude}, ${longitude}`)
-          onChange(`${latitude}, ${longitude}`)
-          setIsLoading(false)
-        },
-        (error) => {
-          console.error('Error getting location:', error)
-          setIsLoading(false)
-        }
-      )
-    } else {
-      console.error('Geolocation is not supported by this browser.')
-    }
-  }
+  const selectedLocation = SuieLocations.find(
+    location => location === value
+  )
 
   return (
-    <div className="flex space-x-2">
-      <Input
-        type="text"
-        value={location}
-        onChange={handleChange}
-        placeholder="Enter location or coordinates"
-        className="flex-grow"
-      />
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[120px]" onClick={handleGetCurrentLocation} disabled={isLoading}>
-            <MapPin className="w-4 h-4 mr-2" />
-            {isLoading ? "Loading..." : "Current"}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium leading-none">Current Location</h4>
-              <p className="text-sm text-muted-foreground">
-                This will use your device's GPS to get your current location.
-              </p>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn("w-full justify-between", className)}
+        >
+          {selectedLocation ? selectedLocation : placeholder}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Search location..." />
+          <CommandEmpty>No location found.</CommandEmpty>
+          <CommandGroup>
+            {SuieLocations.map((location) => (
+              <CommandItem
+                key={location}
+                value={location}
+                onSelect={(currentValue) => {
+                  onChange?.(currentValue === value ? "" : currentValue)
+                  setOpen(false)
+                }}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    value === location ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                <span>{location}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   )
 }

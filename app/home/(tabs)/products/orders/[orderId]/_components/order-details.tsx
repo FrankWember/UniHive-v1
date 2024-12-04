@@ -13,7 +13,6 @@ import { useToast } from '@/hooks/use-toast'
 import { Cart, CartItem, Product, User } from '@prisma/client'
 import { updateDeliveryDate, updateDeliveryStatus } from '@/actions/cart'
 import { BeatLoader } from 'react-spinners'
-import { MapIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -79,14 +78,6 @@ export function OrderDetails({ order }: { order: Order }) {
     }
   }
 
-  const openInMaps = (location: string | null) => {
-    if (!location) {
-      return
-    }
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
-    window.open(mapsUrl, '_blank')
-  }
-
   if (!order) {
     return <div>Loading...</div>
   }
@@ -140,16 +131,7 @@ export function OrderDetails({ order }: { order: Order }) {
           </TableRow>
           <TableRow>
             <TableCell>Address</TableCell>
-            <TableCell>
-              <Button 
-                variant="outline" 
-                className='flex'
-                onClick={()=>openInMaps(order.cart.deliveryLocation || order.product.defaultDeliveryLocation)}
-                >
-                  Location 
-                  <MapIcon className='h-4 w-4 ml-2' />
-              </Button>
-            </TableCell>
+            <TableCell>{order.cart.deliveryLocation || order.product.defaultDeliveryLocation}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

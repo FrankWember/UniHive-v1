@@ -11,7 +11,7 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Clock, DollarSign, FileText, User as UserIcon } from 'lucide-react'
+import { Clock, DollarSign, FileText, MapIcon, User as UserIcon } from 'lucide-react'
 
 interface BookingDetailsProps {
   booking: BookedServices & { service: Service, buyer: User }
@@ -83,6 +83,10 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
               <TableRow>
                 <TableCell className="font-medium"><DollarSign className="inline-block mr-2" /> Price</TableCell>
                 <TableCell>${booking.price.toFixed(2)}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-medium"><MapIcon className="inline-block mr-2" /> Location</TableCell>
+                <TableCell>{booking.location || booking.service.defaultLocation}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

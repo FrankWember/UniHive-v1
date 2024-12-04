@@ -40,14 +40,6 @@ export function OrdersList() {
     router.push(`/home/products/orders/${orderId}`)
   }
 
-  const openInMaps = (location: string | null) => {
-    if (!location) {
-      return
-    }
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
-    window.open(mapsUrl, '_blank')
-  }
-
   return (
     <Table>
       <TableCaption>A list of your recent orders.</TableCaption>
@@ -70,15 +62,7 @@ export function OrdersList() {
             <TableCell>${order.price.toFixed(2)}</TableCell>
             <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
             <TableCell>{order.isDelivered ? 'Delivered' : 'Pending'}</TableCell>
-            <TableCell>
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={()=>openInMaps(order.cart.deliveryLocation || order.product.defaultDeliveryLocation)}
-                >
-                  <MapIcon className='h-4 w-4 ml-2' />
-              </Button>
-            </TableCell>
+            <TableCell>{order.cart.deliveryLocation || order.product.defaultDeliveryLocation}</TableCell>
             <TableCell>
               <Button onClick={() => handleViewOrder(order.id)}>View Details</Button>
             </TableCell>

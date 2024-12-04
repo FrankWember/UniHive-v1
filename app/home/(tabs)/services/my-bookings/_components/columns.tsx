@@ -58,28 +58,7 @@ export const columns: ColumnDef<BookedServices>[] = [
   },
   {
     accessorKey: "location",
-    header: "Location",
-    cell: ({ row }) => {
-      const location = row.getValue("location") as string
-      if (!location) return null
-
-      const openInMaps = () => {
-        // Google Maps URL that works across devices
-        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
-        window.open(mapsUrl, '_blank')
-      }
-
-      return (
-        <Button 
-          variant="outline" 
-          size="icon"
-          onClick={openInMaps}
-          title={location}
-        >
-          <MapIcon className="h-4 w-4" />
-        </Button>
-      )
-    }
+    header: "Location"
   },
   {
     id: "actions",

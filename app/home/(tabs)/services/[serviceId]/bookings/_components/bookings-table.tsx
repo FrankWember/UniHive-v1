@@ -41,6 +41,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
             <TableHead>Time</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Price</TableHead>
+            <TableHead>Location</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -69,6 +70,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
                 </Badge>
               </TableCell>
               <TableCell>${booking.price.toFixed(2)}</TableCell>
+              <TableCell>{booking.location || "Default"}</TableCell>
               <TableCell>
                 <Button onClick={() => handleViewDetails(booking.id)} size="sm">
                   View Details

@@ -38,13 +38,6 @@ export function MyOrdersList() {
     fetchOrders()
   }, [])
 
-  const openInMaps = (location: string | null) => {
-    if (!location) {
-      return
-    }
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
-    window.open(mapsUrl, '_blank')
-  }
 
   return (
     <Accordion type="single" collapsible className="w-full">
@@ -61,6 +54,7 @@ export function MyOrdersList() {
                   <TableHead>Quantity</TableHead>
                   <TableHead>Price</TableHead>
                   <TableHead>Total</TableHead>
+                  <TableHead>Delivery</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,20 +64,11 @@ export function MyOrdersList() {
                     <TableCell>{item.quantity}</TableCell>
                     <TableCell>${item.price.toFixed(2)}</TableCell>
                     <TableCell>${(item.quantity * item.price).toFixed(2)}</TableCell>
+                    <TableCell>{order.deliveryLocation || item.product.defaultDeliveryLocation }</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-            <div className="mt-4">
-              <Button 
-                variant="outline" 
-                className='flex'
-                onClick={()=>openInMaps(order.deliveryLocation)}
-                >
-                  Location 
-                  <MapIcon className='h-4 w-4 ml-2' />
-              </Button>
-            </div>
           </AccordionContent>
         </AccordionItem>
       ))}
