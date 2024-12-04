@@ -2,17 +2,25 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Service, ServiceReview } from '@prisma/client'
+import { BookedServices, Service, ServiceReview, User } from '@prisma/client'
 import Link from 'next/link'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter } from 'next/navigation'
 import { Star, ShoppingCart } from 'lucide-react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 type ServiceProps = {
-  service: Service & { reviews: ServiceReview[]}
+  service: Service & { 
+    reviews: ServiceReview[], 
+    provider: User,
+    customers: ({
+      buyer: {
+        image: string|null
+      }
+    })[]
+  }
 }
 
 export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
@@ -27,50 +35,71 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
   return (
     <Link href={`/home/services/${service.id}`}>
-      <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 shadow-sm border-none">
-        <CardHeader className="p-0">
-          <div className="relative h-48 w-full">
-            <Image
-              src={service.images[0]}
-              alt={service.name}
-              fill
-              className="object-cover rounded"
-            />
+      <div className="flex flex-col border-none rounded gap-2">
+        <div className="relative h-56 w-full">
+          <Image
+            src={service.images[0]}
+            alt={service.name}
+            fill
+            className="object-cover rounded"
+          />
+          {service.isMobileService && (
+            <Badge className="absolute top-5 right-5" variant="success">
+              Mobile Service
+            </Badge>
+          )}
+        </div>
+        <div className="flex gap-1">
+          <div className="flex flex-col gap-1 justify-start">
+            <Avatar className="h-6 w-6">
+              <AvatarImage src={service.provider.image!} />
+              <AvatarFallback>{service.provider.name![0] || service.provider.email[0]}</AvatarFallback>
+            </Avatar>
+            <Badge className="text-[0.4rem] h-2 p-[0.15rem]" variant="success">
+              Verified
+            </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="p-4">
-        <h3 className="font-semibold text-base mb-2">{service.name}</h3>
-          <div className="flex items-center space-x-3">
-            <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`h-4 w-4 ${
-                    star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              ({service.reviews.length})
-            </div>
+          <div className="flex flex-col gap-[0.1rem] justify-start">
+            <p className='text-sm underline'>{service.name}</p>
+            <p className='space-x-1'>
+              <span className='text-[0.5rem]' >Starts at</span>
+              <span className='text-lg font-semibold'>${(service.price - (service.price * service.discount / 100)).toFixed(2)}</span>
+            </p>
+            <p className="text-[0.6rem] text-muted-foreground">
+              {service.defaultLocation}, SUIE
+            </p>
           </div>
-          <div className="flex justify-between">
-            {service.discount>0 ? (
-              <div className='flex items-center space-x-2'>
-                <p className="font-bold text-base">${(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</p>
-                <span className='text-muted-foreground line-through text-sm'>${service.price.toFixed(2)}</span>
+          <div className='flex flex-col gap-1 justify-between'>
+            <div className='flex-col gap-1 p-[0.2rem]'>
+              <div className="flex -space-x-3 overflow-hidden">
+                {service.customers.slice(0, 7).map((customer, index) => (
+                  <Avatar key={index} className="inline-block h-6 w-6">
+                    <AvatarImage src={customer.buyer.image!} alt="C" />
+                    <AvatarFallback>C</AvatarFallback>
+                  </Avatar>
+                ))}
               </div>
-            ):(
-              <p className="text-base font-semibold py-1">${service.price.toFixed(2)}</p>
-            )}
-            <Link href={`/home/services/${service.id}/book`} className="block">
-              <Button disabled={isSubmitting} className="rounded-full bg-amber-500 hover:bg-amber-600" size="icon"><ShoppingCart className="w-4 h-4"/></Button>
-            </Link>
+              <p className="text-[0.6rem] underline">{service.customers.length} active customers</p>
+            </div>
+            <div className="flex items-center space-x-1">
+              <span className="text-xs font-semibold">{averageRating.toFixed(1)}</span>
+              <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-2 w-2 ${
+                      star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs">
+                ({service.reviews.length})
+              </span>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </Link>
   )
 }

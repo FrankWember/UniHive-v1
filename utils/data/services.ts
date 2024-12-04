@@ -74,12 +74,16 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
     const services = await prisma.service.findMany({
       where: query,
       include: {
-        provider: {
+        customers: {
           select: {
-            name: true,
-            image: true
+            buyer: {
+              select: {
+                image: true
+              }
+            }
           }
         },
+        provider: true,
         reviews: true
       }
     })
