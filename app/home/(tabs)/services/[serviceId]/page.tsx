@@ -32,9 +32,6 @@ const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
         <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
           <div className="flex justify-start items-center gap-3">
             <BackButton />
-            <Link href="/home/services">
-              <Image src="/Unihive.svg" alt="logo" width={40} height={40} className="rounded-md border" />
-            </Link>
           </div>
           <div className="flex items-center space-x-3">
               <SearchBar />
