@@ -22,6 +22,7 @@ import { MultiImageUpload } from '@/components/multi-image-upload'
 import { LocationInput } from '@/components/location-input'
 import { Switch } from '@/components/ui/switch'
 import { Service } from '@prisma/client'
+import { BeatLoader } from 'react-spinners'
 
 
 interface EditServiceFormProps {
@@ -203,7 +204,7 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
             </Alert>
           )}
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Updating..." : "Update Service"}
+          {isSubmitting ? <BeatLoader /> : "Update Service"}
         </Button>
       </form>
     </Form>

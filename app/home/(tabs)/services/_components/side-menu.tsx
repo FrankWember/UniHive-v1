@@ -14,7 +14,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import {
-  LayoutGrid,
   ShoppingBag,
   UserCircle,
   PlusCircle,
@@ -29,18 +28,9 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
-  const [openCategories, setOpenCategories] = React.useState(true)
   const [openSeller, setOpenSeller] = React.useState(true)
   const [openCustomer, setOpenCustomer] = React.useState(true)
 
-  const categories = [
-    { name: 'All', path: '/home/services' },
-    { name: 'Food', path: '/home/services?category=food' },
-    { name: 'Transportation', path: '/home/services?category=transportation' },
-    { name: 'Entertainment', path: '/home/services?category=entertainment' },
-    { name: 'Academic', path: '/home/services?category=academic' },
-    { name: 'Health & Wellness', path: '/home/services?category=health' },
-  ]
 
   return (
     <Sheet>
@@ -58,33 +48,6 @@ export function SideMenu({ className }: SidebarProps) {
         </SheetHeader>
         <ScrollArea className="w-full h-[80vh]">
           <div className="space-y-4 py-4">
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                <Button
-                  variant="secondary"
-                  className="w-full justify-start"
-                  onClick={() => setOpenCategories(!openCategories)}
-                >
-                  <LayoutGrid className="mr-2 h-4 w-4" />
-                  Categories
-                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCategories ? "rotate-180" : "")} />
-                </Button>
-              </h2>
-              {openCategories && (
-                <div className="ml-4 mt-2 space-y-1">
-                  {categories.map((category) => (
-                    <Button
-                      key={category.name}
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => router.push(category.path)}
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
             <div className="px-3 py-2">
               <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
                 <Button

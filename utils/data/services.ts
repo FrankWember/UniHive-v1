@@ -9,7 +9,30 @@ import { revalidatePath } from 'next/cache'
 export async function getServiceById(serviceId: string) {
   return await prisma.service.findUnique({
     where: { id: serviceId },
-    include: { provider: true }
+    include: { 
+      provider: {
+        include: {
+          services: {
+            select: {
+              customers: {
+                select: {
+                  id: true,
+                }
+              }
+            }
+          }
+        }
+      },
+      customers: {
+        select: {
+          buyer: {
+            select: {
+              image: true
+            }
+          }
+        }
+      },
+    }
   })
 }
 

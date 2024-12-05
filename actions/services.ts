@@ -6,6 +6,8 @@ import { auth } from "@/auth"
 import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage';
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from 'next/cache'
+import { ServiceSchema } from "@/constants/zod";
+import * as z from 'zod'
 
 
 export async function reportScam(bookedServiceId: string, userId: string) {
@@ -24,17 +26,7 @@ export async function reportScam(bookedServiceId: string, userId: string) {
 }
 
 
-interface MyService {
-  name: string,
-  description: string,
-  price: number,
-  discount?: number,
-  category: string[],
-  images: string[],
-  defaultLocation: string | null
-}
-
-export async function createService(data: MyService) {
+export async function createService(values: z.infer<typeof ServiceSchema>) {
   const session = await auth()
   if (!session?.user?.id) {
     throw new Error("You must be logged in to create a service")
@@ -42,14 +34,14 @@ export async function createService(data: MyService) {
 
   const service = await prisma.service.create({
     data: {
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      discount: data.discount || 0,
-      category: data.category,
+      name: values.name,
+      description: values.description,
+      price: values.price,
+      discount: values.discount || 0,
+      category: values.category,
       providerId: session.user.id,
-      images: data.images,
-      defaultLocation: data.defaultLocation
+      images: values.images,
+      defaultLocation: values.defaultLocation
     },
   })
   return service
@@ -79,7 +71,7 @@ export async function deleteService(id: string) {
 
 export async function updateService(
   id: string,
-  data: MyService
+  values: z.infer<typeof ServiceSchema>
 ) {
   const session = await auth()
   if (!session?.user?.id) {
@@ -97,12 +89,12 @@ export async function updateService(
   const updatedService = await prisma.service.update({
     where: { id },
     data: {
-      name: data.name,
-      description: data.description,
-      price: data.price,
-      discount: data.discount || 0,
-      category: data.category,
-      images: data.images,
+      name: values.name,
+      description: values.description,
+      price: values.price,
+      discount: values.discount || 0,
+      category: values.category,
+      images: values.images,
     },
   })
 

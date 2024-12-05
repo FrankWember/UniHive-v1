@@ -31,7 +31,7 @@ export default function Loading() {
           alt="Unihive Logo"
           width={128}
           height={128}
-          className="z-10"
+          className="z-10 rounded-full"
         />
         <motion.div
           className="absolute top-0 left-0 w-full h-full border-4 border-primary rounded-full border-t-transparent"

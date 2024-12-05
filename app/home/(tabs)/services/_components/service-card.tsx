@@ -43,11 +43,9 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             fill
             className="object-cover rounded"
           />
-          {service.isMobileService && (
-            <Badge className="absolute top-5 right-5" variant="success">
-              Mobile Service
-            </Badge>
-          )}
+          <Badge className="absolute top-2 right-2 text-xs h-4" variant={service.isMobileService ? 'success' : 'secondary'}>
+            {service.isMobileService ? 'Mobile Service' : 'In-House Service'}
+          </Badge>
         </div>
         <div className="flex gap-1">
           <div className="flex flex-col gap-1 justify-start">

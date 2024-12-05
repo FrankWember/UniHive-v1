@@ -63,7 +63,7 @@ export const ServiceSchema = z.object({
   price: z.number().min(0, {
     message: "Price must be a positive number.",
   }),
-  discount: z.number().positive('Discount must be a positive number').optional(),
+  discount: z.number().optional(),
   category: z.array(z.string()).min(1, {
     message: "Please select at least one category.",
   }),
@@ -108,7 +108,7 @@ export const productSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
   description: z.string().min(10, 'Description must be at least 10 characters long'),
   price: z.number().positive('Price must be positive'),
-  discount: z.number().positive('Discount must be a positive number').optional(),
+  discount: z.number().optional(),
   stock: z.number().int().positive('Stock must be a positive integer'),
   images: z.array(z.string().url()).min(1, 'At least one image is required'),
   categories: z.array(z.string()).min(1, 'At least one category is required'),

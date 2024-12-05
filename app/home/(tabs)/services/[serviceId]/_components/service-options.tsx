@@ -20,7 +20,7 @@ import { Service } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { deleteService } from '@/actions/services';
-import { Money01Icon } from 'hugeicons-react';
+import { NotebookIcon } from 'lucide-react';
 
 const ServiceOptions = ({ service }: {service: Service}) => {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -42,7 +42,6 @@ const ServiceOptions = ({ service }: {service: Service}) => {
 
   return (
     <>
-      {isMobile ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="icon" variant="outline">
@@ -52,7 +51,7 @@ const ServiceOptions = ({ service }: {service: Service}) => {
           <DropdownMenuContent>
             {currentUser && currentUser?.id === service.providerId ? (
                 <>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><Money01Icon className="mr-2" />Bookings</DropdownMenuItem>
+                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><NotebookIcon className="mr-2" />Bookings</DropdownMenuItem>
                 <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}><Pencil1Icon className="mr-2" />Edit</DropdownMenuItem>           
                 <AlertDialog>
                     <AlertDialogTrigger>
@@ -81,51 +80,6 @@ const ServiceOptions = ({ service }: {service: Service}) => {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
-        <div className="flex items-center space-x-4">
-          {currentUser && service.providerId===currentUser!.id ? (
-            <div className="flex space-x-2">
-              <Button onClick={handleBookings}>Bookings</Button>
-              <Button onClick={handleEdit}>Edit</Button>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="icon"><TrashIcon/></Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete your service.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          ):(
-            <div className="flex space-x-2">
-              <Link href={`/home/services/provider/${service.providerId}`}>
-                <Button variant="outline" size="icon">
-                  <PersonIcon />
-                </Button>
-              </Link>
-              <Link href={`/home/services/provider/${service.providerId}/chat`}>
-                <Button variant="outline" size="icon">
-                  <ChatBubbleIcon />
-                </Button>
-              </Link>
-              <Link href={`/home/services/provider/${service.providerId}/review`}>
-                <Button variant="outline" size="icon">
-                  <Pencil2Icon />
-                </Button>
-              </Link>
-            </div>
-          )}         
-        </div>
-      )}
     </>
   );
 };
