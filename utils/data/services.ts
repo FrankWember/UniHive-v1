@@ -14,18 +14,22 @@ export async function getServiceById(serviceId: string) {
         include: {
           services: {
             select: {
-              customers: {
+              bookings: {
                 select: {
-                  id: true,
+                  customer: {
+                    select: {
+                      id: true
+                    }
+                  }
                 }
               }
             }
           }
         }
       },
-      customers: {
+      bookings: {
         select: {
-          buyer: {
+          customer: {
             select: {
               image: true
             }
@@ -37,7 +41,7 @@ export async function getServiceById(serviceId: string) {
 }
 
 export async function getBookedServiceById(bookedServiceId: string) {
-    return await prisma.bookedServices.findUnique({
+    return await prisma.serviceBooking.findUnique({
       where: { id: bookedServiceId },
       include: { service: true }
     })
@@ -97,9 +101,9 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
     const services = await prisma.service.findMany({
       where: query,
       include: {
-        customers: {
+        bookings: {
           select: {
-            buyer: {
+            customer: {
               select: {
                 image: true
               }

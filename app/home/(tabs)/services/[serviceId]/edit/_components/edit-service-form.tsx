@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import {
   Alert,
@@ -21,6 +20,7 @@ import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
 import { LocationInput } from '@/components/location-input'
 import { Switch } from '@/components/ui/switch'
+import { AvailabilityInput } from '@/components/availability-input'
 import { Service } from '@prisma/client'
 import { BeatLoader } from 'react-spinners'
 
@@ -39,13 +39,13 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
     resolver: zodResolver(ServiceSchema),
     defaultValues: {
       name: service.name,
-      description: service.description,
       price: service.price,
       discount: service.discount,
       category: service.category,
       images: service.images,
       defaultLocation: service.defaultLocation || "",
-      isMobile: service.isMobileService
+      isMobile: service.isMobileService,
+      availability: service.availability as Record<string, [string, string][]>
     },
   })
 
@@ -77,19 +77,6 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
               <FormLabel>Service Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter service name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Describe your service" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -163,6 +150,25 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
               <FormControl>
                 <LocationInput {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="availability"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Availability</FormLabel>
+              <FormControl>
+                <AvailabilityInput
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Set your available time slots for each day
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

@@ -31,13 +31,13 @@ interface ServiceDetailsProps {
   service: Service & {
     provider: User & {
       services: ({
-        customers: {
+        customer: {
           id: string
-        }[]
+        }
       })[]
     },
-    customers: ({
-      buyer: {
+    bookings: ({
+      customer: {
         image: string|null
       }
     })[]
@@ -57,11 +57,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
   const isMobile = useMediaQuery('(max-width: 768px)')
-  let providerClientsLength = 0 
-
-  service.provider.services.forEach(service => {
-    providerClientsLength += service.customers.length
-  })
+  let providerClientsLength = service.provider.services.length
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()
@@ -142,7 +138,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               <CarouselContent className="-ml-2 md:-ml-4">
                 {service.images.map((image, index) => (
                   <CarouselItem key={index}>
-                    <div className="w-full h-96 relative">
+                    <div className="w-full h-[28rem] relative">
                       <Image 
                         src={image} 
                         alt={`Service Image ${index + 1}`} 
@@ -216,14 +212,14 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
               <div className='flex-col gap-2 p-1'>
                 <div className="flex -space-x-4 overflow-hidden">
-                  {service.customers.slice(0, 7).map((customer, index) => (
+                  {service.bookings.slice(0, 7).map((booking, index) => (
                     <Avatar key={index} className="inline-block h-8 w-8">
-                      <AvatarImage src={customer.buyer.image!} alt="C" />
+                      <AvatarImage src={booking.customer.image!} alt="C" />
                       <AvatarFallback>C</AvatarFallback>
                     </Avatar>
                   ))}
                 </div>
-                <p className="text-sm underline">{service.customers.length} active customers</p>
+                <p className="text-sm underline">{service.bookings.length} active customers</p>
               </div>
             </div>
 
@@ -246,18 +242,8 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             <Separator className="my-8" />
   
             {/* Tabs section */}
-            <Tabs defaultValue='description'>
-              <TabsList>
-                <TabsTrigger value="description">Description</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-              </TabsList>
-              <TabsContent value="description" className='my-4'>
-                <div>
-                  <p className="text-muted-foreground">{service.description}</p>
-                </div>
-              </TabsContent>
-              <TabsContent value="reviews" className="">
-                <ReviewsSection 
+            <div className="max-w-4xl">
+              <ReviewsSection 
                   averageRating={averageRating} 
                   ratingCounts={ratingCounts} 
                   reviews={reviews} 
@@ -266,8 +252,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                   isSubmitting={isSubmitting} 
                   handleSubmitReview={handleSubmitReview}
                 />
-              </TabsContent>
-            </Tabs>
+            </div>
           </div>
         </div>
       </div>
@@ -338,14 +323,14 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
               <div className='flex-col gap-2 p-1'>
                 <div className="flex -space-x-4 overflow-hidden">
-                  {service.customers.slice(0, 7).map((customer, index) => (
+                  {service.bookings.slice(0, 7).map((booking, index) => (
                     <Avatar key={index} className="inline-block h-8 w-8">
-                      <AvatarImage src={customer.buyer.image!} alt="C" />
+                      <AvatarImage src={booking.customer.image!} alt="C" />
                       <AvatarFallback>C</AvatarFallback>
                     </Avatar>
                   ))}
                 </div>
-                <p className="text-sm underline">{service.customers.length} active customers</p>
+                <p className="text-sm underline">{service.bookings.length} active customers</p>
               </div>
             </div>
 
@@ -368,18 +353,8 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             <Separator className="my-8" />
   
             {/* Tabs section */}
-            <Tabs defaultValue='description'>
-              <TabsList>
-                <TabsTrigger value="description">Description</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
-              </TabsList>
-              <TabsContent value="description" className='my-4'>
-                <div>
-                  <p className="text-muted-foreground">{service.description}</p>
-                </div>
-              </TabsContent>
-              <TabsContent value="reviews" className="">
-                <ReviewsSection 
+            <div className="max-w-4xl">
+              <ReviewsSection 
                   averageRating={averageRating} 
                   ratingCounts={ratingCounts} 
                   reviews={reviews} 
@@ -388,8 +363,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                   isSubmitting={isSubmitting} 
                   handleSubmitReview={handleSubmitReview}
                 />
-              </TabsContent>
-            </Tabs>
+            </div>
           </div>
         </div>
       </div>

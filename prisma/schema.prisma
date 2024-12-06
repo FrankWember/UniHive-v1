@@ -39,7 +39,7 @@ model User {
 
   services       Service[]
   serviceReviews ServiceReview[]
-  servicesUsed   BookedServices[] @relation("ServicesUsed")
+  bookedServices ServiceBooking[]
 
   products         Product[]
   productsRequests ProductRequest[]
@@ -47,18 +47,15 @@ model User {
   carts            Cart[]
 
   driver         Driver?
-  ridesOffered   Ride[]  @relation("DriverRides")
-  ridesRequested Ride[]  @relation("PassengerRides")
-
-  studyGroups      StudyGroupMember[]
-  assignments      Assignment[]
+  ridesRequested Ride[] 
+  studyGroups    StudyGroupMember[]
+  assignments    Assignment[]
   assignmentsVoted AssignmentVote[]
-
-  eventsCreated  Event[]         @relation("CreatorEvents")
+  eventsCreated  Event[]         
   eventsAttended EventAttendee[]
 
-  paymentsMade     Payment[] @relation("PayerPayments")
-  paymentsReceived Payment[] @relation("ReceiverPayments")
+  paymentsMade     Payment[]  @relation("PaymentsMade")
+  paymentsReceived Payment[]  @relation("PaymentsReceived")
 }
 
 model Account {
@@ -124,39 +121,42 @@ model Service {
   providerId      String
   name            String
   images          String[]
-  description     String
   price           Float
   discount        Int      @default(0)
   defaultLocation String?
   isMobileService Boolean  @default(false)
   category        String[]
+  availability    Json
 
-  provider  User             @relation(fields: [providerId], references: [id])
-  reviews   ServiceReview[]
-  customers BookedServices[] @relation("Customers")
+  provider User             @relation(fields: [providerId], references: [id])
+  offers   ServiceOffer[]
+  bookings ServiceBooking[]
+  reviews  ServiceReview[]
 }
 
-model BookedServices {
-  id          String   @id @default(uuid())
-  serviceId   String
-  buyerId     String
-  notes       String?
-  price       Float
-  location    String?
-  startTime   DateTime @default(now())
-  stopTime    DateTime @default(now())
-  status      String   @default("pending")
-  isAgreed    Boolean  @default(false)
-  isPaid      Boolean  @default(false)
-  isCompleted Boolean  @default(false)
-  isCanceled  Boolean  @default(false)
-  updatedAt   DateTime @updatedAt
+model ServiceOffer {
+  id        String @id @default(cuid())
+  serviceId String
+  title     String
+  price     Float
+  discount  Int    @default(0)
 
-  paymentId String?
+  service Service @relation(fields: [serviceId], references: [id])
+}
 
-  buyer   User     @relation("ServicesUsed", fields: [buyerId], references: [id])
-  service Service  @relation("Customers", fields: [serviceId], references: [id])
-  reciept Payment? @relation("ServiceReceipts", fields: [paymentId], references: [id])
+model ServiceBooking {
+  id         String   @id @default(cuid())
+  serviceId  String
+  customerId String
+  paymentId  String
+  time       Json
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  service  Service @relation(fields: [serviceId], references: [id])
+  customer User    @relation(fields: [customerId], references: [id])
+  payment  Payment @relation(fields: [paymentId], references: [id])
 }
 
 model ServiceReview {
@@ -183,6 +183,8 @@ model Driver {
   carCapacity   Int
 
   user User @relation(fields: [userId], references: [id])
+
+  rides Ride[]
 }
 
 model Ride {
@@ -196,9 +198,9 @@ model Ride {
   isPaid        Boolean  @default(false)
   paymentId     String?
 
-  driver    User     @relation("DriverRides", fields: [driverId], references: [id])
-  passenger User     @relation("PassengerRides", fields: [passengerId], references: [id])
-  reciept   Payment? @relation("RideReceipts", fields: [paymentId], references: [id])
+  driver    Driver     @relation(fields: [driverId], references: [id])
+  passenger User     @relation(fields: [passengerId], references: [id])
+  reciept   Payment? @relation(fields: [paymentId], references: [id])
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------- //
@@ -418,7 +420,7 @@ model Event {
   dateTime    DateTime
   location    String
 
-  creator   User            @relation("CreatorEvents", fields: [creatorId], references: [id])
+  creator   User            @relation(fields: [creatorId], references: [id])
   attendees EventAttendee[]
 }
 
@@ -445,10 +447,10 @@ model Payment {
   paymentDate DateTime @default(now())
   status      String
 
-  payer    User @relation("PayerPayments", fields: [payerId], references: [id])
-  receiver User @relation("ReceiverPayments", fields: [receiverId], references: [id])
+  payer    User @relation("PaymentsMade", fields: [payerId], references: [id])
+  receiver User @relation("PaymentsReceived", fields: [receiverId], references: [id])
 
-  ServiceReceipts BookedServices[] @relation("ServiceReceipts")
-  RidesReceipts   Ride[]           @relation("RideReceipts")
-  orders          Cart[]
+  ServiceReceipts   ServiceBooking[]
+  RidesReceipts     Ride[]           
+  ProdcuctsReceipts Cart[]
 }

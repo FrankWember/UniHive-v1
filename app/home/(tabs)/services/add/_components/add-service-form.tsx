@@ -22,6 +22,7 @@ import { BeatLoader } from 'react-spinners'
 import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
 import { LocationInput } from '@/components/location-input'
+import { AvailabilityInput } from '@/components/availability-input'
 
 
 export const AddServiceForm = () => {
@@ -34,13 +35,13 @@ export const AddServiceForm = () => {
     resolver: zodResolver(ServiceSchema),
     defaultValues: {
       name: "",
-      description: "",
       price: 0,
       discount: 0,
       category: [], // Ensure this is initialized as an empty array
       images: [],
       defaultLocation: "",
-      isMobile: false
+      isMobile: false,
+      availability: {}
     },
   })
 
@@ -72,19 +73,6 @@ export const AddServiceForm = () => {
               <FormLabel>Service Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter service name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Describe your service" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -164,6 +152,25 @@ export const AddServiceForm = () => {
               <FormControl>
                 <LocationInput {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="availability"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Availability</FormLabel>
+              <FormControl>
+                <AvailabilityInput
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormDescription>
+                Set your available time slots for each day
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Calendar } from '@/components/ui/calendar'
-import { TimePicker } from '@/components/ui/time-picker'
+import { TimePicker } from '@/components/ui/date-time-picker'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { bookService } from '@/actions/service-bookings'
@@ -133,7 +133,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Start Time</FormLabel>
                   <FormControl>
-                    <TimePicker date={field.value} setDate={field.onChange} />
+                    <TimePicker date={field.value} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -187,7 +187,7 @@ export function BookingForm({ service, userId }: BookingFormProps) {
                 <FormItem className="flex flex-col">
                   <FormLabel>End Time</FormLabel>
                   <FormControl>
-                    <TimePicker date={field.value} setDate={field.onChange} />
+                    <TimePicker date={field.value} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

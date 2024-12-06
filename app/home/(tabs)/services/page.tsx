@@ -29,12 +29,11 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     <ServicesProvider>
       <div className="flex flex-col min-h-screen w-full">
         {/* Header  */}
-        <div className="flex items-center justify-between h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
+        <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
           <div className="flex justify-start items-center gap-3">
               <Link href="/home/services">
-                <Image src="/Unihive.svg" alt="logo" width={40} height={40} className="rounded border" />
+                <Image src="/Unihive.svg" alt="logo" width={50} height={50} className="rounded-md border" />
               </Link>
-            <h1 className="text-2xl font-bold">Services</h1>
           </div>
           <div className="flex items-center space-x-3">
             <SearchBar />
@@ -56,7 +55,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         </div>
 
         <div>
-          <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-20 px-4 md:px-8">
+          <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8">
             <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
                 {categories.map((category) => (
                   <Link key={category.name} href={`/home/services?category=${category.name}`}>
@@ -65,7 +64,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
                         <AvatarImage src={category.imageUrl} />
                         <AvatarFallback>{category.name[0]}</AvatarFallback>
                       </Avatar>
-                      <h2 className='text-sm md:text-base font-semibold'>{category.name}</h2>
+                      <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
                     </div>
                   </Link>
                 ))}

@@ -11,7 +11,7 @@ import * as z from 'zod'
 
 
 export async function reportScam(bookedServiceId: string, userId: string) {
-  const updatedBookedService = await prisma.bookedServices.update({
+  const updatedBookedService = await prisma.serviceBooking.update({
     where: { id: bookedServiceId },
     data: {
       status: 'reported',
@@ -35,13 +35,13 @@ export async function createService(values: z.infer<typeof ServiceSchema>) {
   const service = await prisma.service.create({
     data: {
       name: values.name,
-      description: values.description,
       price: values.price,
       discount: values.discount || 0,
       category: values.category,
       providerId: session.user.id,
       images: values.images,
-      defaultLocation: values.defaultLocation
+      defaultLocation: values.defaultLocation,
+      availability: values.availability
     },
   })
   return service
@@ -90,11 +90,12 @@ export async function updateService(
     where: { id },
     data: {
       name: values.name,
-      description: values.description,
       price: values.price,
       discount: values.discount || 0,
       category: values.category,
       images: values.images,
+      defaultLocation: values.defaultLocation,
+      availability: values.availability
     },
   })
 

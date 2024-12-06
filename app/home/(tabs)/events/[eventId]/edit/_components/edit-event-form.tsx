@@ -20,7 +20,7 @@ import { updateEvent } from '@/actions/events'
 import { useRouter } from 'next/navigation'
 import { Event } from '@prisma/client'
 import { DatePicker } from '@/components/ui/date-picker'
-import { TimePicker } from '@/components/ui/time-picker'
+import { TimePicker } from '@/components/ui/date-time-picker'
 import { EventSchema } from '@/constants/zod'
 
 
@@ -129,7 +129,7 @@ export function EditEventForm({ event }: {event: Event}) {
                 <FormControl>
                   <TimePicker
                     date={date}
-                    setDate={(newDate) => {
+                    onChange={(newDate) => {
                       setDate(newDate)
                       if (newDate) {
                         field.onChange(newDate)

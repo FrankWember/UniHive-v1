@@ -102,7 +102,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
           ))}
         </div>
         <Dialog>
-          <DialogTrigger asChild>
+          <DialogTrigger>
             <Button>
               <MessageSquare className="mr-2 h-4 w-4" />
               Write a Review

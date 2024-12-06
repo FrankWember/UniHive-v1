@@ -53,12 +53,21 @@ export const NewPasswordSchema = z.object({
     .min(8, "Minimum 8 characters required!"),
 });
 
+const TimeSlotSchema = z.array(z.tuple([z.string(), z.string()]));
+
+const AvailabilitySchema = z.object({
+  monday: TimeSlotSchema.optional(),
+  tuesday: TimeSlotSchema.optional(),
+  wednesday: TimeSlotSchema.optional(),
+  thursday: TimeSlotSchema.optional(),
+  friday: TimeSlotSchema.optional(),
+  saturday: TimeSlotSchema.optional(),
+  sunday: TimeSlotSchema.optional(),
+});
+
 export const ServiceSchema = z.object({
   name: z.string().min(2, {
     message: "Service name must be at least 2 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
   }),
   price: z.number().min(0, {
     message: "Price must be a positive number.",
@@ -77,6 +86,7 @@ export const ServiceSchema = z.object({
   defaultLocation: z.string()
   .min(1, "Default location is required"),
   isMobile: z.boolean().default(false),
+  availability: AvailabilitySchema
 })
 
 export const EventSchema = z.object({

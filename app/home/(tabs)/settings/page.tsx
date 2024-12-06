@@ -14,6 +14,12 @@ export default async function SettingsPage() {
   const user = await currentUser()
   const userData = await getUserById(user?.id!)
 
+  if (!user?.id) {
+    const callbackUrl = encodeURIComponent('/home/settings');
+    redirect(`/auth/sign-in?callbackUrl=${callbackUrl}`);
+    return
+  }
+
   return (
     <div className="flex flex-col min-h-screen w-screen">
       {/* Header */}
