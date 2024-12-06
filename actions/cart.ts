@@ -19,7 +19,7 @@ export async function addItemToCart(product: Product, customerId: string) {
                 cartItems: {
                     create: {
                         wasRequested: false,
-                        price: product.price,
+                        price: product.price - (product.price * product.discount / 100),
                         quantity: 1,
                         productId: product.id
                     }
@@ -34,7 +34,7 @@ export async function addItemToCart(product: Product, customerId: string) {
                 cartItems: {
                     create: {
                         wasRequested: false,
-                        price: product.price,
+                        price: product.price - (product.price * product.discount / 100),
                         quantity: 1,
                         productId: product.id
                     }
@@ -54,7 +54,7 @@ export async function updateCartItemQuantity(cartItemId: string, quantity: numbe
 
     if (!cartItem) throw new Error("Cart item not found");
 
-    const priceDifference = cartItem.product.price * (quantity - cartItem.quantity);
+    const priceDifference = cartItem.price * (quantity - cartItem.quantity);
 
     await prisma.cart.update({
         where: { id: cartItem.cartId },

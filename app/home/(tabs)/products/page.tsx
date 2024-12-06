@@ -6,7 +6,6 @@ import { ProductsProvider } from '@/contexts/products-context'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart } from 'lucide-react'
-import { Skeleton } from '@/components/ui/skeleton'
 import { getCartItemsNumber } from '@/utils/data/cart'
 
 const ProductsPage = async() => {

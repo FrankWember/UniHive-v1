@@ -58,7 +58,7 @@ export function CartContent({cart}: {cart: Cart & {cartItems: CartItemWithProduc
               </div>
               <div className="flex-grow">
                 <h3 className="font-semibold">{item.product.name}</h3>
-                <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground">${(item.product.price - (item.product.price * (item.product.discount || 0) / 100)).toFixed(2)}</p>
               </div>
               <div className="flex items-center space-x-2">
                 <Button
