@@ -8,7 +8,7 @@ import * as z from 'zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { TimePicker } from '@/components/ui/date-time-picker'
+import { TimePickerDemo } from '@/components/ui/time-picker-12h-demo'
 import { LocationInput } from '@/components/location-input'
 import { createBooking } from '@/actions/service-bookings'
 import { cn } from '@/lib/utils'
@@ -96,9 +96,9 @@ export function BookingForm({ offerId, service }: BookingFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>Start Time</FormLabel>
                 <FormControl>
-                  <TimePicker 
-                    date={field.value} 
-                    onChange={field.onChange}
+                  <TimePickerDemo
+                    date={field.value}
+                    setDate={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />
@@ -113,9 +113,9 @@ export function BookingForm({ offerId, service }: BookingFormProps) {
               <FormItem className="flex-1">
                 <FormLabel>End Time</FormLabel>
                 <FormControl>
-                  <TimePicker 
-                    date={field.value} 
-                    onChange={field.onChange}
+                  <TimePickerDemo
+                    date={field.value}
+                    setDate={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

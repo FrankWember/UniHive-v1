@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { TimePicker } from "./ui/date-time-picker"
+import { TimePickerDemo } from "./ui/time-picker-12h-demo"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
@@ -126,24 +126,22 @@ export function AvailabilityInput({
               <Label className="capitalize">{day}</Label>
               {value[day].map((slot, index) => (
                 <div key={index} className="flex items-center space-x-2">
-                  <TimePicker
+                  <TimePickerDemo
                     date={parseTimeString(slot[0])}
-                    onChange={(newDate) => {
+                    setDate={(newDate) => {
                       if (newDate) {
                         handleTimeChange(day, index, "start", newDate)
                       }
                     }}
-                    granularity="minute"
                   />
                   <span className="flex mx-3 items-center"><ArrowRightIcon /></span>
-                  <TimePicker
+                  <TimePickerDemo
                     date={parseTimeString(slot[1])}
-                    onChange={(newDate) => {
+                    setDate={(newDate) => {
                       if (newDate) {
                         handleTimeChange(day, index, "end", newDate)
                       }
                     }}
-                    granularity="minute"
                   />
                   <Button
                     type="button"
