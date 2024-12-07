@@ -9,6 +9,7 @@ import { currentUser } from '@/lib/auth'
 import { getUserById } from '@/utils/user'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ProfileImageForm } from './_components/profile-image-form'
+import { redirect } from 'next/navigation'
 
 export default async function SettingsPage() {
   const user = await currentUser()
