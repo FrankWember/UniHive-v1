@@ -83,9 +83,21 @@ export async function getProviderServices(providerId: string) {
     const services = await prisma.service.findMany({
       where: { providerId },
       include: {
-        provider: {
-          select: { id: true, name: true },
+        offers: {
+          select: {
+            bookings: {
+              select: {
+                customer: {
+                  select: {
+                    image: true
+                  }
+                }
+              }
+            }
+          }
         },
+        provider: true,
+        reviews: true
       },
     })
     return services
@@ -201,6 +213,22 @@ export async function getBookingsByServiceId (serviceId: string) {
           offer: {
             serviceId: serviceId
           }
+        },
+        include: {
+            offer: {
+                include: {
+                    service: true
+                }
+            },
+            customer: true
+        }
+    })
+}
+
+export async function getBookingsByUserId (userId: string) {
+    return await prisma.serviceBooking.findMany({
+        where: {
+          customerId: userId
         },
         include: {
             offer: {

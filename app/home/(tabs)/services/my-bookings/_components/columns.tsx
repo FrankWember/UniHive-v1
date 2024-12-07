@@ -1,13 +1,17 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { ServiceBooking } from "@prisma/client"
+import { ServiceBooking, ServiceOffer } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { MapIcon } from "lucide-react"
 
-export const columns: ColumnDef<ServiceBooking>[] = [
+type Booking = ServiceBooking & {
+  offer: ServiceOffer
+}
+
+export const columns: ColumnDef<Booking>[] = [
   {
     accessorKey: "offer.title",
     header: "Service",
@@ -28,10 +32,10 @@ export const columns: ColumnDef<ServiceBooking>[] = [
     },
   },
   {
-    accessorKey: "price",
+    accessorKey: "offer.price",
     header: "Price",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("price"))
+      const amount = parseFloat(row.getValue("offer.price"))
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",

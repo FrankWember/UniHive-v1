@@ -1,6 +1,6 @@
 
 import { redirect } from "next/navigation"
-import { getBookingsByUserId } from "@/actions/service-bookings"
+import { getBookingsByUserId } from "@/utils/data/services"
 import { DataTable } from "./_components/data-table"
 import { columns } from "./_components/columns"
 import { currentUser } from "@/lib/auth"

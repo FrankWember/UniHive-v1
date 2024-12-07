@@ -10,22 +10,6 @@ import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
 
 
-export async function reportScam(bookedServiceId: string, userId: string) {
-  const updatedBookedService = await prisma.serviceBooking.update({
-    where: { id: bookedServiceId },
-    data: {
-      status: 'reported',
-    }
-  })
-
-  // In a real-world scenario, you would create a separate scam report entry and notify administrators
-  // For this example, we'll just update the status
-
-  revalidatePath(`/home/services/confirmation/${bookedServiceId}`)
-  return updatedBookedService
-}
-
-
 export async function createService(values: z.infer<typeof ServiceSchema>) {
   const session = await auth()
   if (!session?.user?.id) {
