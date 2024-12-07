@@ -21,12 +21,12 @@ export default async function middleware(request: NextRequest) {
     }
 
     if (isAuthRoute) {
-      if (session?.user) {
-        return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
-      }
       if (session?.user && !session.user.isOnboarded && nextUrl.pathname !== '/auth/onboarding') {
         const callbackUrl = encodeURIComponent(nextUrl.pathname + nextUrl.search);
         return NextResponse.redirect(new URL(`/auth/onboarding?callbackUrl=${callbackUrl}`, nextUrl));
+      }
+      if (session?.user) {
+        return NextResponse.redirect(new URL(DEFAULT_SIGNIN_REDIRECT, nextUrl));
       }
       return NextResponse.next();
     }

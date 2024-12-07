@@ -35,6 +35,7 @@ import {
     User,
     PanelRight
 } from 'lucide-react';
+import { CardStackPlusIcon, ReaderIcon } from '@radix-ui/react-icons';
 
 interface ServiceOptionsProps {
     service: Service;
@@ -86,6 +87,22 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
                                         >
                                             <Pencil className="mr-2 h-4 w-4" />
                                             Edit Service
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/${service.id}/offers/add`)}
+                                        >
+                                            <CardStackPlusIcon className="mr-2 h-4 w-4" />
+                                            Add Offers
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/${service.id}/offers`)}
+                                        >
+                                            <ReaderIcon className="mr-2 h-4 w-4" />
+                                            Manage Offers
                                         </Button>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>

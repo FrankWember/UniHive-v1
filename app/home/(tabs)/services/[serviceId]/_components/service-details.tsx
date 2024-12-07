@@ -113,7 +113,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   if (!isMobile) {
     return (
       <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 overflow-hidden'>
-        <div className='flex justify-between px-3 py-4'>
+        <div className='flex w-full justify-between px-3 py-4'>
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -135,12 +135,12 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
         </div>
         <div className='flex space-x-8'>
           {/* Service Images */}
-          <div className='flex flex-col max-w-[55vw] min-w-[50vw] gap-3 m-4'>
+          <div className='flex flex-col w-full gap-3 m-4'>
             <Carousel setApi={setApi} className="w-full mx-auto">
               <CarouselContent className="-ml-2 md:-ml-4">
                 {service.images.map((image, index) => (
                   <CarouselItem key={index}>
-                    <div className="w-full h-[28rem] relative">
+                    <div className="w-full aspect-square relative">
                       <Image 
                         src={image} 
                         alt={`Service Image ${index + 1}`} 
@@ -170,8 +170,8 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                     src={image} 
                     alt={`Service Image ${index + 1}`} 
                     className='object-cover aspect-square rounded' 
-                    width={100} 
-                    height={100} 
+                    width={80} 
+                    height={80} 
                   />
                 </div>
               ))}
@@ -180,7 +180,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             <Separator className='my-8' />
 
             {/* Reviews section */}
-            <div className="px-4 mx-auto">
+            <div className="w-full px-4 mx-auto">
               <ReviewsSection 
                 averageRating={averageRating} 
                 ratingCounts={ratingCounts} 
@@ -194,7 +194,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           </div>
 
           {/* Service Info */}
-          <div className='flex flex-col mx-4'>
+          <div className='flex flex-col w-full mx-4'>
             <ServiceInfo 
               service={service}
               averageRating={averageRating}
