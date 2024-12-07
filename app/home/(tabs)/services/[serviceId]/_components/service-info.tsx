@@ -1,13 +1,17 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, Star } from 'lucide-react'
+import { Heart, MapPin, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { Service, ServiceOffer, User } from '@prisma/client'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
 import { Badge } from "@/components/ui/badge"
 import { WeeklyAvailabilityCalendar } from "./weekly-availability-calendar"
+import { useToast } from "@/hooks/use-toast"
+import { Share1Icon } from "@radix-ui/react-icons"
+import { useCurrentUser } from "@/hooks/use-current-user"
+import React from "react"
+import { isFavouriteService, likeService } from "@/actions/services"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -31,10 +35,58 @@ interface ServiceInfoProps {
 }
 
 export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProps) => {
+    const { toast } = useToast()
+    const user = useCurrentUser()
+    const [isLiked, setIsLiked] = React.useState(false)
+
+    React.useEffect(() => {
+        const fetchLikeStatus = async () => {
+            try {
+                const response = await fetch(`/api/services/${service.id}/favourites`)
+                const data = await response.json()
+                setIsLiked(data.isLiked)
+            } catch (error) {
+                console.error('Error fetching like status:', error)
+            }
+        }
+
+        fetchLikeStatus()
+    }, [service.id])
+
+    const handleLike = async () => {
+        if (!user) {
+            toast({
+                title: 'Please log in to like a service',
+                description: 'You need to be logged in to like a service.',
+            })
+            return
+        }
+        const like = await likeService(service.id)
+        setIsLiked(like)
+    }
+    
+
     let providerClientsLength = 0
     service.provider.services.forEach(providerService => {
         providerClientsLength += providerService.bookings.length
     })
+
+    const copyToClipboard = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text)
+            toast({ 
+                title: 'Copied to clipboard', 
+                description: 'The link has been copied to your clipboard',
+            })
+        } catch (error) {
+            console.error('Failed to copy to clipboard:', error)
+            toast({
+                title: 'Failed to copy to clipboard',
+                description: 'Please try again later',
+            })
+        }
+    }
+    
 
     return (
         <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
@@ -104,6 +156,14 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                             ${service.price.toFixed(2)}
                         </span>
                     )}
+                </div>
+                <div className="flex gap-3 justify-end">
+                    <Button variant="outline" size="icon" onClick={()=>copyToClipboard(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
+                        <Share1Icon />
+                    </Button>
+                    <Button variant="outline" size="icon" onClick={handleLike}>
+                        <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                    </Button>                
                 </div>
             </div>
 

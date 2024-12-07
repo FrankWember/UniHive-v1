@@ -102,5 +102,57 @@ export async function updateService(
   return updatedService
 }
 
+export async function likeService (serviceId: string) {
+  const user = await currentUser()
+  const userId = user?.id
+  if (!userId) {
+    throw new Error("You must be logged in to like a service")
+  }
+
+  const like = await prisma.favoriteService.findFirst({
+    where: {
+      serviceId: serviceId,
+      userId: userId
+    }
+  })
+
+  if (like) {
+    await prisma.favoriteService.delete({
+      where: {
+        id: like.id
+      }
+    })
+    return false
+  } else {
+    await prisma.favoriteService.create({
+      data: {
+        serviceId: serviceId,
+        userId: userId
+      }
+    })
+    return true
+  }
+}
+
+export async function isFavouriteService (serviceId: string) {
+  const user = await currentUser()
+  const userId = user?.id
+  if (!userId) {
+    throw new Error("You must be logged in to like a service")
+  }
+
+  const like = await prisma.favoriteService.findFirst({
+    where: {
+      serviceId: serviceId,
+      userId: userId
+    }
+  })
+
+  if (like) {
+    return true
+  } else {
+    return false
+  }
+}
 
 

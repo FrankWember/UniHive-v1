@@ -5,7 +5,7 @@ import { MatchedServices } from './_components/matched-services'
 import { ServicesProvider } from '@/contexts/services-context'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart } from 'lucide-react'
+import { ArrowDownAZ, Heart, ShoppingCart } from 'lucide-react'
 import { currentUser } from '@/lib/auth'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
@@ -57,17 +57,33 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         <div>
           <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8">
             <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
-                {categories.map((category) => (
-                  <Link key={category.name} href={`/home/services?category=${category.name}`}>
-                    <div className='flex flex-col gap-2'>
-                      <Avatar className="h-20 w-20 md:h-24 md:w-24">
-                        <AvatarImage src={category.imageUrl} />
-                        <AvatarFallback>{category.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
-                    </div>
-                  </Link>
-                ))}
+              <div className="flex flex-col gap-2">
+                <Link href={`/home/services`}>
+                <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
+                  <ArrowDownAZ className='h-16 w-16' />
+                </div>
+                </Link>
+                <h2 className='text-sm md:text-base font-semibold text-center'>All</h2>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Link href={`/home/services?favourites=true`}>
+                  <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
+                    <Heart className='h-16 w-16' />
+                  </div>
+                </Link>
+                <h2 className='text-sm md:text-base font-semibold text-center'>Favourites</h2>
+              </div>
+              {categories.map((category) => (
+                <Link key={category.name} href={`/home/services?category=${category.name}`}>
+                  <div className='flex flex-col gap-2'>
+                    <Avatar className="h-20 w-20 md:h-24 md:w-24">
+                      <AvatarImage src={category.imageUrl} />
+                      <AvatarFallback>{category.name[0]}</AvatarFallback>
+                    </Avatar>
+                    <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
+                  </div>
+                </Link>
+              ))}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

@@ -98,6 +98,31 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
     if (searchParams.mine === 'true' && userId) {
       query.providerId = userId
     }
+
+    if (searchParams.favourites === 'true' && userId) {
+      return await prisma.service.findMany({
+        where: {
+          likes: {
+            some: {
+              userId
+            }
+          }
+        },
+        include: {
+          bookings: {
+            select: {
+              customer: {
+                select: {
+                  image: true
+                }
+              }
+            }
+          },
+          provider: true,
+          reviews: true
+        }
+      })
+    }
   
     const services = await prisma.service.findMany({
       where: query,
