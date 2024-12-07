@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getBookingById } from '@/actions/service-bookings'
+import { getBookingById } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
 import { BackButton } from '@/components/back-button'
 import { BookingDetails } from './_components/booking-details'
@@ -10,7 +10,7 @@ export default async function BookingDetailsPage({ params }: { params: { service
   if (!user) return notFound()
 
   const booking = await getBookingById(params.bookingId)
-  if (!booking || booking.service.providerId !== user.id) return notFound()
+  if (!booking || booking.offer.service.providerId !== user.id) return notFound()
 
   return (
     <div className="flex flex-col min-h-screen w-screen">
@@ -24,7 +24,7 @@ export default async function BookingDetailsPage({ params }: { params: { service
       <div className="flex w-screen justify-center pb-24">
         <Card className="w-full max-w-2xl mt-24 mx-2">
           <CardHeader>
-            <CardTitle>Booking for {booking.service.name}</CardTitle>
+            <CardTitle>Booking for {booking.offer.title}</CardTitle>
             <CardDescription>Manage this booking</CardDescription>
           </CardHeader>
           <CardContent>

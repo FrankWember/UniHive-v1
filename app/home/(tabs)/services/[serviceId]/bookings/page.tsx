@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getServiceById } from '@/utils/data/services'
-import { getBookingsForService } from '@/actions/service-bookings'
+import { getBookingsByServiceId } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
 import { BackButton } from '@/components/back-button'
 import { BookingsTable } from './_components/bookings-table'
@@ -13,7 +13,7 @@ export default async function ServiceBookingsPage({ params }: { params: { servic
   const service = await getServiceById(params.serviceId)
   if (!service || service.providerId !== user.id) return notFound()
 
-  const bookings = await getBookingsForService(params.serviceId)
+  const bookings = await getBookingsByServiceId(params.serviceId)
 
   return (
     <div className="flex flex-col min-h-screen w-screen">

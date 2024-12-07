@@ -1,16 +1,19 @@
 /**
  * An array of routes that are accessible to the public
  * These routes do not require authentication
- * @type {string[]}
+ * @type {RegExp[]}
  */
 export const publicRoutes = [
-  "/",
-  "/home",
-  "/home/services",
-  "/home/products",
-  "/home/events",
-  "/auth/new-verification",
-  "/api/uploadthing",
+  /^\/$/,
+  /^\/home$/,
+  /^\/home\/services$/,
+  /^\/home\/services\/[^/]+$/,
+  /^\/home\/products$/,
+  /^\/home\/products\/[^/]+$/,
+  /^\/home\/events$/,
+  /^\/home\/events\/[^/]+$/,
+  /^\/auth\/new-verification$/,
+  /^\/api\/uploadthing$/,
 ];
 
 /**

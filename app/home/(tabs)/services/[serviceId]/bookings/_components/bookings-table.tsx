@@ -3,13 +3,15 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { BookedServices } from '@prisma/client'
+import { ServiceBooking, ServiceOffer } from '@prisma/client'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 interface BookingsTableProps {
-  bookings: BookedServices[]
+  bookings: (ServiceBooking & {
+    offer: ServiceOffer
+  })[]
 }
 
 export function BookingsTable({ bookings }: BookingsTableProps) {
@@ -25,7 +27,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
   }
 
   const handleViewDetails = (bookingId: string) => {
-    router.push(`/home/services/${bookings[0].serviceId}/bookings/${bookingId}`)
+    router.push(`/home/services/${bookings[0].offer.serviceId}/bookings/${bookingId}`)
   }
 
   return (
@@ -55,21 +57,19 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
               transition={{ duration: 0.3 }}
               style={{ cursor: 'pointer' }}
             >
-              <TableCell>{booking.startTime.toLocaleDateString()}</TableCell>
-              <TableCell>{`${booking.startTime.toLocaleTimeString()} - ${booking.stopTime.toLocaleTimeString()}`}</TableCell>
+              <TableCell>{booking.date.toLocaleDateString()}</TableCell>
+              <TableCell>{`${booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}`}</TableCell>
               <TableCell>
                 <Badge variant={
-                    booking.status === 'pending' ? 'warning' :
-                    booking.status === 'agreed' ? 'info' :
-                    booking.status === 'paid' ? 'success' :
-                    booking.status === 'completed' ? 'success' :
-                    booking.status === 'canceled' ? 'destructive' :
+                    booking.status === 'PENDING' ? 'warning' :
+                    booking.status === 'ACCEPTED' ? 'success' :
+                    booking.status === 'CANCELLED' ? 'destructive' :
                     'default'
                     }>
                     {booking.status}
                 </Badge>
               </TableCell>
-              <TableCell>${booking.price.toFixed(2)}</TableCell>
+              <TableCell>${booking.offer.price.toFixed(2)}</TableCell>
               <TableCell>{booking.location || "Default"}</TableCell>
               <TableCell>
                 <Button onClick={() => handleViewDetails(booking.id)} size="sm">

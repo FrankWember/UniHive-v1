@@ -37,26 +37,26 @@ model User {
 
   accounts Account[]
 
-  services       Service[]
+  services          Service[]
   favouriteServices FavoriteService[]
-  serviceReviews ServiceReview[]
-  bookedServices ServiceBooking[]
+  serviceReviews    ServiceReview[]
+  bookedServices    ServiceBooking[]
 
   products         Product[]
   productsRequests ProductRequest[]
   productReviews   ProductReview[]
   carts            Cart[]
 
-  driver         Driver?
-  ridesRequested Ride[] 
-  studyGroups    StudyGroupMember[]
-  assignments    Assignment[]
+  driver           Driver?
+  ridesRequested   Ride[]
+  studyGroups      StudyGroupMember[]
+  assignments      Assignment[]
   assignmentsVoted AssignmentVote[]
-  eventsCreated  Event[]         
-  eventsAttended EventAttendee[]
+  eventsCreated    Event[]
+  eventsAttended   EventAttendee[]
 
-  paymentsMade     Payment[]  @relation("PaymentsMade")
-  paymentsReceived Payment[]  @relation("PaymentsReceived")
+  paymentsMade     Payment[] @relation("PaymentsMade")
+  paymentsReceived Payment[] @relation("PaymentsReceived")
 }
 
 model Account {
@@ -129,11 +129,10 @@ model Service {
   category        String[]
   availability    Json
 
-  provider User             @relation(fields: [providerId], references: [id])
+  provider User              @relation(fields: [providerId], references: [id])
   offers   ServiceOffer[]
-  bookings ServiceBooking[]
   reviews  ServiceReview[]
-  likes FavoriteService[]
+  likes    FavoriteService[]
 }
 
 model FavoriteService {
@@ -141,8 +140,8 @@ model FavoriteService {
   userId    String
   serviceId String
 
-  user     User   @relation(fields: [userId], references: [id])
-  service  Service @relation(fields: [serviceId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
 }
 
 model ServiceOffer {
@@ -153,26 +152,37 @@ model ServiceOffer {
   discount  Int    @default(0)
 
   service Service @relation(fields: [serviceId], references: [id])
+
+  bookings ServiceBooking[]
 }
 
 model ServiceBooking {
-  id         String   @id @default(cuid())
-  serviceId  String
+  id         String     @id @default(cuid())
+  offerId    String
   customerId String
-  paymentId  String
-  time       Json
-  status     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  paymentId  String?
+  date       DateTime
+  time       DateTime[]
+  status     BookingStatus
+  location   String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
-  service  Service @relation(fields: [serviceId], references: [id])
-  customer User    @relation(fields: [customerId], references: [id])
-  payment  Payment @relation(fields: [paymentId], references: [id])
+  offer    ServiceOffer @relation(fields: [offerId], references: [id])
+  customer User         @relation(fields: [customerId], references: [id])
+  payment  Payment?     @relation(fields: [paymentId], references: [id])
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
 }
 
 model ServiceReview {
   id         String   @id @default(cuid())
-  serviceId  String
+  serviceId  String 
   reviewerId String
   rating     Int
   comment    String
@@ -209,7 +219,7 @@ model Ride {
   isPaid        Boolean  @default(false)
   paymentId     String?
 
-  driver    Driver     @relation(fields: [driverId], references: [id])
+  driver    Driver   @relation(fields: [driverId], references: [id])
   passenger User     @relation(fields: [passengerId], references: [id])
   reciept   Payment? @relation(fields: [paymentId], references: [id])
 }
@@ -462,6 +472,6 @@ model Payment {
   receiver User @relation("PaymentsReceived", fields: [receiverId], references: [id])
 
   ServiceReceipts   ServiceBooking[]
-  RidesReceipts     Ride[]           
+  RidesReceipts     Ride[]
   ProdcuctsReceipts Cart[]
 }

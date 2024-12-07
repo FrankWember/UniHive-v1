@@ -60,7 +60,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
               <div className="flex flex-col gap-2">
                 <Link href={`/home/services`}>
                 <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
-                  <ArrowDownAZ className='h-16 w-16' />
+                  <ArrowDownAZ className='h-12 w-12' />
                 </div>
                 </Link>
                 <h2 className='text-sm md:text-base font-semibold text-center'>All</h2>
@@ -68,13 +68,13 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
               <div className="flex flex-col gap-2">
                 <Link href={`/home/services?favourites=true`}>
                   <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
-                    <Heart className='h-16 w-16' />
+                    <Heart className='h-12 w-12' />
                   </div>
                 </Link>
                 <h2 className='text-sm md:text-base font-semibold text-center'>Favourites</h2>
               </div>
               {categories.map((category) => (
-                <Link key={category.name} href={`/home/services?category=${category.name}`}>
+                <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                   <div className='flex flex-col gap-2'>
                     <Avatar className="h-20 w-20 md:h-24 md:w-24">
                       <AvatarImage src={category.imageUrl} />

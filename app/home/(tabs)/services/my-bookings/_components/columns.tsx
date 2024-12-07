@@ -1,29 +1,30 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { BookedServices } from "@prisma/client"
+import { ServiceBooking } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { MapIcon } from "lucide-react"
 
-export const columns: ColumnDef<BookedServices>[] = [
+export const columns: ColumnDef<ServiceBooking>[] = [
   {
-    accessorKey: "service.name",
+    accessorKey: "offer.title",
     header: "Service",
   },
   {
-    accessorKey: "startTime",
-    header: "Start Time",
+    accessorKey: "date",
+    header: "Date",
     cell: ({ row }) => {
-      return new Date(row.getValue("startTime")).toLocaleString()
+      return new Date(row.getValue("date")).toLocaleDateString()
     },
   },
   {
-    accessorKey: "stopTime",
-    header: "End Time",
+    accessorKey: "time",
+    header: "Time",
     cell: ({ row }) => {
-      return new Date(row.getValue("stopTime")).toLocaleString()
+      const time = [new Date(row.original.time[0]), new Date(row.original.time[1])]
+      return `${time[0]} - ${time[1]}`
     },
   },
   {
@@ -44,11 +45,9 @@ export const columns: ColumnDef<BookedServices>[] = [
     cell: ({ row }) => {
       return (
         <Badge variant={
-          row.getValue("status") === 'pending' ? 'warning' :
-          row.getValue("status") === 'agreed' ? 'info' :
-          row.getValue("status") === 'paid' ? 'success' :
-          row.getValue("status") === 'completed' ? 'success' :
-          row.getValue("status") === 'canceled' ? 'destructive' :
+          row.getValue("status") === 'PENDING' ? 'warning' :
+          row.getValue("status") === 'ACCEPTED' ? 'success' :
+          row.getValue("status") === 'CANCELLED' ? 'destructive' :
           'default'
         }>
           {row.getValue("status")}

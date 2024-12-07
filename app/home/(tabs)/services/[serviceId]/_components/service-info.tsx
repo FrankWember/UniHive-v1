@@ -17,18 +17,22 @@ interface ServiceInfoProps {
     service: Service & {
         provider: User & {
             services: ({
-                bookings: ({
-                    customer: {
-                        id: string
-                    }
-                })[]
+                offers: {
+                    bookings: ({
+                        customer: {
+                            id: string
+                        }
+                    })[]
+                }[]
             })[]
         },
-        bookings: ({
-            customer: {
-                image: string | null;
-            }
-        })[],
+        offers: {
+            bookings: ({
+                customer: {
+                    image: string | null;
+                }
+            })[]
+        }[],
     };
     averageRating: number;
     reviews: any[];
@@ -65,10 +69,16 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         setIsLiked(like)
     }
     
+    let customerList: ({customer: {image: string|null}})[] = []
+    service.offers.map(offer=>{
+        customerList.concat(offer.bookings)
+    })
 
     let providerClientsLength = 0
     service.provider.services.forEach(providerService => {
-        providerClientsLength += providerService.bookings.length
+        providerService.offers.forEach(offer=>{
+            providerClientsLength+=offer.bookings.length
+        })
     })
 
     const copyToClipboard = async (text: string) => {
@@ -116,14 +126,14 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </div>
                     <div className='flex gap-2 p-1'>
                         <div className="flex -space-x-4 overflow-hidden">
-                            {service.bookings.slice(0, 7).map((booking, index) => (
+                            {customerList.slice(0, 7).map((booking, index) => (
                                 <Avatar key={index} className="inline-block h-8 w-8">
                                     <AvatarImage src={booking.customer.image!} alt="C" />
                                     <AvatarFallback>C</AvatarFallback>
                                 </Avatar>
                             ))}
                         </div>
-                        <p className="text-xs underline">{service.bookings.length} active customers</p>
+                        <p className="text-xs underline">{customerList.length} active customers</p>
                     </div>
                     <div className="flex items-center space-x-3">
                         <div className="text-xl font-semibold">{averageRating.toFixed(1)}</div>

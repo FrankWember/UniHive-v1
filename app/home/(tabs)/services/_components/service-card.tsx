@@ -16,10 +16,12 @@ type ServiceProps = {
   service: Service & { 
     reviews: ServiceReview[], 
     provider: User,
-    bookings: ({
-      customer: {
-        image: string|null
-      }
+    offers: ({
+      bookings: ({
+        customer: {
+          image: string|null
+        }
+      })[]
     })[]
   }
 }
@@ -28,6 +30,12 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   const averageRating = service.reviews.length > 0
     ? service.reviews.reduce((acc, review) => acc + review.rating, 0) / service.reviews.length
     : 0
+
+  let customerList: ({customer: {image: string|null}})[] = []
+
+  service.offers.map(offer=>{
+    customerList.concat(offer.bookings)
+  })
 
   return (
     <Link href={`/home/services/${service.id}`}>
@@ -85,14 +93,16 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
               <div className='flex-col gap-1 p-[0.2rem]'>
                 <div className="flex -space-x-3 overflow-hidden">
-                  {service.bookings.slice(0, 7).map((booking, index) => (
+                  {customerList.slice(0, 7).map((booking, index) => (
                     <Avatar key={index} className="inline-block h-6 w-6">
                       <AvatarImage src={booking.customer.image!} alt="C" />
                       <AvatarFallback>C</AvatarFallback>
                     </Avatar>
                   ))}
                 </div>
-                <p className="text-[0.4rem] md:text-[0.5rem] underline">{service.bookings.length} active customers</p>
+                <p className="text-[0.4rem] md:text-[0.5rem] underline">
+                  {customerList.length} active customers
+                </p>
               </div>
             </div>
           </div>

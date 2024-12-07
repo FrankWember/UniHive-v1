@@ -26,19 +26,22 @@ interface ServiceDetailsProps {
   service: Service & {
     provider: User & {
       services: ({
-        bookings: ({
-          customer: {
-            id: string
-          }
-        })[]
+        offers: {
+          bookings: ({
+            customer: {
+              id: string
+            }
+          })[]
+        }[]
       })[]
     },
-    bookings: ({
-      customer: {
-        image: string|null
-      }
+    offers: (ServiceOffer & {
+      bookings: ({
+        customer: {
+          image: string|null
+        }
+      })[]
     })[],
-    offers: ServiceOffer[]
   }
   reviews: (ServiceReview & {
     reviewer: User
@@ -55,11 +58,6 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
   const isMobile = useMediaQuery('(max-width: 768px)')
-  let providerClientsLength = 0
-
-  service.provider.services.forEach(providerService => {
-    providerClientsLength += providerService.bookings.length
-  })
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()
@@ -223,7 +221,9 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                           </Badge>
                         )}
                       </div>
-                      <Button className="mr-3">Book</Button>
+                      <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
+                        Book
+                      </Button>
                     </div>
                   </div>
               ))}
@@ -294,7 +294,9 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                         </Badge>
                       )}
                     </div>
-                    <Button className="mr-3">Book</Button>
+                    <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
+                      Book
+                    </Button>
                   </div>
                 </div>
             ))}
