@@ -38,6 +38,7 @@ model User {
   accounts Account[]
 
   services       Service[]
+  favouriteServices FavoriteService[]
   serviceReviews ServiceReview[]
   bookedServices ServiceBooking[]
 
@@ -132,6 +133,16 @@ model Service {
   offers   ServiceOffer[]
   bookings ServiceBooking[]
   reviews  ServiceReview[]
+  likes FavoriteService[]
+}
+
+model FavoriteService {
+  id        String @id @default(cuid())
+  userId    String
+  serviceId String
+
+  user     User   @relation(fields: [userId], references: [id])
+  service  Service @relation(fields: [serviceId], references: [id])
 }
 
 model ServiceOffer {

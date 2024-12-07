@@ -36,6 +36,7 @@ export async function getServiceById(serviceId: string) {
           }
         }
       },
+      offers: true
     }
   })
 }

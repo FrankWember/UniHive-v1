@@ -8,7 +8,7 @@ interface MatchedServicesProps {
 }
 
 const ServicesSkeleton = () => (
-  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5 p-6">
+  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-5 px-3 py-6">
     {[...Array(15)].map((_, i) => (
       <div key={i} className="flex flex-col gap-2">
         <Skeleton className="h-56 w-full rounded-lg" />
@@ -21,7 +21,7 @@ const ServicesContent: React.FC<MatchedServicesProps> = async ({ searchParams })
   const services = await getMatchedServices(searchParams)
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-5 p-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-5 px-3 py-6">
       {services.map((service) => (
         <ServiceCard key={service.id} service={service} />
       ))}

@@ -1,7 +1,15 @@
 "use client"
 
 import { useMediaQuery } from '@/hooks/use-media-query';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -12,76 +20,122 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button';
-import { ChatBubbleIcon, DotsVerticalIcon, Pencil1Icon, Pencil2Icon, PersonIcon, TrashIcon } from '@radix-ui/react-icons';
-import Link from 'next/link';
 import { Service } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCurrentUser } from '@/hooks/use-current-user';
 import { deleteService } from '@/actions/services';
-import { NotebookIcon } from 'lucide-react';
+import { 
+    BookOpen,
+    MessageCircle,
+    Pencil,
+    Settings,
+    Trash2,
+    User,
+    PanelRight
+} from 'lucide-react';
 
-const ServiceOptions = ({ service }: {service: Service}) => {
-  const isMobile = useMediaQuery('(max-width: 768px)');
-  const router = useRouter()
-  const currentUser = useCurrentUser()
+interface ServiceOptionsProps {
+    service: Service;
+}
 
-  const handleDelete = async () => {
-    await deleteService(service.id)
-    router.push('/home/services')
-  }
+export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
+    const isMobile = useMediaQuery('(max-width: 768px)');
+    const router = useRouter()
+    const currentUser = useCurrentUser()
+    const isOwner = currentUser?.id === service.providerId;
 
-  const handleEdit = () => {
-    router.push(`/home/services/${service.id}/edit`)
-  }
+    const handleDelete = async () => {
+        await deleteService(service.id)
+        router.push('/home/services')
+    }
 
-  const handleBookings = () => {
-    router.push(`/home/services/${service.id}/bookings`)
-  }
-
-  return (
-    <>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="icon" variant="outline">
-                <DotsVerticalIcon />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {currentUser && currentUser?.id === service.providerId ? (
-                <>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/bookings`)}><NotebookIcon className="mr-2" />Bookings</DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/edit`)}><Pencil1Icon className="mr-2" />Edit</DropdownMenuItem>           
-                <AlertDialog>
-                    <AlertDialogTrigger>
-                        <DropdownMenuItem><TrashIcon className="mr-2" />Delete</DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your service.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-                </>
-            ):(
-              <>
-              <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}`)}><PersonIcon className="mr-2" />View Provider</DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>router.push(`/home/services/${service.id}/review`)}><Pencil2Icon className="mr-2" />Review</DropdownMenuItem>
-              <DropdownMenuItem onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}><ChatBubbleIcon className="mr-2" />Chat</DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-    </>
-  );
-};
-
-export default ServiceOptions;
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button size="icon" variant="outline">
+                    <PanelRight className="h-4 w-4" />
+                </Button>
+            </SheetTrigger>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle className="text-2xl font-bold">Service Options</SheetTitle>
+                    <SheetDescription>
+                        {isOwner ? 'Manage your service settings' : 'Interact with this service'}
+                    </SheetDescription>
+                </SheetHeader>
+                <ScrollArea className="w-full h-[80vh]">
+                    <div className="space-y-4 py-4">
+                        <div className="px-3 py-2">
+                            <div className="space-y-1">
+                                {isOwner ? (
+                                    <>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/${service.id}/bookings`)}
+                                        >
+                                            <BookOpen className="mr-2 h-4 w-4" />
+                                            Bookings
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/${service.id}/edit`)}
+                                        >
+                                            <Pencil className="mr-2 h-4 w-4" />
+                                            Edit Service
+                                        </Button>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-full justify-start text-destructive"
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    Delete Service
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This action cannot be undone. This will permanently delete your service.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/provider/${service.providerId}`)}
+                                        >
+                                            <User className="mr-2 h-4 w-4" />
+                                            View Provider
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/provider/${service.providerId}/chat`)}
+                                        >
+                                            <MessageCircle className="mr-2 h-4 w-4" />
+                                            Chat with Provider
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
+            </SheetContent>
+        </Sheet>
+    );
+}

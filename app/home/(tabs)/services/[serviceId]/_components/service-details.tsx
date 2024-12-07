@@ -3,14 +3,8 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
-import { UserIcon, Star } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,32 +13,36 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Service, ServiceReview, User } from '@prisma/client'
+import { Service, ServiceOffer, ServiceReview, User } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { submitReview, updateReview } from '@/actions/service-reviews'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { BeatLoader } from 'react-spinners'
 import { ReviewsSection } from './review-section'
+import { ServiceInfo } from './service-info'
+import { Button } from '@/components/ui/button'
 
 interface ServiceDetailsProps {
   service: Service & {
     provider: User & {
       services: ({
-        customer: {
-          id: string
-        }
+        bookings: ({
+          customer: {
+            id: string
+          }
+        })[]
       })[]
     },
     bookings: ({
       customer: {
         image: string|null
       }
-    })[]
+    })[],
+    offers: ServiceOffer[]
   }
   reviews: (ServiceReview & {
     reviewer: User
-  })[]
+  })[],
 }
 
 
@@ -57,7 +55,11 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
   const isMobile = useMediaQuery('(max-width: 768px)')
-  let providerClientsLength = service.provider.services.length
+  let providerClientsLength = 0
+
+  service.provider.services.forEach(providerService => {
+    providerClientsLength += providerService.bookings.length
+  })
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()
@@ -110,7 +112,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
   if (!isMobile) {
     return (
-      <div className='flex flex-col w-full max-w-7xl min-h-screen h-full px-10 overflow-hidden'>
+      <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 overflow-hidden'>
         <div className='flex justify-between px-3 py-4'>
           <Breadcrumb>
             <BreadcrumbList>
@@ -174,84 +176,53 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
                 </div>
               ))}
             </div>
+
+            <Separator className='my-8' />
+
+            {/* Reviews section */}
+            <div className="px-4 mx-auto">
+              <ReviewsSection 
+                averageRating={averageRating} 
+                ratingCounts={ratingCounts} 
+                reviews={reviews} 
+                newReview={newReview} 
+                setNewReview={setNewReview} 
+                isSubmitting={isSubmitting} 
+                handleSubmitReview={handleSubmitReview}
+              />
+            </div>
           </div>
 
-          {/* Service Details */}
-          <div className='flex flex-col gap-4 py-4 w-full'>
-            <p className="text-2xl underline font-bold">{service.name}</p>
-            <div className="flex gap-3 justify-between">
-              <div className="flex gap-1">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} />
-                  <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-2">
-                  <span className="flex gap-1 items-center">
-                    <span className="text-xl font-semibold">{service.provider.name}</span>
-                    <span className="text-sm text-muted-foreground">({providerClientsLength} clients served)</span>
-                  </span>
-                  <div className="flex items-center space-x-3">
-                    <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-                    <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`h-4 w-4 ${
-                            star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ({reviews.length})
-                    </div>
+          {/* Service Info */}
+          <div className='flex flex-col mx-4'>
+            <ServiceInfo 
+              service={service}
+              averageRating={averageRating}
+              reviews={reviews}
+            /> 
+            <Separator className="my-4" />
+
+            {/* Offers section */}
+            <div className='flex flex-col gap-3'>
+              {service.offers.map((offer, index)=> (
+                <div key={index} className="grid grid-cols-5">
+                  <div className="col-span-3 flex flex-col">
+                    <p className="text-xl font-semibold">{offer.title}</p>
+                    {offer.discount>0 && (
+                      <Badge variant="success">
+                        Save up to {offer.discount}%
+                      </Badge>
+                    )}
                   </div>
-                  <span className="text-base">{service.defaultLocation}</span>
+                  <span>
+                    {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
+                    <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
+                  </span>
+                  <div>
+                    <Button>Book</Button>
+                  </div>
                 </div>
-              </div>
-
-              <div className='flex-col gap-2 p-1'>
-                <div className="flex -space-x-4 overflow-hidden">
-                  {service.bookings.slice(0, 7).map((booking, index) => (
-                    <Avatar key={index} className="inline-block h-8 w-8">
-                      <AvatarImage src={booking.customer.image!} alt="C" />
-                      <AvatarFallback>C</AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                <p className="text-sm underline">{service.bookings.length} active customers</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 justify-between">
-              <div className="flex items-center mt-2">
-                <span className='text-sm mr-4'>Starts at</span>
-                <span className='text-green-500 font-semibold text-2xl'>$</span>
-                <span className="font-semibold text-2xl mr-3">{(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</span>
-                {service.discount > 0 && (
-                  <span className="text-sm text-muted-foreground line-through">${service.price.toFixed(2)}</span>
-                )}
-              </div>
-              <div className="flex justify-end">
-                <Link href={`/home/services/${service.id}/book`}>
-                  <Button>Book</Button>
-                </Link>
-              </div>
-            </div>
-
-            <Separator className="my-8" />
-  
-            {/* Tabs section */}
-            <div className="max-w-4xl">
-              <ReviewsSection 
-                  averageRating={averageRating} 
-                  ratingCounts={ratingCounts} 
-                  reviews={reviews} 
-                  newReview={newReview} 
-                  setNewReview={setNewReview} 
-                  isSubmitting={isSubmitting} 
-                  handleSubmitReview={handleSubmitReview}
-                />
+              ))}
             </div>
           </div>
         </div>
@@ -263,107 +234,79 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
       <div className="w-full m-0 p-0">
         <div className="flex flex-col gap-8 p-0 m-0">
           {/* Images section */}
-          <Carousel setApi={setApi} className="w-full">
-            <CarouselContent>
-              {service.images.map((image, index) => (
-                <CarouselItem key={index}>
-                  <div className="aspect-square relative w-full">
-                    <Image
-                      src={image}
-                      alt={`${service.name} - Image ${index + 1}`}
-                      fill
-                      className="object-cover rounded-b-lg"
-                    />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <div className="absolute bottom-8 right-14 flex items-center gap-2">
-              <CarouselPrevious />
-              <CarouselNext />
+          <div className="flex flex-col gap-2">
+            <Carousel setApi={setApi} className="w-full">
+              <CarouselContent>
+                {service.images.map((image, index) => (
+                  <CarouselItem key={index}>
+                    <div className="aspect-square relative w-full">
+                      <Image
+                        src={image}
+                        alt={`${service.name} - Image ${index + 1}`}
+                        fill
+                        className="object-cover rounded-b-lg"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="absolute bottom-8 right-14 flex items-center gap-2">
+                <CarouselPrevious />
+                <CarouselNext />
+              </div>
+            </Carousel>
+            <div className="py-1 text-center text-sm text-muted-foreground">
+              Image {current} of {count}
             </div>
-          </Carousel>
-          <div className="py-1 text-center text-sm text-muted-foreground">
-            Image {current} of {count}
           </div>
   
-          {/* Service Details */}
-          <div className='flex flex-col gap-4 p-4 w-full'>
-            <p className="text-2xl underline font-bold">{service.name}</p>
-            <div className="flex gap-3 justify-between">
-              <div className="flex gap-1">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} />
-                  <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col gap-2">
-                  <span className="flex gap-1 items-center">
-                    <span className="text-xl font-semibold">{service.provider.name}</span>
-                    <span className="text-sm text-muted-foreground">({providerClientsLength} clients served)</span>
-                  </span>
-                  <div className="flex items-center space-x-3">
-                    <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-                    <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`h-4 w-4 ${
-                            star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      ({reviews.length})
-                    </div>
-                  </div>
-                  <span className="text-base">{service.defaultLocation}</span>
-                </div>
-              </div>
+          {/* Service Info */}
+          <div className="mx-8">
+            <ServiceInfo 
+              service={service}
+              averageRating={averageRating}
+              reviews={reviews}
+            />
+          </div>
+          
+          <Separator className="my-4" />
 
-              <div className='flex-col gap-2 p-1'>
-                <div className="flex -space-x-4 overflow-hidden">
-                  {service.bookings.slice(0, 7).map((booking, index) => (
-                    <Avatar key={index} className="inline-block h-8 w-8">
-                      <AvatarImage src={booking.customer.image!} alt="C" />
-                      <AvatarFallback>C</AvatarFallback>
-                    </Avatar>
-                  ))}
+          {/* Offers section */}
+          <div className='flex flex-col gap-3 mx-8'>
+            {service.offers.map((offer, index)=> (
+              <div key={index} className="grid grid-cols-5">
+                <div className="col-span-3 flex flex-col">
+                  <p className="text-xl font-semibold">{offer.title}</p>
+                  {offer.discount>0 && (
+                    <Badge variant="success">
+                      Save up to {offer.discount}%
+                    </Badge>
+                  )}
                 </div>
-                <p className="text-sm underline">{service.bookings.length} active customers</p>
-              </div>
-            </div>
-
-            <div className="flex gap-4 justify-between">
-              <div className="flex items-center mt-2">
-                <span className='text-sm mr-4'>Starts at</span>
-                <span className='text-green-500 font-semibold text-2xl'>$</span>
-                <span className="font-semibold text-2xl mr-3">{(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}</span>
-                {service.discount > 0 && (
-                  <span className="text-sm text-muted-foreground line-through">${service.price.toFixed(2)}</span>
-                )}
-              </div>
-              <div className="flex justify-end">
-                <Link href={`/home/services/${service.id}/book`}>
+                <span>
+                  {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
+                  <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
+                </span>
+                <div>
                   <Button>Book</Button>
-                </Link>
+                </div>
               </div>
-            </div>
+            ))}
+          </div>
 
-            <Separator className="my-8" />
+          <Separator className="my-4" />
   
-            {/* Tabs section */}
-            <div className="max-w-4xl">
-              <ReviewsSection 
-                  averageRating={averageRating} 
-                  ratingCounts={ratingCounts} 
-                  reviews={reviews} 
-                  newReview={newReview} 
-                  setNewReview={setNewReview} 
-                  isSubmitting={isSubmitting} 
-                  handleSubmitReview={handleSubmitReview}
-                />
-            </div>
+          {/* Reviews section */}
+          <div className="mx-8">
+            <ReviewsSection 
+              averageRating={averageRating} 
+              ratingCounts={ratingCounts} 
+              reviews={reviews} 
+              newReview={newReview} 
+              setNewReview={setNewReview} 
+              isSubmitting={isSubmitting} 
+              handleSubmitReview={handleSubmitReview}
+            />
           </div>
         </div>
       </div>
