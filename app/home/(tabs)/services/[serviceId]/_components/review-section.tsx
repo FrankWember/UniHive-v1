@@ -41,7 +41,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
 }) => {
     
     return (
-      <div className='flex flex-col gap-2'>
+      <div className='flex flex-col gap-4'>
         <h3 className='text-xl font-bold'>Reviews</h3>
         <div className="flex items-center space-x-4">
           <div className="text-4xl font-bold">{averageRating.toFixed(1)}</div>
@@ -68,37 +68,6 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
                 {(((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0}%
               </span>
             </div>
-          ))}
-        </div>
-        <div className="space-y-4">
-          {reviews.map((review) => (
-            <Card key={review.id}>
-              <CardContent className="pt-6">
-                <div className="flex items-center space-x-4 mb-2">
-                  <Avatar>
-                    <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} />
-                    <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold">{review.reviewer.name}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {new Date(review.reviewDate).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <p className="text-sm">{review.comment}</p>
-              </CardContent>
-            </Card>
           ))}
         </div>
         <Dialog>
@@ -136,6 +105,37 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
             </div>
           </DialogContent>
         </Dialog>
+        <div className="space-y-4">
+          {reviews.map((review) => (
+            <Card key={review.id}>
+              <CardContent className="pt-6">
+                <div className="flex items-center space-x-4 mb-2">
+                  <Avatar>
+                    <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} />
+                    <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-semibold">{review.reviewer.name}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {new Date(review.reviewDate).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center mb-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-4 w-4 ${
+                        star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm">{review.comment}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
     )
   }

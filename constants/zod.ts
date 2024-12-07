@@ -1,4 +1,5 @@
 import { ProductState } from "@prisma/client";
+import { title } from "process";
 import * as z from "zod"
 
 export const IDSignInSchema = z.object({
@@ -87,6 +88,16 @@ export const ServiceSchema = z.object({
   .min(1, "Default location is required"),
   isMobile: z.boolean().default(false),
   availability: AvailabilitySchema
+})
+
+export const ServiceOfferSchema = z.object({
+  title: z.string().min(2, {
+    message: "Title must be at least 2 characters.",
+  }),
+  price: z.number().min(0, {
+    message: "Price must be a positive number.",
+  }),
+  discount: z.number().default(0).optional(),
 })
 
 export const EventSchema = z.object({

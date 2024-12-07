@@ -112,7 +112,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
   if (!isMobile) {
     return (
-      <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 overflow-hidden'>
+      <div className='flex flex-col w-full max-w-7xl min-h-screen h-full px-12 overflow-hidden'>
         <div className='flex w-full justify-between px-3 py-4'>
           <Breadcrumb>
             <BreadcrumbList>
@@ -129,9 +129,11 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <Badge variant={service.isMobileService ? 'success' : 'secondary'}>
-            {service.isMobileService ? 'Mobile Service' : 'In-House Service'}
-          </Badge>          
+          {service.isMobileService && (
+            <Badge variant='success'>
+              Mobile Service
+            </Badge>
+          )}      
         </div>
         <div className='flex space-x-8'>
           {/* Service Images */}
@@ -205,23 +207,25 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             {/* Offers section */}
             <div className='flex flex-col gap-3'>
               {service.offers.map((offer, index)=> (
-                <div key={index} className="grid grid-cols-5">
-                  <div className="col-span-3 flex flex-col">
-                    <p className="text-xl font-semibold">{offer.title}</p>
-                    {offer.discount>0 && (
-                      <Badge variant="success">
-                        Save up to {offer.discount}%
-                      </Badge>
-                    )}
+                  <div  key={index} className="flex flex-col border rounded-md p-3">
+                    <p className="text-xl">{offer.title}</p>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className='flex items-center gap-2'>
+                        {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
+                        <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
+                        {offer.discount>0 ? (
+                          <Badge variant="success">
+                            Save up to {offer.discount}%
+                          </Badge>
+                        ):(
+                          <Badge variant="secondary">
+                            No discount
+                          </Badge>
+                        )}
+                      </div>
+                      <Button className="mr-3">Book</Button>
+                    </div>
                   </div>
-                  <span>
-                    {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                    <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                  </span>
-                  <div>
-                    <Button>Book</Button>
-                  </div>
-                </div>
               ))}
             </div>
           </div>
@@ -274,23 +278,25 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           {/* Offers section */}
           <div className='flex flex-col gap-3 mx-8'>
             {service.offers.map((offer, index)=> (
-              <div key={index} className="grid grid-cols-5">
-                <div className="col-span-3 flex flex-col">
-                  <p className="text-xl font-semibold">{offer.title}</p>
-                  {offer.discount>0 && (
-                    <Badge variant="success">
-                      Save up to {offer.discount}%
-                    </Badge>
-                  )}
+                <div  key={index} className="flex flex-col border rounded-md p-3">
+                  <p className="text-xl">{offer.title}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className='flex items-center gap-2'>
+                      {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
+                      <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
+                      {offer.discount>0 ? (
+                        <Badge variant="success">
+                          Save up to {offer.discount}%
+                        </Badge>
+                      ):(
+                        <Badge variant="secondary">
+                          No discount
+                        </Badge>
+                      )}
+                    </div>
+                    <Button className="mr-3">Book</Button>
+                  </div>
                 </div>
-                <span>
-                  {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                  <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                </span>
-                <div>
-                  <Button>Book</Button>
-                </div>
-              </div>
             ))}
           </div>
 

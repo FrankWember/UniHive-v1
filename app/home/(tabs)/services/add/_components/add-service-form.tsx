@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import {
   Alert,
@@ -56,7 +55,6 @@ export const AddServiceForm = () => {
       router.refresh()
     } catch (error) {
       setError("We couldn't create your service. Please try again!")
-      console.error('Error creating service:', error)
     } finally {
       setIsSubmitting(false)
     }

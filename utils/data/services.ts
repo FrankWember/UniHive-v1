@@ -127,3 +127,15 @@ export async function getServiceReviews (serviceId: string) {
         include: {reviewer: true}
     })
 }
+
+export async function getServiceOfferById (offerId: string) {
+    return await prisma.serviceOffer.findUnique({
+        where: {id: offerId},
+    })
+}
+
+export async function getServiceOffers (serviceId: string) {
+    return await prisma.serviceOffer.findMany({
+        where: {serviceId: serviceId},
+    })
+}

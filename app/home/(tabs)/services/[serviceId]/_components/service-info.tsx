@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Service, ServiceOffer, User } from '@prisma/client'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
 import { Badge } from "@/components/ui/badge"
+import { WeeklyAvailabilityCalendar } from "./weekly-availability-calendar"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -73,18 +74,18 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                         <p className="text-xs underline">{service.bookings.length} active customers</p>
                     </div>
                     <div className="flex items-center space-x-3">
-                        <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
+                        <div className="text-xl font-semibold">{averageRating.toFixed(1)}</div>
                         <div className="flex items-center">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <Star
                                     key={star}
-                                    className={`h-4 w-4 ${
+                                    className={`h-6 w-6 ${
                                         star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                                     }`}
                                 />
                             ))}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                             ({reviews.length})
                         </div>
                     </div>
@@ -104,6 +105,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                         </span>
                     )}
                 </div>
+            </div>
+
+            <div className="flex w-full">
+                <WeeklyAvailabilityCalendar availability={service.availability!} />
             </div>
         </div>
     )
