@@ -122,10 +122,10 @@ export function AvailabilityInput({
           if (!value[day]?.length) return null
           
           return (
-            <div key={day} className="space-y-2">
+            <div key={day} className="space-y-2 items-center">
               <Label className="capitalize">{day}</Label>
               {value[day].map((slot, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={index} className="flex flex-col md:flex-row items-center space-y-2 md:space-x-2">
                   <TimePickerDemo
                     date={parseTimeString(slot[0])}
                     setDate={(newDate) => {
@@ -134,7 +134,9 @@ export function AvailabilityInput({
                       }
                     }}
                   />
-                  <span className="flex mx-3 items-center"><ArrowRightIcon /></span>
+                  <span className="flex mx-3 md:my-3 md:mx-0 items-center">
+                    <ArrowRightIcon className="rotate-90 md:rotate-0" />
+                  </span>
                   <TimePickerDemo
                     date={parseTimeString(slot[1])}
                     setDate={(newDate) => {
