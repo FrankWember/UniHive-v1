@@ -24,13 +24,15 @@ interface LocationInputProps {
   onChange?: (value: string) => void
   className?: string
   placeholder?: string
+  disabled?: boolean
 }
 
 export function LocationInput({
   value,
   onChange,
   className,
-  placeholder = "Select location..."
+  placeholder = "Select location...",
+  disabled = false
 }: LocationInputProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -42,6 +44,7 @@ export function LocationInput({
           role="combobox"
           aria-expanded={open}
           className={cn("w-full justify-between", className)}
+          disabled={disabled}
         >
           {value || placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

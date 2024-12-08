@@ -277,6 +277,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           {/* Offers section */}
           <div className='flex flex-col gap-3 mx-8'>
+            <h1 className="text-3xl font-bold mb-4">Offers</h1>
             {service.offers.map((offer, index)=> (
                 <div  key={index} className="flex flex-col border rounded-md p-3">
                   <p className="text-xl">{offer.title}</p>

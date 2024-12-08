@@ -158,13 +158,6 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
             >
               Accept
             </Button>
-            <Button 
-              variant="destructive" 
-              onClick={handleCancel} 
-              disabled={isLoading}
-            >
-              Cancel
-            </Button>
           </>
         )}
       </CardFooter>

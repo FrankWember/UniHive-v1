@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { TimePickerDemo } from '@/components/ui/time-picker-12h-demo'
@@ -88,7 +88,7 @@ export function BookingForm({ offerId, service }: BookingFormProps) {
           )}
         />
 
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-4">
           <FormField
             control={form.control}
             name="startTime"
@@ -129,11 +129,14 @@ export function BookingForm({ offerId, service }: BookingFormProps) {
           name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Location (Optional)</FormLabel>
+              <FormLabel>Location {service.isMobileService? "" : " (Not Mobile)"}</FormLabel>
               <FormControl>
-                <LocationInput {...field} />
+                <LocationInput {...field} disabled={service.isMobileService?false:true} />
               </FormControl>
               <FormMessage />
+              {!service.isMobileService && (
+                <FormDescription>You will have to get to the seller's location above</FormDescription>
+              )}
             </FormItem>
           )}
         />

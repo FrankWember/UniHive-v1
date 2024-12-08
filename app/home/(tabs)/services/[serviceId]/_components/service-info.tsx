@@ -116,10 +116,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                         </span>
                     </div>
                     <div className="flex gap-3">
-                        <Badge variant="secondary" className="text-sm">
+                        <Badge variant="secondary" className="text-[0.6rem]">
                             {providerClientsLength} clients served
                         </Badge>
-                        <Button className="flex text-sm h-6 mr-3" variant="secondary">
+                        <Button className="flex text-[0.6rem] h-6 mr-3" variant="secondary">
                             <MapPin className="mr-1 h-4 w-4" />
                             {service.defaultLocation}
                         </Button>
