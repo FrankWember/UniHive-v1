@@ -7,13 +7,13 @@ export const publicRoutes = [
   "/",
   "/home",
   "/home/services",
-  "/home/services/:serviceId",
+  "/home/services/:serviceId*",
   "/api/services",
   "/home/products",
-  "/home/products/:productId",
+  "/home/products/:productId*",
   "/api/products",
   "/home/events",
-  "/home/events/:eventId",
+  "/home/events/:eventId*",
   "/auth/new-verification",
   "/api/uploadthing",
 ];
@@ -36,22 +36,6 @@ export const authRoutes = [
  * @type {string}
  */
 export const apiAuthPrefix = "/api/auth";
-
-/**
- * Routes that require authentication
- * @type {RegExp[]}
- */
-export const protectedRoutes = [
-  /^\/home\/services\/add$/,
-  /^\/home\/services\/my-services$/,
-  /^\/home\/services\/[^/]+\/edit$/,
-  /^\/home\/services\/[^/]+\/book$/,
-  /^\/home\/products\/add$/,
-  /^\/home\/products\/my-products$/,
-  /^\/home\/products\/[^/]+\/edit$/,
-  /^\/home\/events\/create$/,
-  /^\/home\/events\/[^/]+\/edit$/,
-];
 
 /**
  * The default redirect path after loggin in

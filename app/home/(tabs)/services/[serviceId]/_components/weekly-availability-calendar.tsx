@@ -54,12 +54,6 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
               }
             }}
-            disabled={
-              {
-                before: startOfWeek(new Date()),
-                after: addDays(startOfWeek(new Date()), 7)
-              }
-            }
           />
         </CardContent>
       </Card>

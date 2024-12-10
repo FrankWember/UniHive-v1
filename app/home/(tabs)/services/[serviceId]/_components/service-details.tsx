@@ -265,7 +265,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           </div>
   
           {/* Service Info */}
-          <div className="mx-8">
+          <div className="mx-4">
             <ServiceInfo 
               service={service}
               averageRating={averageRating}
