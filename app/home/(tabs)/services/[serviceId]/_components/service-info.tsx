@@ -1,7 +1,7 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Heart, MapPin, Star } from 'lucide-react'
+import { Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Service, ServiceOffer, User } from '@prisma/client'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
@@ -12,6 +12,7 @@ import { Share1Icon } from "@radix-ui/react-icons"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import React from "react"
 import { isFavouriteService, likeService } from "@/actions/services"
+import { useRouter } from "next/navigation"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -41,6 +42,7 @@ interface ServiceInfoProps {
 export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProps) => {
     const { toast } = useToast()
     const user = useCurrentUser()
+    const router = useRouter()
     const [isLiked, setIsLiked] = React.useState(false)
 
     React.useEffect(() => {
@@ -156,9 +158,9 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
 
             <div className="flex gap-4 justify-between">
                 <div className="flex items-center mt-2">
-                    <span className='text-sm mr-4'>Starts at</span>
-                    <span className='text-green-500 font-semibold text-3xl'>$</span>
-                    <span className="font-semibold text-3xl mr-3">
+                    <span className='text-[0.6rem] md:text-sm mr-4'>Starts at</span>
+                    <span className='text-green-500 font-semibold text-2xl'>$</span>
+                    <span className="font-semibold text-2xl mr-3">
                         {(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}
                     </span>
                     {service.discount > 0 && (
@@ -173,7 +175,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </Button>
                     <Button variant="outline" size="icon" onClick={handleLike}>
                         <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                    </Button>                
+                    </Button> 
+                    <Button size="icon" onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}>
+                        <MessageCircle className="h-4 w-4" />
+                    </Button>        
                 </div>
             </div>
 

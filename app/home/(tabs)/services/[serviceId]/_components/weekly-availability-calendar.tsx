@@ -22,6 +22,8 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
 
   const eventDates = events.map((event: CalendarEvent) => event.start)
 
+  const unAvailableDays = []
+
   const renderDaySummary = (day: Date) => {
     const dayEvents = events.filter((event: CalendarEvent) => isSameDay(event.start, day))
     if (dayEvents.length === 0) return <p>Not available</p>
@@ -34,7 +36,7 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
 
   return (
     <div className="flex flex-col lg:flex-row gap-4">
-      <Card className="flex-grow">
+      <Card className="flex-grow w-full">
         <CardHeader>
           <CardTitle>Weekly Availability</CardTitle>
         </CardHeader>
@@ -43,7 +45,7 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-md border"
+            className="rounded-md border w-full"
             modifiers={{
               available: eventDates,
             }}
@@ -52,10 +54,16 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
               }
             }}
+            disabled={
+              {
+                before: startOfWeek(new Date()),
+                after: addDays(startOfWeek(new Date()), 7)
+              }
+            }
           />
         </CardContent>
       </Card>
-      <Card className="w-full lg:w-64">
+      <Card className="w-full min-w-64 lg:w-64">
         <CardHeader>
           <CardTitle>Availability Summary</CardTitle>
         </CardHeader>

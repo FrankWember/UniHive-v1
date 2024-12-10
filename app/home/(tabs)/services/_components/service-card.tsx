@@ -5,12 +5,9 @@ import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
 import { Service, ServiceReview, User } from '@prisma/client'
 import Link from 'next/link'
-import { useCurrentUser } from '@/hooks/use-current-user'
-import { useRouter } from 'next/navigation'
 import { Star } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { VerifiedIcon } from '@/components/icons/verified-icon'
-import { useIsMobile } from '@/hooks/use-mobile'
 
 type ServiceProps = {
   service: Service & { 
@@ -59,10 +56,10 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
               <AvatarImage src={service.provider.image!} />
               <AvatarFallback>{service.provider.name![0] || service.provider.email[0]}</AvatarFallback>
             </Avatar>
-            <VerifiedIcon className='h-6 w-6'/>
+            <VerifiedIcon className='h-4 w-4'/>
           </div>
           <div className="flex flex-col gap-[0.1rem] justify-start">
-            <p className='text-[0.75rem] md:text-[0.85rem] underline'>{service.name}</p>
+            <p className='text-[0.75rem] md:text-[0.85rem] underline truncate max-w-[12rem]'>{service.name}</p>
             <p className='space-x-1'>
               <span className='text-[0.5rem]' >Starts at</span>
               <span className='text-base md:text-lg font-semibold'>${(service.price - (service.price * service.discount / 100)).toFixed(2)}</span>
@@ -70,7 +67,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
             <div className='flex gap-1 justify-start items-center'>
               <div className='flex flex-col gap-[0.1rem] justify-start'>
-                <p className="text-[0.6rem] text-muted-foreground">
+                <p className="text-[0.6rem] text-muted-foreground truncate max-w-[6rem]">
                   {service.defaultLocation}, SUIE
                 </p>
                 <div className="flex items-center space-x-1">

@@ -51,13 +51,13 @@ interface ServiceDetailsProps {
 
 
 export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews }) => {
-  const my_review = reviews.find(review => review.reviewer.id === service.provider.id)
-  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
   const [currentImgIndex, setCurrentImageIndex] = useState(0)
   const isMobile = useMediaQuery('(max-width: 768px)')
+  const my_review = reviews.find(review => review.reviewer.id === user?.id)
+  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()

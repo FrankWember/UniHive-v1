@@ -37,13 +37,14 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product, reviews }: ProductDetailsProps) {
-  const my_review = reviews.find(review => review.reviewer.id === product.seller.id)
-  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { toast } = useToast()
+
+  const my_review = reviews.find(review => review.reviewer.id === user?.id)
+  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
 
   // Image stuff
   const [currentImgIndex, setCurrentImageIndex] = useState(0)

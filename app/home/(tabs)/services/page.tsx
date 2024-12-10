@@ -85,7 +85,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 </Link>
               ))}
             </div>
-            <ScrollBar orientation="horizontal" />
+            <ScrollBar orientation="horizontal" className='hidden' />
           </ScrollArea>
         </div>
 
