@@ -10,15 +10,17 @@ import {
 export default async function middleware(request: NextRequest) {
   try {
     const { nextUrl } = request;
-    const session = await getSession(request);
+    
 
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-    if (isApiAuthRoute) {
+    if (isPublicRoute || isApiAuthRoute) {
       return NextResponse.next();
     }
+
+    const session = await getSession(request);
 
     if (isAuthRoute) {
       if (session?.user && !session.user.isOnboarded && nextUrl.pathname !== '/auth/onboarding') {
