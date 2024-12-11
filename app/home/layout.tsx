@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Navbar } from "@/components/navbar";
+import { ConvexClientProvider } from "@/components/convex-provider";
 
 export const metadata: Metadata = {
   title: "Unihive | Home",
@@ -13,9 +14,11 @@ export default function HomeLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-screen">
-      {children}
-      <Suspense><Navbar /></Suspense>
-    </div>
+    <ConvexClientProvider>
+      <div className="flex flex-col justify-center items-center w-full h-screen">
+        {children}
+        <Suspense><Navbar /></Suspense>
+      </div>
+    </ConvexClientProvider>
   );
 }

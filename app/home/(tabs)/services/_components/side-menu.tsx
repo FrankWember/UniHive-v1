@@ -21,8 +21,10 @@ import {
   BarChart3,
   ClipboardList,
   ChevronDown,
-  PanelRight
+  PanelRight,
+  MessageCircle
 } from "lucide-react"
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -30,6 +32,7 @@ export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
   const [openSeller, setOpenSeller] = React.useState(true)
   const [openCustomer, setOpenCustomer] = React.useState(true)
+  const user = useCurrentUser()
 
 
   return (
@@ -69,6 +72,10 @@ export function SideMenu({ className }: SidebarProps) {
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services?mine=true")}>
                     <Package className="mr-2 h-4 w-4" />
                     My services
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/services/provider/${user?.id!}/my-chats`)}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Chats
                   </Button>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/bookings")}>
                     <ShoppingBag className="mr-2 h-4 w-4" />
