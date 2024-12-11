@@ -33,6 +33,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { BeatLoader } from 'react-spinners'
+import RotatingLoader from '@/components/rotating-loader'
 
 interface ChatUser {
     id: string
@@ -57,15 +58,19 @@ export const NewChatDialog = ({
 }: NewChatDialogProps) => {
     const [users, setUsers] = useState<ChatUser[]>()
     const [loading, setLoading] = useState(false)
+    const [gettingUsers, setGettingUsers] = useState(false)
     const createChat = useMutation(api.chats.createChat);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                setGettingUsers(true)
                 const { data } = await axios.get('/api/customer')
                 setUsers(data)
             } catch (error) {
                 console.error('Error fetching users:', error)
+            } finally {
+                setGettingUsers(false)
             }
         }
         
@@ -131,6 +136,7 @@ export const NewChatDialog = ({
                                                     <span>{user.name}</span>
                                                 </CommandItem>
                                             ))}
+                                            {gettingUsers && (<RotatingLoader size={50} />)}
                                         </CommandGroup>
                                     </CommandList>
                                 </Command>

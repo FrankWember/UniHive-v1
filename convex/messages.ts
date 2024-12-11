@@ -30,3 +30,11 @@ export const getServiceMessages = query({
         return [...customerChats, ...serviceChats];
     }
 })
+
+export const markAsRead = mutation({
+    args: { messageId: v.id("messages") },
+    handler: async (ctx, { messageId }) => {
+        const message = await ctx.db.get(messageId);
+        await ctx.db.patch(messageId, { read: true });
+    },
+})

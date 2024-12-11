@@ -22,6 +22,7 @@ import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import axios from 'axios';
 import { Badge } from '@/components/ui/badge';
+import RotatingLoader from '@/components/rotating-loader';
 
 interface Chat {
     _id: string
@@ -55,10 +56,12 @@ export const ChatsList = ({
         sellerId: sellerId
     })
     const [chats, setChats] = React.useState<Chat[]>([]);
+    const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
         const fetchChats = async () => {
             if (!sellerChats || sellerChats.length <= 0) return;
+            setLoading(true)
             const resolvedChats = await Promise.all(sellerChats.map(async (chat) => {
                 const { data: customer } = await axios.get(`/api/customer/${chat.customerId}`, {
                     headers: {
@@ -70,6 +73,7 @@ export const ChatsList = ({
                     customer
                 };
             }));
+            setLoading(false)
             setChats(resolvedChats);
         };
         fetchChats();
@@ -88,7 +92,7 @@ export const ChatsList = ({
                     <SheetTitle className="text-2xl font-bold mb-6">Chats</SheetTitle>
                 </SheetHeader>
                 <ScrollArea className="w-full h-[80vh]">
-                    <div className="felx flex-col gap-2">
+                    <div className="felx flex-col space-y-2">
                         <NewChatDialog setCurrentChatId={setCurrentChatId} currentChatId={currentChatId} sellerId={sellerId} />
                         {chats.map((chat) => (
                             <div key={chat._id} className="flex items-center justify-start gap-2 p-3 border-t">
@@ -99,7 +103,7 @@ export const ChatsList = ({
                                 <div className='flex flex-col gap-2'>
                                     <span className='flex items-center gap-2 text-lg font-bold '>
                                         <span>{chat.customer!.name}</span>
-                                        <Badge variant="success">.</Badge>
+                                        {chat.lastMessage && !chat.lastMessage.read && (<Badge variant="success"></Badge>)}
                                     </span>
                                     {chat.lastMessage && (
                                         <span className='flex items-center justify-between text-sm text-muted-foreground'>
@@ -112,6 +116,7 @@ export const ChatsList = ({
                                 </div>
                             </div>
                         ))}
+                        {loading && (<RotatingLoader size={100} />)}
                     </div>
                 </ScrollArea>
             </SheetContent>

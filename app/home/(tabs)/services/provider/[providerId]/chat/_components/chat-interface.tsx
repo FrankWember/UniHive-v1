@@ -14,6 +14,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useQuery, useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
+import { BeatLoader } from 'react-spinners'
+import { PaperPlaneIcon } from '@radix-ui/react-icons'
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -43,7 +45,9 @@ interface Chat {
 export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
   const sendMessage = useMutation(api.messages.sendMessage)
   const createChat = useMutation(api.chats.createChat)
+  const markAsRead = useMutation(api.messages.markAsRead)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [sendingMessage, setSendingMessage] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,16 +72,29 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
-  }, [scrollAreaRef])
+    const markAllAsRead = async () => {
+      chat?.messages?.forEach(async (message) => {
+        if (!message.read) {
+          await markAsRead({
+            messageId: message._id!,
+          })
+        }
+      })
+    }
+    markAllAsRead()
+
+  }, [scrollAreaRef, chat, markAsRead])
   
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setSendingMessage(true)
     const message = await sendMessage({
       chatId: chat?._id!,
       senderId: userId,
       text: values.message
     })
     form.reset()
+    setSendingMessage(false)
   }
 
   return (
@@ -140,7 +157,9 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Send</Button>
+                <Button type="submit" disabled={sendingMessage}>
+                  {sendingMessage ? <BeatLoader /> : <PaperPlaneIcon />}
+                </Button>
               </form>
             </Form>
           </CardFooter>

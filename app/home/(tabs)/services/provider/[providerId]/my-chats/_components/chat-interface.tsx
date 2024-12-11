@@ -15,6 +15,8 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { NewChatDialog } from './new-chat-dialog'
+import { BeatLoader } from 'react-spinners'
+import { PaperPlaneIcon } from '@radix-ui/react-icons'
 
 interface ChatInterfaceProps {
     currentChatId: Id<"chats"> | null
@@ -36,8 +38,10 @@ const formSchema = z.object({
 
 const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInterfaceProps) => {
     const [messages, setMessages] = useState<Message[]>([])
+    const [sendingMessage, setSendingMessage] = useState(false)
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const sendMessage = useMutation(api.messages.sendMessage)
+    const markAsRead = useMutation(api.messages.markAsRead)
   
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -54,7 +58,18 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
         if (chatMessages) {
             setMessages(chatMessages);
         }
-    }, [chatMessages])
+        const makeAllAsRead = async () => {
+            chatMessages?.forEach(async (message) => {
+                if (!message.read) {
+                    await markAsRead({
+                        messageId: message._id!,
+                    })
+                }
+            })
+        }
+        makeAllAsRead()
+
+    }, [chatMessages, markAsRead])
   
     useEffect(() => {
       if (scrollAreaRef.current) {
@@ -63,12 +78,14 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
     }, [messages])
   
     async function onSubmit(values: z.infer<typeof formSchema>) {
-      const message = await sendMessage({
-        chatId: currentChatId!,
-        senderId: providerId,
-        text: values.message
-      })
-      form.reset()
+        setSendingMessage(true)
+        const message = await sendMessage({
+            chatId: currentChatId!,
+            senderId: providerId,
+            text: values.message
+        })
+        form.reset()
+        setSendingMessage(false)
     }
   
     return (
@@ -117,7 +134,9 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Send</Button>
+                  <Button type="submit" disabled={sendingMessage}>
+                    {sendingMessage?<BeatLoader />: <PaperPlaneIcon />}
+                  </Button>
                 </form>
               </Form>
             </CardFooter>
