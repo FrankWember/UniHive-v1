@@ -107,7 +107,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 <div className="flex flex-col gap-2">
                     <div className="flex gap-3 items-center">
                         <Avatar className="h-16 w-16">
-                            <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} />
+                            <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} className="object-cover" />
                             <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
                         </Avatar>
                         <span className="flex gap-1 items-center h-16">
@@ -130,7 +130,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                         <div className="flex -space-x-4 overflow-hidden">
                             {customerList.slice(0, 7).map((booking, index) => (
                                 <Avatar key={index} className="inline-block h-8 w-8">
-                                    <AvatarImage src={booking.customer.image!} alt="C" />
+                                    <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
                                     <AvatarFallback>C</AvatarFallback>
                                 </Avatar>
                             ))}

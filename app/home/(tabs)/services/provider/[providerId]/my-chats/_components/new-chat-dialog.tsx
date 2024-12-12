@@ -22,12 +22,18 @@ import {
     CommandSeparator,
     CommandShortcut,
 } from "@/components/ui/command"
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert"
+import { CheckCircledIcon, ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import { Form, FormField, FormControl, FormDescription, FormItem } from '@/components/ui/form';
+import { Form, FormField, FormControl, FormDescription, FormItem, FormMessage } from '@/components/ui/form';
 import axios from 'axios'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
@@ -42,7 +48,9 @@ interface ChatUser {
 }
 
 const formSchema = z.object({
-    userId: z.string()
+    userId: z.string().min(2, {
+        message: "Name must be at least 2 characters.",
+      }),
 })
 
 interface NewChatDialogProps {
@@ -59,6 +67,9 @@ export const NewChatDialog = ({
     const [users, setUsers] = useState<ChatUser[]>()
     const [loading, setLoading] = useState(false)
     const [gettingUsers, setGettingUsers] = useState(false)
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
+    const [open, setOpen] = React.useState(false)
     const createChat = useMutation(api.chats.createChat);
 
     useEffect(() => {
@@ -84,26 +95,39 @@ export const NewChatDialog = ({
         },
       })
 
+    const currentChat = useQuery(api.chats.getCustomerChat, {
+        sellerId: sellerId,
+        customerId: form.getValues('userId')
+    })
+    
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
-        const currentChat = useQuery(api.chats.getCustomerChat, {
-            sellerId: sellerId,
-            customerId: values.userId
-        })
-        if (currentChat){
-            setCurrentChatId(currentChat._id!)
-        } else {
-            const chatId = await createChat({
-                sellerId: sellerId,
-                customerId: values.userId
-            });
-            setCurrentChatId(chatId);
+        console.log("Started Submitting", "Values:", values)
+        try {
+            setError("")
+            setSuccess("")
+            setLoading(true)
+            if (currentChat && currentChat._id) {
+                setCurrentChatId(currentChat._id!)
+                setSuccess("You already had a chat with this user")
+            } else {
+                const chatId = await createChat({
+                    sellerId: sellerId,
+                    customerId: values.userId
+                });
+                setCurrentChatId(chatId);
+                setSuccess("Chat created successfully!")
+            }
+        } catch (error) {
+            setError("We couldn't create your chat. Please try again!")
+            console.error('Error creating chat:', error)
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
     }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger>
             <Button>
                 New Chat <MessageCircle className='ml-2 h-4 w-4' />
@@ -114,7 +138,7 @@ export const NewChatDialog = ({
                 <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
                     <DialogHeader>
                         <DialogTitle>Start A New Chat</DialogTitle>
-                        <DialogDescription>You search and contact your customers right now.</DialogDescription>
+                        <DialogDescription>You can search and contact your customers right now.</DialogDescription>
                     </DialogHeader>
                     <FormField
                         control={form.control}
@@ -122,18 +146,27 @@ export const NewChatDialog = ({
                         render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Command value={field.value} onChange={field.onChange} className="rounded-lg border shadow-md w-full h-[20rem]">
+                                <Command className="rounded-lg border shadow-md w-full h-[20rem]">
                                     <CommandInput placeholder="Type a command or search..." />
                                     <CommandList>
                                         <CommandEmpty>No User found.</CommandEmpty>
                                         <CommandGroup heading="Users">
-                                            {users?.map((user) => (
-                                                <CommandItem key={user.id} className="flex gap-3 items-center hover:bg-secondary focus:bg-secondary">
+                                            {users && users.map((user) => (
+                                                <CommandItem
+                                                    key={user.name}
+                                                    className="flex gap-3 items-center"
+                                                    onSelect={() => {
+                                                        field.onChange(user.id)
+                                                    }}
+                                                >
                                                     <Avatar className=''>
                                                         <AvatarImage src={user.image} />
                                                         <AvatarFallback>{user.name[0] || 'C'}</AvatarFallback>
                                                     </Avatar>
                                                     <span>{user.name}</span>
+                                                    {field.value === user.id && (
+                                                        <CheckCircledIcon />
+                                                    )}
                                                 </CommandItem>
                                             ))}
                                             {gettingUsers && (<RotatingLoader size={50} />)}
@@ -142,9 +175,24 @@ export const NewChatDialog = ({
                                 </Command>
                             </FormControl>
                             <FormDescription>Select a User</FormDescription>
+                            <FormMessage />
                         </FormItem>
                         )}
                     />
+                    {error && (
+                        <Alert variant="destructive">
+                            <ExclamationTriangleIcon className="h-6 w-6" />
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
+                    {success && (
+                        <Alert>
+                            <RocketIcon className="h-6 w-6"/>
+                            <AlertTitle>Success</AlertTitle>
+                            <AlertDescription>{success}</AlertDescription>
+                        </Alert>
+                    )}
                     <DialogFooter className="flex flex-row items-center justify-end gap-3">
                         <DialogClose>
                             <Button variant="outline">Cancel</Button>

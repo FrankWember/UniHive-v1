@@ -53,7 +53,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
         <div className="flex gap-2">
           <div className="flex flex-col gap-1 justify-start">
             <Avatar className="h-6 w-6">
-              <AvatarImage src={service.provider.image!} />
+              <AvatarImage src={service.provider.image!} className='object-cover' />
               <AvatarFallback>{service.provider.name![0] || service.provider.email[0]}</AvatarFallback>
             </Avatar>
             <VerifiedIcon className='h-4 w-4'/>
@@ -92,7 +92,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
                 <div className="flex -space-x-3 overflow-hidden">
                   {customerList.slice(0, 7).map((booking, index) => (
                     <Avatar key={index} className="inline-block h-6 w-6">
-                      <AvatarImage src={booking.customer.image!} alt="C" />
+                      <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
                       <AvatarFallback>C</AvatarFallback>
                     </Avatar>
                   ))}

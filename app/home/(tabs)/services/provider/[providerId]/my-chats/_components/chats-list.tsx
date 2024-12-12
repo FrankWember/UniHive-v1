@@ -77,7 +77,7 @@ export const ChatsList = ({
             setChats(resolvedChats);
         };
         fetchChats();
-        if (!currentChatId && sellerChats) setCurrentChatId(sellerChats[0]._id);
+        if (!currentChatId && sellerChats && sellerChats[0]) setCurrentChatId(sellerChats[0]._id);
     }, [sellerChats]);
 
     return (
@@ -97,7 +97,7 @@ export const ChatsList = ({
                         {chats.map((chat) => (
                             <div key={chat._id} className="flex items-center justify-start gap-2 p-3 border-t">
                                 <Avatar className=''>
-                                    <AvatarImage src={chat.customer!.image!} />
+                                    <AvatarImage src={chat.customer!.image!} className="object-cover"/>
                                     <AvatarFallback>{chat.customer!.name[0] || 'C'}</AvatarFallback>
                                 </Avatar>
                                 <div className='flex flex-col gap-2'>

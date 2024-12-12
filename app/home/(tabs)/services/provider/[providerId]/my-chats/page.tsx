@@ -1,7 +1,7 @@
 "use client"
 
 import { BackButton } from "@/components/back-button"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { ChatsList } from "./_components/chats-list"
 import { useState } from "react"
 import ChatInterface from "./_components/chat-interface"
@@ -11,6 +11,11 @@ import { Id } from "@/convex/_generated/dataModel"
 const ProviderChatPage = () => {
   const { providerId } = useParams<{ providerId: string }>()
   const [currentChatId, setCurrentChatId] = useState<Id<"chats">|null>(null)
+  const router = useRouter()
+
+  if (!providerId) {
+    router.push("/auth/sign-in")
+  }
 
   return (
     <div className="flex flex-col min-h-screen w-screen">

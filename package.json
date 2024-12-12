@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "-": "^0.0.1",
     "@auth/prisma-adapter": "^2.5.0",
     "@aws-sdk/client-s3": "^3.658.1",
     "@aws-sdk/s3-request-presigner": "^3.658.1",

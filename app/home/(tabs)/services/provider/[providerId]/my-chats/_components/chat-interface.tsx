@@ -93,12 +93,12 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl px-2 mx-auto flex flex-col items-center justify-start"
+        className="w-full mx-auto flex flex-col items-center justify-start"
       >
         {currentChatId ? (
-            <Card className="h-[calc(100vh-14rem)] fixed z-20">
+            <Card className="h-[calc(100vh-14rem)] md:h-[calc(100vh-10rem)] w-full max-w-4xl px-2 fixed z-20">
             <CardContent className="p-0">
-              <ScrollArea className="h-[calc(100vh-18rem)] p-4" ref={scrollAreaRef}>
+              <ScrollArea className="h-[calc(100vh-18rem)] md:h-[calc(100vh-14rem)] p-4" ref={scrollAreaRef}>
                 {messages.map((message) => (
                   <div
                     key={message._id}

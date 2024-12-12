@@ -55,7 +55,7 @@ export function ProfileImageForm({ user }: { user: User }) {
       <CardContent>
         <div className="flex items-center space-x-4 mb-4">
           <Avatar className="w-20 h-20">
-            <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+            <AvatarImage src={user.image || undefined} alt={user.name || "User"} className="object-cover"/>
             <AvatarFallback>{user.name?.[0] || "U"}</AvatarFallback>
           </Avatar>
           <div>

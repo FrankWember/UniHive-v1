@@ -16,6 +16,7 @@ import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
 import { BeatLoader } from 'react-spinners'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
+import { useToast } from '@/hooks/use-toast'
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -48,6 +49,7 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
   const markAsRead = useMutation(api.messages.markAsRead)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const [sendingMessage, setSendingMessage] = useState(false)
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -73,13 +75,15 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
     }
     const markAllAsRead = async () => {
-      chat?.messages?.forEach(async (message) => {
-        if (!message.read) {
-          await markAsRead({
-            messageId: message._id!,
-          })
-        }
-      })
+      if (chat && chat.messages && chat.messages.length > 0) {
+        chat?.messages?.forEach(async (message) => {
+          if (!message.read) {
+            await markAsRead({
+              messageId: message._id!,
+            })
+          }
+        })
+      }
     }
     markAllAsRead()
 
@@ -88,13 +92,22 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSendingMessage(true)
-    const message = await sendMessage({
-      chatId: chat?._id!,
-      senderId: userId,
-      text: values.message
-    })
-    form.reset()
-    setSendingMessage(false)
+    try {
+      const message = await sendMessage({
+        chatId: chat?._id!,
+        senderId: userId,
+        text: values.message
+      })
+    } catch {
+      toast({
+        title: "An error occured",
+        description: "Something went wrong. Please try again.",
+        variant: 'destructive'
+      })
+    } finally {
+      form.reset()
+      setSendingMessage(false)
+    }
   }
 
   return (
@@ -102,9 +115,9 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-2xl px-2 mx-auto flex flex-col items-center justify-start"
+      className="w-full mx-auto flex flex-col items-center justify-start"
     >
-      {!chat ? (
+      {!chat || !chat._id || chat===null ? (
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center justify-center text-2xl font-bold" >
@@ -119,9 +132,9 @@ export function ChatInterface({ userId, providerId }: ChatInterfaceProps) {
             </CardFooter>
         </Card>
       ):(
-        <Card className="h-[calc(100vh-14rem)]">
+        <Card className="h-[calc(100vh-14rem)] md:h-[calc(100vh-10rem)] w-full max-w-4xl px-2">
           <CardContent className="p-0">
-            <ScrollArea className="h-[calc(100vh-18rem)] p-4" ref={scrollAreaRef}>
+            <ScrollArea className="h-[calc(100vh-18rem)] md:h-[calc(100vh-14rem)] p-4" ref={scrollAreaRef}>
               {chat && chat.messages &&chat.messages.map((message) => (
                 <div
                   key={message._id}
