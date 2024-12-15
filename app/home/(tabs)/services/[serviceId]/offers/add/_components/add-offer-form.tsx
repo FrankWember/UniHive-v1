@@ -12,6 +12,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert"
+import { DurationInput } from '@/components/ui/duration-input'
 import { ServiceOfferSchema } from '@/constants/zod'
 import { useRouter } from 'next/navigation'
 import { BeatLoader } from 'react-spinners'
@@ -29,7 +30,8 @@ export const AddOfferForm = ({serviceId}: {serviceId: string}) => {
         defaultValues: {
             title: "",
             price: 20,
-            discount: 0
+            discount: 0,
+            duration: 0
         }
     })
 
@@ -85,6 +87,19 @@ export const AddOfferForm = ({serviceId}: {serviceId: string}) => {
                             <FormLabel>Discount (%)</FormLabel>
                             <FormControl>
                                 <Input placeholder="Discount" type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="duration"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Duration (hours & minutes)</FormLabel>
+                            <FormControl>
+                                <DurationInput {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

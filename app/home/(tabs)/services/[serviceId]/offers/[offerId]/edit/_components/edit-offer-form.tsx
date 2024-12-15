@@ -18,6 +18,7 @@ import { BeatLoader } from 'react-spinners'
 import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons'
 import { updateServiceOffer } from '@/actions/service-offers'
 import { ServiceOffer } from '@prisma/client'
+import { DurationInput } from '@/components/ui/duration-input'
 
 export const EditOfferForm = ({offer}: {offer: ServiceOffer}) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -30,7 +31,8 @@ export const EditOfferForm = ({offer}: {offer: ServiceOffer}) => {
         defaultValues: {
             title: offer.title,
             price: offer.price,
-            discount: offer.discount
+            discount: offer.discount,
+            duration: offer.duration || 0
         }
     })
 
@@ -86,6 +88,19 @@ export const EditOfferForm = ({offer}: {offer: ServiceOffer}) => {
                             <FormLabel>Discount (%)</FormLabel>
                             <FormControl>
                                 <Input placeholder="Discount" type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="duration"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Duration (hours & minutes)</FormLabel>
+                            <FormControl>
+                                <DurationInput {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

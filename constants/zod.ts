@@ -98,6 +98,7 @@ export const ServiceOfferSchema = z.object({
     message: "Price must be a positive number.",
   }),
   discount: z.number().min(0).max(100).default(0).optional(),
+  duration: z.number()
 })
 
 export const EventSchema = z.object({
