@@ -148,6 +148,7 @@ model ServiceOffer {
   id        String @id @default(cuid())
   serviceId String
   title     String
+  duration  Int?
   price     Float
   discount  Int    @default(0)
 
@@ -162,7 +163,7 @@ model ServiceBooking {
   customerId String
   paymentId  String?
   date       DateTime
-  time       DateTime[]
+  time       Json?
   status     BookingStatus
   location   String?
   createdAt  DateTime   @default(now())

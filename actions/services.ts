@@ -8,6 +8,7 @@ import { currentUser } from "@/lib/auth";
 import { revalidatePath } from 'next/cache'
 import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
+import { splitTimeSlots } from "@/utils/helpers/availability";
 
 
 export async function createService(values: z.infer<typeof ServiceSchema>) {
@@ -25,7 +26,7 @@ export async function createService(values: z.infer<typeof ServiceSchema>) {
       providerId: session.user.id,
       images: values.images,
       defaultLocation: values.defaultLocation,
-      availability: values.availability
+      availability: splitTimeSlots(values.availability)
     },
   })
   return service
@@ -79,7 +80,7 @@ export async function updateService(
       category: values.category,
       images: values.images,
       defaultLocation: values.defaultLocation,
-      availability: values.availability
+      availability: splitTimeSlots(values.availability)
     },
   })
 
