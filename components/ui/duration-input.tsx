@@ -52,8 +52,6 @@ export const DurationInput = ({ value, onChange, className }: DurationInputProps
               value={hours}
               onChange={handleHoursChange}
               className="pr-12"
-              min={0}
-              max={99}
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">
               hrs
@@ -66,7 +64,6 @@ export const DurationInput = ({ value, onChange, className }: DurationInputProps
               value={minutes}
               onChange={handleMinutesChange}
               className="pr-12"
-              min={0}
               max={59}
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-muted-foreground">

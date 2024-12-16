@@ -20,7 +20,7 @@ import { submitReview, updateReview } from '@/actions/service-reviews'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { ReviewsSection } from './review-section'
 import { ServiceInfo } from './service-info'
-import { Button } from '@/components/ui/button'
+import { OfferCard } from './offer-card'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -205,27 +205,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             {/* Offers section */}
             <div className='flex flex-col gap-3'>
               {service.offers.map((offer, index)=> (
-                  <div  key={index} className="flex flex-col border rounded-md p-3">
-                    <p className="text-xl">{offer.title}</p>
-                    <div className="flex items-center justify-between gap-2">
-                      <div className='flex items-center gap-2'>
-                        {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                        <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                        {offer.discount>0 ? (
-                          <Badge variant="success">
-                            Save up to {offer.discount}%
-                          </Badge>
-                        ):(
-                          <Badge variant="secondary">
-                            No discount
-                          </Badge>
-                        )}
-                      </div>
-                      <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
-                        Book
-                      </Button>
-                    </div>
-                  </div>
+                  <OfferCard key={index} service={service} offer={offer} />
               ))}
             </div>
           </div>
@@ -279,27 +259,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <div className='flex flex-col gap-3 mx-8'>
             <h1 className="text-3xl font-bold mb-4">Offers</h1>
             {service.offers.map((offer, index)=> (
-                <div  key={index} className="flex flex-col border rounded-md p-3">
-                  <p className="text-xl">{offer.title}</p>
-                  <div className="flex items-center justify-between gap-2">
-                    <div className='flex items-center gap-2'>
-                      {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                      <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                      {offer.discount>0 ? (
-                        <Badge variant="success">
-                          Save up to {offer.discount}%
-                        </Badge>
-                      ):(
-                        <Badge variant="secondary">
-                          No discount
-                        </Badge>
-                      )}
-                    </div>
-                    <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
-                      Book
-                    </Button>
-                  </div>
-                </div>
+                <OfferCard key={index} service={service} offer={offer} />
             ))}
           </div>
 
