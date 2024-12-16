@@ -6,16 +6,18 @@ import { z } from "zod"
 import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/mail'
 import { BookingStatus } from "@prisma/client"
+import { ServiceBookingSchema } from "@/constants/zod"
+import { JsonValue } from "@prisma/client/runtime/library"
+import { parseBookingTime } from "@/utils/helpers/availability"
 
-const BookingSchema = z.object({
-    serviceId: z.string(),
-    offerId: z.string(),
-    date: z.date(),
-    time: z.array(z.date()).length(2),
-    location: z.string().optional()
-})
+const getTimeRange = (time: JsonValue) => {
+    const { startTime, endTime } = parseBookingTime(time) ?? {}
+    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    return `${startTimeString} - ${endTimeString}`
+  }
 
-export async function createBooking(offerId: string, values: z.infer<typeof BookingSchema>) {
+export async function createBooking(offerId: string, values: z.infer<typeof ServiceBookingSchema>) {
     try {
         const user = await currentUser()
         if (!user?.id) {
@@ -53,6 +55,9 @@ export async function createBooking(offerId: string, values: z.infer<typeof Book
             }
         })
 
+        const startTime = new Date(values.time[0][0])
+        const stopTime = new Date(values.time[values.time.length-1][values.time[values.time.length-1].length-1])
+
         await sendEmail({
             to: offer.service.provider.email,
             subject: `New booking request: ${offer.service.name}`,
@@ -63,13 +68,14 @@ export async function createBooking(offerId: string, values: z.infer<typeof Book
                 <p><strong>Service:</strong> ${offer.service.name}</p>
                 <p><strong>Offer:</strong> ${offer.title}</p>
                 <p><strong>Date:</strong> ${values.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${values.time[0].toLocaleTimeString()} - ${values.time[1].toLocaleTimeString()}</p>
+                <p><strong>Start Time:</strong> ${startTime.toLocaleTimeString()} - ${stopTime.toLocaleTimeString()}</p>
                 <p><strong>Location:</strong> ${values.location || offer.service.defaultLocation}</p>
                 <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/${offer.service.id}/bookings/${booking.id}">View Booking</a>
             `
         })
 
         revalidatePath(`/home/services/${offer.service.id}/bookings`)
+        revalidatePath(`/home/services/my-bookings`)
         return booking
     } catch (error) {
         console.error('[SERVICE_BOOKING_ERROR]', error)
@@ -119,7 +125,7 @@ export async function acceptBooking(bookingId: string) {
                 <h2>Booking Accepted</h2>
                 <p>Your booking for ${booking.offer.service.name} has been accepted!</p>
                 <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}</p>
+                <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
                 <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
                 <p>Please proceed with the payment to confirm your booking.</p>
             `
@@ -175,8 +181,9 @@ export async function rejectBooking(bookingId: string) {
                 <h2>Booking Rejected</h2>
                 <p>Unfortunately, your booking for ${booking.offer.service.name} has been rejected.</p>
                 <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}</p>
-                <p>You may try booking a different time slot or contact the service provider.</p>
+                <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
+                <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
+                <p>You may try booking a different time or contact the service provider.</p>
             `
         })
 
@@ -227,8 +234,9 @@ export async function cancelBooking(bookingId: string, userId: string) {
                 html: `
                     <h2>Booking Cancelled</h2>
                     <p>The booking for ${booking.offer.service.name} has been cancelled.</p>
+                    <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
                     <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> ${booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}</p>
+                    <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
                 `
             })
         ))

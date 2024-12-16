@@ -12,6 +12,8 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Calendar, Clock, DollarSign, FileText, MapIcon, User as UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
+import { JsonValue } from '@prisma/client/runtime/library'
+import { parseBookingTime } from '@/utils/helpers/availability'
 
 interface BookingDetailsProps {
   booking: ServiceBooking & { 
@@ -85,6 +87,13 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
     }
   }
 
+  const getTimeRange = (time: JsonValue) => {
+    const { startTime, endTime } = parseBookingTime(time) ?? {}
+    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    return `${startTimeString} - ${endTimeString}`
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -124,7 +133,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
                 <Calendar className="inline-block mr-2" /> Time
               </TableCell>
               <TableCell>
-                {booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}
+                {getTimeRange(booking.time)}
               </TableCell>
             </TableRow>
             <TableRow>

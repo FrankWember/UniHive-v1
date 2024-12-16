@@ -35,6 +35,8 @@ export async function getServiceById(serviceId: string) {
         include: {
           bookings: {
             select: {
+              date: true,
+              time: true,
               customer: {
                 select: {
                   image: true

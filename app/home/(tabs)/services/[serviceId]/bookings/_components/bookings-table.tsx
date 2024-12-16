@@ -7,6 +7,8 @@ import { ServiceBooking, ServiceOffer } from '@prisma/client'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { JsonValue } from '@prisma/client/runtime/library'
+import { parseBookingTime } from '@/utils/helpers/availability'
 
 interface BookingsTableProps {
   bookings: (ServiceBooking & {
@@ -28,6 +30,13 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
 
   const handleViewDetails = (bookingId: string) => {
     router.push(`/home/services/${bookings[0].offer.serviceId}/bookings/${bookingId}`)
+  }
+
+  const getTimeRange = (time: JsonValue) => {
+    const { startTime, endTime } = parseBookingTime(time) ?? {}
+    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+    return `${startTimeString} - ${endTimeString}`
   }
 
   return (
@@ -58,7 +67,9 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
               style={{ cursor: 'pointer' }}
             >
               <TableCell>{booking.date.toLocaleDateString()}</TableCell>
-              <TableCell>{`${booking.time[0].toLocaleTimeString()} - ${booking.time[1].toLocaleTimeString()}`}</TableCell>
+              {booking.time && typeof booking.time === "object" && (
+                <TableCell>{getTimeRange(booking.time)}</TableCell>
+              )}
               <TableCell>
                 <Badge variant={
                     booking.status === 'PENDING' ? 'warning' :

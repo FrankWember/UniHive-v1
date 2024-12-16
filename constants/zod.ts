@@ -101,6 +101,14 @@ export const ServiceOfferSchema = z.object({
   duration: z.number()
 })
 
+export const ServiceBookingSchema = z.object({
+  date: z.date({
+    required_error: "A date is required",
+  }),
+  time: TimeSlotSchema,
+  location: z.string().optional()
+})
+
 export const EventSchema = z.object({
   title: z.string().min(2, {
     message: "Title must be at least 2 characters.",
