@@ -6,9 +6,18 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { MapIcon } from "lucide-react"
+import { JsonValue } from "@prisma/client/runtime/library"
+import { parseBookingTime } from "@/utils/helpers/availability"
 
 type Booking = ServiceBooking & {
   offer: ServiceOffer
+}
+
+const getTimeRange = (time: JsonValue) => {
+  const { startTime, endTime } = parseBookingTime(time) ?? {}
+  const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+  const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
+  return `${startTimeString} - ${endTimeString}`
 }
 
 export const columns: ColumnDef<Booking>[] = [
@@ -27,8 +36,7 @@ export const columns: ColumnDef<Booking>[] = [
     accessorKey: "time",
     header: "Time",
     cell: ({ row }) => {
-      const time = [new Date(row.original.time[0]), new Date(row.original.time[1])]
-      return `${time[0]} - ${time[1]}`
+      return getTimeRange(row.original.time)
     },
   },
   {
