@@ -4,7 +4,6 @@ import { currentUser } from '@/lib/auth'
 import { BookingForm } from './_components/booking-form'
 import { BackButton } from '@/components/back-button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { findAvailableSlots } from '@/utils/helpers/availability'
 
 type TimeSlot = [string, string];
 
@@ -19,15 +18,6 @@ type DayAvailability = {
 }
 
 
-function isDayAvailability(obj: any): obj is DayAvailability {
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-    return days.every(day => 
-        obj[day] === undefined || 
-        Array.isArray(obj[day]) && 
-        obj[day].every(slot => Array.isArray(slot) && slot.length === 2)
-    );
-}
-
 export default async function BookServicePage({ params }: { params: { serviceId: string, offerId: string } }) {
   const user = await currentUser()
   if (!user) return notFound()
@@ -37,10 +27,6 @@ export default async function BookServicePage({ params }: { params: { serviceId:
 
   const offer = service.offers.find(o => o.id === params.offerId)
   if (!offer) return notFound()
-
-  const availableSlots = isDayAvailability(service.availability) ? 
-    findAvailableSlots(service.availability, offer.duration || 0, offer.bookings!) : 
-    null;
 
   return (
     <div className="flex flex-col min-h-screen w-screen">
@@ -65,7 +51,7 @@ export default async function BookServicePage({ params }: { params: { serviceId:
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <BookingForm service={service} offerId={params.offerId} availableSlots={availableSlots} />
+            <BookingForm service={service} offerId={params.offerId} offer={offer} />
           </CardContent>
         </Card>
       </div>

@@ -77,11 +77,35 @@ function isValidTimeSlots(value: JsonValue): value is { slots: TimeSlot[] } {
 
 export function findAvailableSlots(
   splitAvailability: DayAvailability, 
+  date: Date,
   duration: number, 
   bookings: Booking[] = []
 ): TimeSlot[] {
+  // Get the day of the week
+  const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+  const dayOfWeek = days[date.getDay()];
+
+  // Filter availability for the specific day
+  const dayAvailability = splitAvailability[dayOfWeek] || [];
+
   // Convert duration to number of 15-minute slots needed
   const slotsNeeded = Math.ceil(duration / 15);
+
+  // Type guard to check if the JsonValue is a valid time slots object
+  const isValidTimeSlots = (value: JsonValue): value is { slots: TimeSlot[] } => {
+    return (
+      typeof value === 'object' && 
+      value !== null && 
+      'slots' in value && 
+      Array.isArray((value as any).slots) && 
+      (value as any).slots.every((slot: any) => 
+        Array.isArray(slot) && 
+        slot.length === 2 && 
+        typeof slot[0] === 'string' && 
+        typeof slot[1] === 'string'
+      )
+    );
+  };
 
   // Function to check if a sequence of slots is available
   const isSlotSequenceAvailable = (
@@ -117,46 +141,32 @@ export function findAvailableSlots(
     return !(end1 <= start2 || start1 >= end2);
   };
 
-  // Collect all available slots for each day
-  const availableSlotsByDay: Record<string, TimeSlot[]> = {};
-
-  // Collect booked times for each day
-  const bookedTimesByDay: Record<string, TimeSlot[]> = {};
+  // Collect booked times for the specific day
+  const bookedTimes: TimeSlot[] = [];
   bookings.forEach(booking => {
-    const dayKey = booking.date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-    
-    // Safely extract booked times
-    if (isValidTimeSlots(booking.time)) {
-      if (!bookedTimesByDay[dayKey]) {
-        bookedTimesByDay[dayKey] = [];
+    // Check if the booking is for the same date
+    if (booking.date.toDateString() === date.toDateString()) {
+      // Safely extract booked times
+      if (isValidTimeSlots(booking.time)) {
+        bookedTimes.push(...booking.time.slots);
       }
-      bookedTimesByDay[dayKey].push(...booking.time.slots);
     }
   });
 
-  // Process each day's availability
-  (Object.keys(splitAvailability) as Array<keyof DayAvailability>).forEach(day => {
-    const availableSlots = splitAvailability[day];
-    const bookedTimes = bookedTimesByDay[day] || [];
+  // Find available slots for the day
+  const availableSlots: TimeSlot[] = [];
 
-    if (availableSlots) {
-      const dayAvailableSlots: TimeSlot[] = [];
-
-      // Find sequences of slots that match the duration and are not booked
-      for (let i = 0; i < availableSlots.length; i++) {
-        if (isSlotSequenceAvailable(availableSlots, i, bookedTimes)) {
-          // Take the first and last slot of the sequence
-          const startSlot = availableSlots[i];
-          const endSlot = availableSlots[i + slotsNeeded - 1];
-          dayAvailableSlots.push([startSlot[0], endSlot[1]]);
-        }
-      }
-
-      availableSlotsByDay[day] = dayAvailableSlots;
+  // Find sequences of slots that match the duration and are not booked
+  for (let i = 0; i < dayAvailability.length; i++) {
+    if (isSlotSequenceAvailable(dayAvailability, i, bookedTimes)) {
+      // Take the first and last slot of the sequence
+      const startSlot = dayAvailability[i];
+      const endSlot = dayAvailability[i + slotsNeeded - 1];
+      availableSlots.push([startSlot[0], endSlot[1]]);
     }
-  });
+  }
 
-  return Object.values(availableSlotsByDay).flat();
+  return availableSlots;
 }
 
 

@@ -110,7 +110,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
   if (!isMobile) {
     return (
-      <div className='flex flex-col w-full max-w-7xl min-h-screen h-full px-12 overflow-hidden'>
+      <div className='flex flex-col w-full max-w-7xl min-h-screen h-full justify-center px-12 overflow-hidden'>
         <div className='flex w-full justify-between px-3 py-4'>
           <Breadcrumb>
             <BreadcrumbList>

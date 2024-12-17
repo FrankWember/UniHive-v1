@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,8 +22,10 @@ import { LocationInput } from '@/components/location-input'
 import { createBooking } from '@/actions/service-bookings'
 import { cn } from '@/lib/utils'
 import { BeatLoader } from 'react-spinners'
-import { Service, ServiceOffer } from '@prisma/client'
+import { Service, ServiceBooking, ServiceOffer } from '@prisma/client'
 import { ServiceBookingSchema } from '@/constants/zod'
+import { findAvailableSlots } from '@/utils/helpers/availability'
+import { JsonValue } from '@prisma/client/runtime/library'
 
 type TimeSlot = [string, string];
 type Availability = {
@@ -36,17 +38,38 @@ type Availability = {
   sunday?: TimeSlot[] | undefined;
 };
 
+function isDayAvailability(obj: any): obj is Availability {
+  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  return days.every(day => 
+      obj[day] === undefined || 
+      Array.isArray(obj[day]) && 
+      obj[day].every(slot => Array.isArray(slot) && slot.length === 2)
+  );
+}
+
+interface Booking {
+  date: Date,
+  time: JsonValue,
+  customer: {
+    image: string|null
+  }
+}
+
 interface BookingFormProps {
   offerId: string
   service: Service & {
-    offers: ServiceOffer[]
+    offers: (ServiceOffer & {
+      bookings: Booking[]
+    })[]
     availability: Availability | null
   },
-  availableSlots: TimeSlot[] | null
+  offer: ServiceOffer
 }
 
-export function BookingForm({ offerId, service, availableSlots }: BookingFormProps) {
+
+export function BookingForm({ offerId, service, offer }: BookingFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[] | null>(null)
   const router = useRouter()
 
   // Memoized function to check if a date is available
@@ -61,6 +84,9 @@ export function BookingForm({ offerId, service, availableSlots }: BookingFormPro
     }
   }, [service.availability])
 
+  var totalBookings:Booking[]  = []
+  service.offers.map(offer=>totalBookings=totalBookings.concat(offer.bookings))
+
   const form = useForm<z.infer<typeof ServiceBookingSchema>>({
     resolver: zodResolver(ServiceBookingSchema),
     defaultValues: {
@@ -68,6 +94,15 @@ export function BookingForm({ offerId, service, availableSlots }: BookingFormPro
     }
   })
 
+  function getDaysSlot (date: Date = new Date()) {
+    if (service.availability) {
+      const slots = isDayAvailability(service.availability) ?
+        findAvailableSlots(service.availability, date, offer.duration || 0, totalBookings) :
+        null;
+      setAvailableSlots(slots);
+    }
+  }
+    
   const onSubmit = async (values: z.infer<typeof ServiceBookingSchema>) => {
     try {
       setIsLoading(true)
@@ -95,7 +130,10 @@ export function BookingForm({ offerId, service, availableSlots }: BookingFormPro
               <Calendar
                 mode="single"
                 selected={field.value}
-                onSelect={field.onChange}
+                onSelect={(value) => {
+                  field.onChange(value)
+                  getDaysSlot(value)
+                }}
                 disabled={(date) => 
                   date < new Date() || 
                   !isDateAvailable(date)
@@ -115,18 +153,18 @@ export function BookingForm({ offerId, service, availableSlots }: BookingFormPro
               <FormLabel>Time</FormLabel>
               <Select 
                 onValueChange={(value)=>field.onChange(value.split(' - '))} 
-                defaultValue={`${field.value[0]} - ${field.value[1]}`}>
+                >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a time" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {availableSlots?.map((slot, index) => (
+                  {availableSlots && availableSlots?.map((slot, index) => (
                     <SelectItem 
                       key={index} 
                       value={`${slot[0]} - ${slot[1]}`}>
-                      {`${new Date(slot[0]).toLocaleTimeString()} - ${new Date(slot[1]).toLocaleTimeString()}`}
+                      {`${slot[0]}  ~to~  ${slot[1]}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
