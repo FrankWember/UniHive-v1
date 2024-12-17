@@ -4,8 +4,8 @@ import React, { useState, useEffect } from 'react'
 import { BackButton } from '@/components/back-button'
 import { Id } from '@/convex/_generated/dataModel'
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { useRouter } from 'next/navigation'
-import { useQuery } from 'convex/react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import axios from 'axios'
 import { ChatList } from './_components/chat-list'
@@ -29,12 +29,23 @@ export interface Chat {
     } | null
 }
 
+interface Customer {
+    id: string
+    name: string|null
+    image: string|null
+}
+
 const InboxPage = () => {
     const user = useCurrentUser()
+    const searchParams = useSearchParams()
+    const recipientId = searchParams.get('recipientId')
+    const chatType = searchParams.get('chatType')
     const router = useRouter()
     const [loading, setLoading] = useState(false);
     const [currentChatId, setCurrentChatId] = useState<Id<"chats">|null>(null)
     const [chats, setChats] = useState<Chat[]>([])
+
+    const newChat = useMutation(api.chats.createChat)
 
     // Move the redirect logic before any hooks
     React.useLayoutEffect(() => {
@@ -42,11 +53,13 @@ const InboxPage = () => {
             const callbackUrl = encodeURIComponent("/home/inbox")
             router.push("/auth/sign-in?callbackUrl=" + callbackUrl)
         }
-    }, [user, router]);
+    }, [user, router, recipientId, chatType]);
 
     const allChats = useQuery(api.chats.getAllChats, {
         userId: user?.id || '',
     })
+
+    console.log("ALL CHATS:", allChats)
 
     useEffect(() => {
         const fetchChats = async () => {
@@ -55,20 +68,22 @@ const InboxPage = () => {
             let allUserIds: string[] = allChats.map((chat) => chat.customerId)
             
             try {
-                const resolvedChats = await Promise.all(allChats.map(async (chat) => {
-                    const { data: user } = await axios.get(`/api/customer`, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        data: {
-                            userIds: allUserIds
-                        }
-                    });
+                const { data: users } = await axios.get(`/api/users`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: {
+                        userIds: allUserIds
+                    }
+                });  
+
+                const resolvedChats = allChats.map((chat) => {
+                    const user = users.find((user: Customer) => user.id === chat.customerId || user.id === chat.sellerId);
                     return {
                         ...chat,
                         customer: user
                     };
-                }));
+                });
 
                 setChats(resolvedChats);
                 if (!currentChatId && resolvedChats[0]) {
@@ -83,6 +98,27 @@ const InboxPage = () => {
 
         fetchChats();
     }, [allChats]);
+
+    useEffect(() => {
+        // create a new chat if there is a recipient in the search params
+        const handleCreateChat = async () => {
+            if (recipientId && allChats) {
+                const chat = allChats.find((chat) => chat.customerId === user?.id && chat.sellerId === recipientId)
+                if (chat) {
+                    setCurrentChatId(chat._id)
+                } else {
+                    const mychat = await newChat({
+                        sellerId: user!.id!,
+                        customerId: recipientId!,
+                        type: chatType || "services"
+                    })
+                    setCurrentChatId(mychat)
+                }
+            }
+        }
+
+        handleCreateChat()
+    }, [recipientId, chatType, allChats, chats])
 
     // If no user, this will render null due to the useLayoutEffect redirect
     if (!user || !user.id) {
@@ -104,6 +140,7 @@ const InboxPage = () => {
                     setCurrentChatId={setCurrentChatId} 
                     chats={chats}
                     userId={user.id}
+                    loading={loading}
                 />
             </div>
 

@@ -28,23 +28,15 @@ import { useIsMobile } from '@/hooks/use-mobile'
 interface ChatListProps {
     currentChatId: Id<"chats"> | null
     setCurrentChatId: React.Dispatch<React.SetStateAction<Id<"chats"> | null>>
+    loading: boolean
     userId: string,
     chats: Chat[]
 }
 
-export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats }: ChatListProps) => {
-    const [open, setOpen] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loading=false }: ChatListProps) => {
+    const [open, setOpen] = React.useState(true);
     const [filteredChats, setFilteredChats] = React.useState<Chat[]>(chats);
     const isMobile = useIsMobile()
-
-    useEffect(()=>{
-        if (isMobile) {
-            setOpen(true)
-        } else {
-            setOpen(false)
-        }
-    }, [isMobile])
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -53,14 +45,20 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats }: Cha
                     <PanelRight className="h-4 w-4" />
                 </Button>
             </SheetTrigger>
-            <SheetContent className="w-screen md:max-w-sm">
-                <SheetHeader>
+            <SheetContent className="w-screen md:max-w-sm mx-0">
+                <SheetHeader className="px-4">
                     <div className="p-4 border-b">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 placeholder="Search chats"
-                                onChange={(e) => setFilteredChats(chats.filter(chat => chat.customer!.name.toLowerCase().includes(e.target.value.toLowerCase())))}
+                                onChange={(e) => {
+                                    if (e.target.value === '' || e.target.value.length === 0 || e.target.value === ' ') {
+                                        setFilteredChats(chats)
+                                    } else {
+                                        setFilteredChats(chats.filter(chat => chat.customer!.name.toLowerCase().includes(e.target.value.toLowerCase())))
+                                    }
+                                }}
                                 className="pl-10"
                             />
                         </div>
@@ -81,26 +79,29 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats }: Cha
                                 className={`p-4 border-b cursor-pointer hover:bg-muted transition-colors ${
                                     currentChatId === chat._id ? 'bg-muted' : ''
                                     }`}
-                                onClick={() => {setCurrentChatId(chat._id); setOpen(false)}}
+                                onClick={() => {
+                                    setCurrentChatId(chat._id) 
+                                    setOpen(false)
+                                }}
                             >
                                 <div className="flex items-center space-x-4">
                                 <Avatar>
-                                    <AvatarImage src={chat.customer?.image || undefined} alt={chat.customer?.name} />
+                                    <AvatarImage src={chat.customer?.image || undefined} alt={chat.customer?.name} className='object-cover' />
                                     <AvatarFallback>{chat.customer?.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-grow min-w-0">
                                     <div className="flex justify-between items-baseline">
                                     <h3 className="text-sm font-semibold truncate">{chat.customer?.name}</h3>
-                                    {chat.lastMessage && (
-                                        <span className="text-xs text-muted-foreground">
-                                        {format(new Date(chat.lastMessage.timestamp), 'HH:mm')}
-                                        </span>
-                                    )}
+                                        {chat.lastMessage && (
+                                            <span className="text-xs text-muted-foreground">
+                                            {format(new Date(chat.lastMessage.timestamp), 'HH:mm')}
+                                            </span>
+                                        )}
                                     </div>
                                     {chat.lastMessage && (
-                                    <p className="text-sm text-muted-foreground truncate">
-                                        {chat.lastMessage.text}
-                                    </p>
+                                        <p className="text-sm text-muted-foreground truncate">
+                                            {chat.lastMessage.text}
+                                        </p>
                                     )}
                                 </div>
                                 </div>

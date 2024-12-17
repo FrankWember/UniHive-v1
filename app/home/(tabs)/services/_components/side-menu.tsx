@@ -73,9 +73,9 @@ export function SideMenu({ className }: SidebarProps) {
                     <Package className="mr-2 h-4 w-4" />
                     My services
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/services/provider/${user?.id!}/my-chats`)}>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/inbox`)}>
                     <MessageCircle className="mr-2 h-4 w-4" />
-                    Chats
+                    Inbox
                   </Button>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/analytics")}>
                     <BarChart3 className="mr-2 h-4 w-4" />
@@ -101,6 +101,10 @@ export function SideMenu({ className }: SidebarProps) {
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/my-bookings")}>
                     <ClipboardList className="mr-2 h-4 w-4" />
                     My Bookings
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/inbox`)}>
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Inbox
                   </Button>
                 </div>
               )}

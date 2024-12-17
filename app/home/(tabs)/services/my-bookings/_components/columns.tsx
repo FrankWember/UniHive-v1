@@ -5,9 +5,11 @@ import { ServiceBooking, ServiceOffer } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { MapIcon } from "lucide-react"
+import { MessageCircle } from "lucide-react"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { parseBookingTime } from "@/utils/helpers/availability"
+import { useRouter } from "next/navigation"
+
 
 type Booking = ServiceBooking & {
   offer: ServiceOffer
@@ -71,5 +73,16 @@ export const columns: ColumnDef<Booking>[] = [
   {
     accessorKey: "location",
     header: "Location"
+  },
+  {
+    header: "Chat",
+    cell: ({ row }) => {
+      const router = useRouter()
+      return (
+        <Button onClick={() => router.push(`/home/inbox?recipientId=${row.original.customerId}&chatType=services`)} size="icon">
+          <MessageCircle className='h-4 w-4' />
+        </Button>
+      )
+    }
   },
 ]

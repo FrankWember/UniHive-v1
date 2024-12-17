@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { parseBookingTime } from '@/utils/helpers/availability'
 import { format } from 'date-fns'
+import { MessageCircle } from 'lucide-react'
 
 interface BookingsTableProps {
   bookings: (ServiceBooking & {
@@ -59,6 +60,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
             <TableHead>Status</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Location</TableHead>
+            <TableHead>Chat</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -88,6 +90,11 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
               </TableCell>
               <TableCell>${booking.offer.price.toFixed(2)}</TableCell>
               <TableCell>{booking.location || "Default"}</TableCell>
+              <TableCell>
+                <Button onClick={() => router.push(`/home/inbox?recipientId=${booking.customerId}&chatType=services`)} size="icon">
+                  <MessageCircle className='h-4 w-4' />
+                </Button>
+              </TableCell>
               <TableCell>
                 <Button onClick={() => handleViewDetails(booking.id)} size="sm">
                   View Details

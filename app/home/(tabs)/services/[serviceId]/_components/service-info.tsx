@@ -176,7 +176,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     <Button variant="outline" size="icon" onClick={handleLike}>
                         <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                     </Button> 
-                    <Button size="icon" onClick={()=>router.push(`/home/services/provider/${service.providerId}/chat`)}>
+                    <Button size="icon" onClick={()=>router.push(`/home/inbox?recipientId=${service.provider.id}&chatType=services`)}>
                         <MessageCircle className="h-4 w-4" />
                     </Button>        
                 </div>

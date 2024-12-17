@@ -1,15 +1,17 @@
 import { prisma } from "@/prisma/connection";
 import { NextRequest, NextResponse } from "next/server";
 
+
 export async function GET(req: NextRequest) {
   try {
     const users = await prisma.user.findMany({
-      select: {
+    select: {
         id: true,
         name: true,
         image: true,
-      },
-    });
+    },
+    })
+
 
     return NextResponse.json(users, { status: 200 });
   } catch (error) {

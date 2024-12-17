@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Calendar, Clock, DollarSign, FileText, MapIcon, User as UserIcon } from 'lucide-react'
+import { Calendar, Clock, DollarSign, FileText, MapIcon, MessageCircle, User as UserIcon } from 'lucide-react'
 import { format } from 'date-fns'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { parseBookingTime } from '@/utils/helpers/availability'
@@ -156,7 +156,14 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter className="flex justify-end space-x-4">
+      <CardFooter className="flex justify-between space-x-4">
+        <Button 
+          variant="secondary" 
+          onClick={()=>router.push(`/home/inbox?recipientId=${booking.customerId}&chatType=services`)} 
+          className='flex items-center'
+        >
+          <MessageCircle className='h-4 w-4 mr-2' />Chat
+        </Button>
         {booking.status === 'PENDING' && (
           <>
             <Button 
