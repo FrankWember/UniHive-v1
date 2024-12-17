@@ -16,7 +16,7 @@ interface OfferCardProps {
 
 export const OfferCard = ({service, offer}: OfferCardProps) => {
     const router = useRouter()
-    const duration = format(addMinutes(new Date(0), offer.duration || 0), 'hh:mm')
+    const duration = `${offer.duration} min`
   return (
     <div  className="flex flex-col border rounded-md p-4">
         <div className='flex gap-4 justify-start items-center'>

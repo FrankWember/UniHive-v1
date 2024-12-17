@@ -16,8 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
 import { Calendar } from '@/components/ui/calendar'
-import { TimePickerDemo } from '@/components/ui/time-picker-12h-demo'
+import { ExclamationTriangleIcon, RocketIcon } from '@radix-ui/react-icons'
 import { LocationInput } from '@/components/location-input'
 import { createBooking } from '@/actions/service-bookings'
 import { cn } from '@/lib/utils'
@@ -69,6 +74,8 @@ interface BookingFormProps {
 
 export function BookingForm({ offerId, service, offer }: BookingFormProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const [availableSlots, setAvailableSlots] = useState<TimeSlot[] | null>(null)
   const router = useRouter()
 
@@ -106,13 +113,15 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
   const onSubmit = async (values: z.infer<typeof ServiceBookingSchema>) => {
     try {
       setIsLoading(true)
-
+      setError("")
+      setSuccess("")
       await createBooking(offerId, values)
-
+      setSuccess("Your booking has been made!")
       router.push(`/home/services/${service.id}`)
       router.refresh()
     } catch (error) {
       console.error(error)
+      setError("An error occurred while booking the service.")
     } finally {
       setIsLoading(false)
     }
@@ -152,7 +161,7 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
             <FormItem>
               <FormLabel>Time</FormLabel>
               <Select 
-                onValueChange={(value)=>field.onChange(value.split(' - '))} 
+                onValueChange={(value)=>field.onChange([value.split(' - ')])} 
                 >
                 <FormControl>
                   <SelectTrigger>
@@ -190,6 +199,21 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
             </FormItem>
           )}
         />
+
+        {error && (
+            <Alert variant="destructive">
+                <ExclamationTriangleIcon className="h-6 w-6" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+            </Alert>
+        )}
+        {success && (
+            <Alert>
+                <RocketIcon className="h-6 w-6"/>
+                <AlertTitle>Success</AlertTitle>
+                <AlertDescription>{success}</AlertDescription>
+            </Alert>
+        )}
 
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <BeatLoader /> : "Book"}
