@@ -91,8 +91,10 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
     }
   }, [service.availability])
 
-  var totalBookings:Booking[]  = []
-  service.offers.map(offer=>totalBookings=totalBookings.concat(offer.bookings))
+  const totalBookings = useMemo(() => {
+    const bookings = service.offers.reduce((total, offer) => total.concat(offer.bookings), [] as Booking[])
+    return bookings
+  }, [service.offers])
 
   const form = useForm<z.infer<typeof ServiceBookingSchema>>({
     resolver: zodResolver(ServiceBookingSchema),

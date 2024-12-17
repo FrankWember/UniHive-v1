@@ -13,11 +13,16 @@ type Booking = ServiceBooking & {
   offer: ServiceOffer
 }
 
-const getTimeRange = (time: JsonValue) => {
+const getTimeRange = (date: Date, time: JsonValue) => {
   const { startTime, endTime } = parseBookingTime(time) ?? {}
-  const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-  const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-  return `${startTimeString} - ${endTimeString}`
+  const startDate = new Date(date)
+  const endDate = new Date(date)
+  const startTimeParts = startTime?.split('-')
+  const endTimeParts = endTime?.split('-')
+
+  startDate.setHours(parseInt(startTimeParts![0]), parseInt(startTimeParts![1]))
+  endDate.setHours(parseInt(endTimeParts![0]), parseInt(endTimeParts![1]))
+  return `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
 }
 
 export const columns: ColumnDef<Booking>[] = [
@@ -36,19 +41,15 @@ export const columns: ColumnDef<Booking>[] = [
     accessorKey: "time",
     header: "Time",
     cell: ({ row }) => {
-      return getTimeRange(row.original.time)
+      return getTimeRange(row.original.date, row.original.time)
     },
   },
   {
-    accessorKey: "offer.price",
+    accessorKey: "offer",
     header: "Price",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("offer.price"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-      return formatted
+      const amount = row.original.offer.price.toFixed(2)
+      return `$ ${amount}`
     },
   },
   {
@@ -70,17 +71,5 @@ export const columns: ColumnDef<Booking>[] = [
   {
     accessorKey: "location",
     header: "Location"
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <Button asChild>
-          <Link href={`/home/services/my-bookings/${row.original.id}`}>
-            View
-          </Link>
-        </Button>
-      )
-    },
   },
 ]

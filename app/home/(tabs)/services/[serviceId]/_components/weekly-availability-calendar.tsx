@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo} from 'react'
 import { addDays, format, isSameDay, startOfWeek } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -19,6 +19,7 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
     const parsedAvailability = parseAvailability(availability);
     return generateEvents(parsedAvailability);
   }, [availability])
+
 
   const eventDates = events.map((event: CalendarEvent) => event.start)
 

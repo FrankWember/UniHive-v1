@@ -77,10 +77,6 @@ export function SideMenu({ className }: SidebarProps) {
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Chats
                   </Button>
-                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/bookings")}>
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    Bookings
-                  </Button>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/analytics")}>
                     <BarChart3 className="mr-2 h-4 w-4" />
                     Analytics

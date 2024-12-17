@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { parseBookingTime } from '@/utils/helpers/availability'
+import { format } from 'date-fns'
 
 interface BookingsTableProps {
   bookings: (ServiceBooking & {
@@ -32,11 +33,16 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
     router.push(`/home/services/${bookings[0].offer.serviceId}/bookings/${bookingId}`)
   }
 
-  const getTimeRange = (time: JsonValue) => {
+  const getTimeRange = (date: Date, time: JsonValue) => {
     const { startTime, endTime } = parseBookingTime(time) ?? {}
-    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    return `${startTimeString} - ${endTimeString}`
+    const startDate = new Date(date)
+    const endDate = new Date(date)
+    const startTimeParts = startTime?.split('-')
+    const endTimeParts = endTime?.split('-')
+
+    startDate.setHours(parseInt(startTimeParts![0]), parseInt(startTimeParts![1]))
+    endDate.setHours(parseInt(endTimeParts![0]), parseInt(endTimeParts![1]))
+    return `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
   }
 
   return (
@@ -68,7 +74,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
             >
               <TableCell>{booking.date.toLocaleDateString()}</TableCell>
               {booking.time && typeof booking.time === "object" && (
-                <TableCell>{getTimeRange(booking.time)}</TableCell>
+                <TableCell>{getTimeRange(booking.date, booking.time)}</TableCell>
               )}
               <TableCell>
                 <Badge variant={

@@ -172,14 +172,13 @@ export function findAvailableSlots(
 
 export function parseBookingTime(time: JsonValue): { startTime: string; endTime: string } | null {
   // Type guard to validate the time structure
-  const isValidTimeSlots = (value: JsonValue): value is { slots: TimeSlot[] } => {
+  const isValidTimeSlots = (value: JsonValue): value is TimeSlot[] => {
     return (
       typeof value === 'object' && 
       value !== null && 
-      'slots' in value && 
-      Array.isArray((value as any).slots) && 
-      (value as any).slots.length > 0 && 
-      (value as any).slots.every((slot: any) => 
+      Array.isArray((value as any)) && 
+      (value as any).length > 0 && 
+      (value as any).every((slot: any) => 
         Array.isArray(slot) && 
         slot.length === 2 && 
         typeof slot[0] === 'string' && 
@@ -193,15 +192,9 @@ export function parseBookingTime(time: JsonValue): { startTime: string; endTime:
     return null;
   }
 
-  // Sort slots to ensure we get the absolute first and last times
-  const sortedSlots = [...time.slots].sort((a, b) => {
-    // Compare first elements (start times) of each slot
-    return a[0].localeCompare(b[0]);
-  });
-
   // Return the first slot's start time and the last slot's end time
   return {
-    startTime: sortedSlots[0][0],
-    endTime: sortedSlots[sortedSlots.length - 1][1]
+    startTime: time[0][0],
+    endTime: time[time.length - 1][1]
   };
 }

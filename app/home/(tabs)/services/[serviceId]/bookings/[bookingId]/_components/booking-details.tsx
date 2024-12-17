@@ -87,11 +87,16 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
     }
   }
 
-  const getTimeRange = (time: JsonValue) => {
+  const getTimeRange = (date: Date, time: JsonValue) => {
     const { startTime, endTime } = parseBookingTime(time) ?? {}
-    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    return `${startTimeString} - ${endTimeString}`
+    const startDate = new Date(date)
+    const endDate = new Date(date)
+    const startTimeParts = startTime?.split('-')
+    const endTimeParts = endTime?.split('-')
+
+    startDate.setHours(parseInt(startTimeParts![0]), parseInt(startTimeParts![1]))
+    endDate.setHours(parseInt(endTimeParts![0]), parseInt(endTimeParts![1]))
+    return `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
   }
 
   return (
@@ -133,7 +138,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
                 <Calendar className="inline-block mr-2" /> Time
               </TableCell>
               <TableCell>
-                {getTimeRange(booking.time)}
+                {getTimeRange(booking.date, booking.time)}
               </TableCell>
             </TableRow>
             <TableRow>
