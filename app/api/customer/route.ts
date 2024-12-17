@@ -1,15 +1,32 @@
 import { prisma } from "@/prisma/connection";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const data = await req.json();
   try {
-    const users = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        image: true,
-      },
-    });
+    let users = []
+    if (data && data.userIds) {
+      users = await prisma.user.findMany({
+        where: {
+          id: {
+            in: data.userIds
+          }
+        },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      });      
+    } else {
+      users = await prisma.user.findMany({
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      });
+    }
 
     return NextResponse.json(users, { status: 200 });
   } catch (error) {

@@ -14,14 +14,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
-import { NewChatDialog } from './new-chat-dialog'
 import { BeatLoader } from 'react-spinners'
 import { PaperPlaneIcon } from '@radix-ui/react-icons'
 
 interface ChatInterfaceProps {
     currentChatId: Id<"chats"> | null
     setCurrentChatId: React.Dispatch<React.SetStateAction<Id<"chats"> | null>>
-    providerId: string
+    userId: string
 }
 
 interface Message {
@@ -36,7 +35,7 @@ const formSchema = z.object({
     message: z.string().min(1, "Message cannot be empty"),
 })
 
-const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInterfaceProps) => {
+export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatInterfaceProps) => {
     const [messages, setMessages] = useState<Message[]>([])
     const [sendingMessage, setSendingMessage] = useState(false)
     const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -81,7 +80,7 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
         setSendingMessage(true)
         const message = await sendMessage({
             chatId: currentChatId!,
-            senderId: providerId,
+            senderId: userId,
             text: values.message
         })
         form.reset()
@@ -102,15 +101,15 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
                 {messages.map((message) => (
                   <div
                     key={message._id}
-                    className={`flex ${message.senderId === providerId ? 'justify-end' : 'justify-start'} mb-4`}
+                    className={`flex ${message.senderId === userId ? 'justify-end' : 'justify-start'} mb-4`}
                   >
-                    <div className={`flex items-end ${message.senderId === providerId ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`flex items-end ${message.senderId === userId ? 'flex-row-reverse' : 'flex-row'}`}>
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback>{message.senderId === providerId ? 'You' : 'P'}</AvatarFallback>
+                        <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
                       </Avatar>
                       <div
                         className={`mx-2 py-2 px-3 rounded-lg ${
-                          message.senderId === providerId ? 'bg-primary text-primary-foreground' : 'bg-secondary'
+                          message.senderId === userId ? 'bg-primary text-primary-foreground' : 'bg-secondary'
                         }`}
                       >
                         {message.text}
@@ -152,9 +151,6 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
                             Select a chat to start messaging.
                         </CardDescription>
                     </CardHeader>
-                    <CardFooter className='flex gap-3'>
-                        <NewChatDialog currentChatId={currentChatId} setCurrentChatId={setCurrentChatId} sellerId={providerId} />
-                    </CardFooter>
                 </Card>
             </div>
         )}
@@ -162,5 +158,3 @@ const ChatInterface = ({ currentChatId, setCurrentChatId, providerId }: ChatInte
       </motion.div>
     )
 }
-
-export default ChatInterface

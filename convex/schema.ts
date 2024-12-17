@@ -5,6 +5,7 @@ export default defineSchema({
   chats: defineTable({
     sellerId: v.string(),
     customerId: v.string(),
+    type: v.string(),
     updatedAt: v.number(),
   }),
   messages: defineTable({
@@ -14,4 +15,4 @@ export default defineSchema({
     timestamp: v.number(),
     read: v.boolean(),
   }),
-});
+})
