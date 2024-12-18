@@ -13,6 +13,8 @@ import { useCurrentUser } from "@/hooks/use-current-user"
 import React from "react"
 import { isFavouriteService, likeService } from "@/actions/services"
 import { useRouter } from "next/navigation"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -44,6 +46,12 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     const user = useCurrentUser()
     const router = useRouter()
     const [isLiked, setIsLiked] = React.useState(false)
+
+    const newChat = useMutation(api.chats.createChat)
+    const existingChat = useQuery(api.chats.getChatByUserIds, {
+        customerId: user?.id!,
+        sellerId: service.providerId
+    })
 
     React.useEffect(() => {
         const fetchLikeStatus = async () => {
@@ -95,6 +103,24 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
             toast({
                 title: 'Failed to copy to clipboard',
                 description: 'Please try again later',
+            })
+        }
+    }
+
+    const createChat = async () => {
+        try {
+            let chatId = ''
+            if (existingChat){
+                chatId = existingChat._id
+            } else {
+                chatId = await newChat({ sellerId: service.provider.id, customerId: user!.id!, type: 'services' })
+            }
+            router.push(`/home/inbox?chatId=${chatId}`)
+        } catch {
+            toast({
+                title: 'Failed to create chat',
+                description: 'Please try again later',
+                variant: 'destructive'
             })
         }
     }
@@ -176,7 +202,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     <Button variant="outline" size="icon" onClick={handleLike}>
                         <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
                     </Button> 
-                    <Button size="icon" onClick={()=>router.push(`/home/inbox?recipientId=${service.provider.id}&chatType=services`)}>
+                    <Button size="icon" onClick={createChat}>
                         <MessageCircle className="h-4 w-4" />
                     </Button>        
                 </div>

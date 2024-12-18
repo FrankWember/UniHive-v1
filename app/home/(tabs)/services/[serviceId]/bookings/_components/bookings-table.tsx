@@ -11,6 +11,10 @@ import { JsonValue } from '@prisma/client/runtime/library'
 import { parseBookingTime } from '@/utils/helpers/availability'
 import { format } from 'date-fns'
 import { MessageCircle } from 'lucide-react'
+import { useMutation, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { useToast } from '@/hooks/use-toast'
 
 interface BookingsTableProps {
   bookings: (ServiceBooking & {
@@ -20,7 +24,11 @@ interface BookingsTableProps {
 
 export function BookingsTable({ bookings }: BookingsTableProps) {
   const router = useRouter()
+  const user = useCurrentUser()
+  const userId = user?.id!
+  const { toast } = useToast()
   const [expandedRow, setExpandedRow] = useState<string | null>(null)
+  const newChat = useMutation(api.chats.createChat)
 
   const handleRowClick = (bookingId: string) => {
     if (expandedRow === bookingId) {
@@ -44,6 +52,28 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
     startDate.setHours(parseInt(startTimeParts![0]), parseInt(startTimeParts![1]))
     endDate.setHours(parseInt(endTimeParts![0]), parseInt(endTimeParts![1]))
     return `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+  }
+
+  const openSellerChat = async (customerId: string) => {
+    const existingChat = useQuery(api.chats.getChatByUserIds, {
+        customerId: customerId,
+        sellerId: userId
+    })
+    try {
+      let chatId = ''
+      if (existingChat){
+          chatId = existingChat._id
+      } else {
+          chatId = await newChat({ sellerId: userId, customerId: customerId, type: 'services' })
+      }
+      router.push(`/home/inbox?chatId=${chatId}`)
+    } catch {
+      toast({
+        title: 'Failed to create chat',
+        description: 'Please try again later',
+        variant: 'destructive'
+      })
+    }
   }
 
   return (
@@ -91,7 +121,7 @@ export function BookingsTable({ bookings }: BookingsTableProps) {
               <TableCell>${booking.offer.price.toFixed(2)}</TableCell>
               <TableCell>{booking.location || "Default"}</TableCell>
               <TableCell>
-                <Button onClick={() => router.push(`/home/inbox?recipientId=${booking.customerId}&chatType=services`)} size="icon">
+                <Button onClick={() => openSellerChat(booking.customerId)} size="icon">
                   <MessageCircle className='h-4 w-4' />
                 </Button>
               </TableCell>

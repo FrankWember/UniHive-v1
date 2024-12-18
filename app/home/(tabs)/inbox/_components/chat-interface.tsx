@@ -108,11 +108,14 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatI
                         <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
                       </Avatar>
                       <div
-                        className={`mx-2 py-2 px-3 rounded-lg ${
+                        className={`flex flex-col mx-2 p-2 rounded-lg max-w-[75%] ${
                           message.senderId === userId ? 'bg-primary text-primary-foreground' : 'bg-secondary'
                         }`}
                       >
-                        {message.text}
+                        <span className="text-sm">{message.text}</span>
+                        <span className={`w-full flex justify-end text-[0.5rem] text-primary-foreground/70`}>
+                          {new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(message.timestamp))}
+                        </span>
                       </div>
                     </div>
                   </div>

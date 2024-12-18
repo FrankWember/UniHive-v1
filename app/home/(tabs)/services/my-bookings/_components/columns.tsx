@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { ServiceBooking, ServiceOffer } from "@prisma/client"
+import { ServiceBooking, ServiceOffer, Service } from "@prisma/client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -9,10 +10,17 @@ import { MessageCircle } from "lucide-react"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { parseBookingTime } from "@/utils/helpers/availability"
 import { useRouter } from "next/navigation"
+import { useMutation, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { useToast } from "@/hooks/use-toast"
+import { BeatLoader } from "react-spinners"
 
 
 type Booking = ServiceBooking & {
-  offer: ServiceOffer
+  offer: ServiceOffer & {
+    service: Service
+  }
 }
 
 const getTimeRange = (date: Date, time: JsonValue) => {
@@ -77,10 +85,41 @@ export const columns: ColumnDef<Booking>[] = [
   {
     header: "Chat",
     cell: ({ row }) => {
+      const [loading, setLoading] = useState(false);
       const router = useRouter()
+      const user = useCurrentUser()
+      const userId = user?.id!
+      const newChat = useMutation(api.chats.createChat)
+      const { toast } = useToast()
+
+      const openCustomerChat = async () => {
+        setLoading(true)
+        const existingChat = useQuery(api.chats.getChatByUserIds, {
+            customerId: userId,
+            sellerId: row.original.offer.service.providerId
+        })
+        try {
+          let chatId = ''
+          if (existingChat){
+              chatId = existingChat._id
+          } else {
+              chatId = await newChat({ sellerId: row.original.offer.service.providerId, customerId: userId, type: 'services' })
+          }
+          router.push(`/home/inbox?chatId=${chatId}`)
+        } catch {
+          toast({
+            title: 'Failed to create chat',
+            description: 'Please try again later',
+            variant: 'destructive'
+          })
+        } finally {
+          setLoading(false)
+        }
+      }
+
       return (
-        <Button onClick={() => router.push(`/home/inbox?recipientId=${row.original.customerId}&chatType=services`)} size="icon">
-          <MessageCircle className='h-4 w-4' />
+        <Button onClick={openCustomerChat} size="icon">
+          {loading ? <BeatLoader /> : <MessageCircle className='h-4 w-4' />}
         </Button>
       )
     }

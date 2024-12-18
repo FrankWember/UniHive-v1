@@ -23,6 +23,18 @@ export const getChatById = query({
   },
 });
 
+export const getChatByUserIds = query({
+  args: { sellerId: v.string(), customerId: v.string() },
+  handler: async (ctx, args) => {
+    const chat = await ctx.db
+      .query("chats")
+      .filter(q => (q.eq(q.field("sellerId"), args.sellerId) && q.eq(q.field("customerId"), args.customerId)) || (q.eq(q.field("sellerId"), args.sellerId) && q.eq(q.field("customerId"), args.customerId)))
+      .order("asc")
+      .first();
+    return chat;
+  },
+});
+
 export const getAllChats = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
@@ -44,7 +56,7 @@ export const getAllChats = query({
       const lastMessage = await ctx.db
         .query("messages")
         .filter(q => q.eq(q.field("chatId"), chat._id))
-        .order("asc")
+        .order("desc")
         .first();
       return { ...chat, lastMessage };
     }));

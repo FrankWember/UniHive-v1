@@ -14,6 +14,9 @@ import { Calendar, Clock, DollarSign, FileText, MapIcon, MessageCircle, User as 
 import { format } from 'date-fns'
 import { JsonValue } from '@prisma/client/runtime/library'
 import { parseBookingTime } from '@/utils/helpers/availability'
+import { useMutation, useQuery } from "convex/react"
+import { api } from "@/convex/_generated/api"
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 interface BookingDetailsProps {
   booking: ServiceBooking & { 
@@ -26,6 +29,9 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
+  const user = useCurrentUser()
+  const userId = user?.id!
+  const newChat = useMutation(api.chats.createChat)
 
   const handleAccept = async () => {
     setIsLoading(true)
@@ -99,6 +105,28 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
     return `${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
   }
 
+  const openSellerChat = async (customerId: string) => {
+    const existingChat = useQuery(api.chats.getChatByUserIds, {
+        customerId: customerId,
+        sellerId: userId
+    })
+    try {
+      let chatId = ''
+      if (existingChat){
+          chatId = existingChat._id
+      } else {
+          chatId = await newChat({ sellerId: userId, customerId: customerId, type: 'services' })
+      }
+      router.push(`/home/inbox?chatId=${chatId}`)
+    } catch {
+      toast({
+        title: 'Failed to create chat',
+        description: 'Please try again later',
+        variant: 'destructive'
+      })
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -159,7 +187,7 @@ export function BookingDetails({ booking }: BookingDetailsProps) {
       <CardFooter className="flex justify-between space-x-4">
         <Button 
           variant="secondary" 
-          onClick={()=>router.push(`/home/inbox?recipientId=${booking.customerId}&chatType=services`)} 
+          onClick={()=>openSellerChat(booking.customerId)} 
           className='flex items-center'
         >
           <MessageCircle className='h-4 w-4 mr-2' />Chat

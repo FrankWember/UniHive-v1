@@ -138,14 +138,6 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
                                             <User className="mr-2 h-4 w-4" />
                                             View Provider
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            className="w-full justify-start"
-                                            onClick={() => router.push(`/home/services/provider/${service.providerId}/chat`)}
-                                        >
-                                            <MessageCircle className="mr-2 h-4 w-4" />
-                                            Chat with Provider
-                                        </Button>
                                     </>
                                 )}
                             </div>

@@ -51,11 +51,6 @@ export const ServiceHeader = ({ user, service }: ServiceHeaderProps) => {
                         </Button>
                     </Link>
                 )}
-                <Link href={`/home/services/provider/${service.providerId}/chat`}>
-                    <Button variant="outline" size="icon">
-                        <MessageCircle className="h-4 w-4" />
-                    </Button>
-                </Link>
                 <ServiceOptions service={service} />
             </div>
         </div>

@@ -36,7 +36,17 @@ interface ChatListProps {
 export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loading=false }: ChatListProps) => {
     const [open, setOpen] = React.useState(true);
     const [filteredChats, setFilteredChats] = React.useState<Chat[]>(chats);
-    const isMobile = useIsMobile()
+    const [search, setSearch] = React.useState('');
+
+    React.useEffect(() => {
+        if (search.length === 0) {
+            const noDuplicates = Array.from(new Set(chats.map(chat => chat.customer?.name))).map(name => chats.find(chat => chat.customer?.name === name)).filter(chat => chat !== undefined) as Chat[];
+            setFilteredChats(noDuplicates)
+        } else {
+            const noDuplicates = Array.from(new Set(chats.filter((chat) => chat.customer?.name.toLowerCase().includes(search.toLowerCase())).map(chat => chat.customer?.name))).map(name => chats.find(chat => chat.customer?.name === name)).filter(chat => chat !== undefined) as Chat[];
+            setFilteredChats(noDuplicates)
+        }
+    }, [search, chats])
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -52,13 +62,7 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loadi
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
                             <Input
                                 placeholder="Search chats"
-                                onChange={(e) => {
-                                    if (e.target.value === '' || e.target.value.length === 0 || e.target.value === ' ') {
-                                        setFilteredChats(chats)
-                                    } else {
-                                        setFilteredChats(chats.filter(chat => chat.customer!.name.toLowerCase().includes(e.target.value.toLowerCase())))
-                                    }
-                                }}
+                                onChange={(e) => setSearch(e.target.value)}
                                 className="pl-10"
                             />
                         </div>

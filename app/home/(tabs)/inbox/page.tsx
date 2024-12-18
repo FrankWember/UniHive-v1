@@ -38,28 +38,25 @@ interface Customer {
 const InboxPage = () => {
     const user = useCurrentUser()
     const searchParams = useSearchParams()
-    const recipientId = searchParams.get('recipientId')
-    const chatType = searchParams.get('chatType')
+    const chatId = searchParams.get('chatId')
     const router = useRouter()
     const [loading, setLoading] = useState(false);
     const [currentChatId, setCurrentChatId] = useState<Id<"chats">|null>(null)
     const [chats, setChats] = useState<Chat[]>([])
 
-    const newChat = useMutation(api.chats.createChat)
+    
 
     // Move the redirect logic before any hooks
     React.useLayoutEffect(() => {
         if (!user || !user.id) {
             const callbackUrl = encodeURIComponent("/home/inbox")
-            router.push("/auth/sign-in?callbackUrl=" + callbackUrl)
+            router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
         }
-    }, [user, router, recipientId, chatType]);
+    }, [user, router]);
 
     const allChats = useQuery(api.chats.getAllChats, {
         userId: user?.id || '',
     })
-
-    console.log("ALL CHATS:", allChats)
 
     useEffect(() => {
         const fetchChats = async () => {
@@ -100,25 +97,13 @@ const InboxPage = () => {
     }, [allChats]);
 
     useEffect(() => {
-        // create a new chat if there is a recipient in the search params
-        const handleCreateChat = async () => {
-            if (recipientId && allChats) {
-                const chat = allChats.find((chat) => chat.customerId === user?.id && chat.sellerId === recipientId)
-                if (chat) {
-                    setCurrentChatId(chat._id)
-                } else {
-                    const mychat = await newChat({
-                        sellerId: user!.id!,
-                        customerId: recipientId!,
-                        type: chatType || "services"
-                    })
-                    setCurrentChatId(mychat)
-                }
+        if (chatId && allChats) {
+            const chat = allChats.find((chat) => chat._id === chatId)
+            if (chat) {
+                setCurrentChatId(chat._id)
             }
         }
-
-        handleCreateChat()
-    }, [recipientId, chatType, allChats, chats])
+    }, [chatId, allChats])
 
     // If no user, this will render null due to the useLayoutEffect redirect
     if (!user || !user.id) {
