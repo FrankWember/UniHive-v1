@@ -35,18 +35,7 @@ interface ChatListProps {
 
 export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loading=false }: ChatListProps) => {
     const [open, setOpen] = React.useState(true);
-    const [filteredChats, setFilteredChats] = React.useState<Chat[]>(chats);
     const [search, setSearch] = React.useState('');
-
-    React.useEffect(() => {
-        if (search.length === 0) {
-            const noDuplicates = Array.from(new Set(chats.map(chat => chat.customer?.name))).map(name => chats.find(chat => chat.customer?.name === name)).filter(chat => chat !== undefined) as Chat[];
-            setFilteredChats(noDuplicates)
-        } else {
-            const noDuplicates = Array.from(new Set(chats.filter((chat) => chat.customer?.name.toLowerCase().includes(search.toLowerCase())).map(chat => chat.customer?.name))).map(name => chats.find(chat => chat.customer?.name === name)).filter(chat => chat !== undefined) as Chat[];
-            setFilteredChats(noDuplicates)
-        }
-    }, [search, chats])
 
     return (
         <Sheet open={open} onOpenChange={setOpen}>
@@ -73,7 +62,7 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loadi
                         {loading ? (
                             <ChatListSkeleton />
                         ) : (
-                            filteredChats.map((chat) => (
+                            chats.map((chat) => (
                             <motion.div
                                 key={chat._id}
                                 initial={{ opacity: 0, y: 20 }}

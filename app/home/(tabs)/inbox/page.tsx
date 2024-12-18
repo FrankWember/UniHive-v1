@@ -7,9 +7,14 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import axios from 'axios'
+import axios, { all } from 'axios'
 import { ChatList } from './_components/chat-list'
 import { ChatInterface } from './_components/chat-interface'
+
+interface ChatPlusUserId {
+    _id: Id<"chats">
+    userId: string
+}
 
 export interface Chat {
     _id: Id<"chats">
@@ -48,7 +53,7 @@ const InboxPage = () => {
     
 
     // Move the redirect logic before any hooks
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         setUser(me)
         if (!user || !user.id) {
             const callbackUrl = encodeURIComponent("/home/inbox")
@@ -64,7 +69,12 @@ const InboxPage = () => {
         const fetchChats = async () => {
             if (!allChats || allChats.length <= 0) return;
             setLoading(true)
-            let allUserIds: string[] = allChats.map((chat) => chat.customerId)
+            let allUserIds: ChatPlusUserId[] = allChats.map((chat) => {
+                if (chat.customerId === user?.id) {
+                    return {_id: chat._id, userId: chat.sellerId}
+                }
+                return {_id: chat._id, userId: chat.customerId}
+            })
             
             try {
                 const { data: users } = await axios.get(`/api/users`, {
@@ -75,9 +85,12 @@ const InboxPage = () => {
                         userIds: allUserIds
                     }
                 });  
-
+                console.log("ALL_CHATS: ", allChats)
                 const resolvedChats = allChats.map((chat) => {
-                    const user = users.find((user: Customer) => user.id === chat.customerId || user.id === chat.sellerId);
+                    const user = users.find((user: Customer) => {
+                        return allUserIds.find((id) => id.userId === user.id)?._id === chat._id
+                    })
+                    console.log('USER:', user)
                     return {
                         ...chat,
                         customer: user
@@ -85,6 +98,7 @@ const InboxPage = () => {
                 });
 
                 setChats(resolvedChats);
+                console.log('RESOLVED CHATS:', resolvedChats);
                 if (!currentChatId && resolvedChats[0]) {
                     setCurrentChatId(resolvedChats[0]._id);
                 }
@@ -96,9 +110,9 @@ const InboxPage = () => {
         };
 
         fetchChats();
-    }, [allChats, me]);
+    }, [allChats, me, user]);
 
-    useEffect(() => {
+    React.useLayoutEffect(() => {
         if (chatId && allChats) {
             const chat = allChats.find((chat) => chat._id === chatId)
             if (chat) {

@@ -28,7 +28,8 @@ export const getChatByUserIds = query({
   handler: async (ctx, args) => {
     const chat = await ctx.db
       .query("chats")
-      .filter(q => (q.eq(q.field("sellerId"), args.sellerId) && q.eq(q.field("customerId"), args.customerId)) || (q.eq(q.field("sellerId"), args.sellerId) && q.eq(q.field("customerId"), args.customerId)))
+      .filter(q => q.eq(q.field("sellerId"), args.sellerId))
+      .filter(q => q.eq(q.field("customerId"), args.customerId))
       .order("asc")
       .first();
     return chat;
@@ -41,6 +42,7 @@ export const getAllChats = query({
     const sellerChats = await ctx.db
       .query("chats")
       .filter(q => q.eq(q.field("sellerId"), args.userId))
+      .filter(q => q.not(q.eq(q.field("customerId"), args.userId)))
       .order("asc")
       .collect();
 
