@@ -1,11 +1,11 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import { BackButton } from '@/components/back-button'
 import { Id } from '@/convex/_generated/dataModel'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useMutation, useQuery } from 'convex/react'
+import { useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import axios from 'axios'
 import { ChatList } from './_components/chat-list'
@@ -36,7 +36,8 @@ interface Customer {
 }
 
 const InboxPage = () => {
-    const user = useCurrentUser()
+    const me = useCurrentUser()
+    const [user, setUser] = useState(me)
     const searchParams = useSearchParams()
     const chatId = searchParams.get('chatId')
     const router = useRouter()
@@ -48,11 +49,12 @@ const InboxPage = () => {
 
     // Move the redirect logic before any hooks
     React.useLayoutEffect(() => {
+        setUser(me)
         if (!user || !user.id) {
             const callbackUrl = encodeURIComponent("/home/inbox")
             router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
         }
-    }, [user, router]);
+    }, [user, router, me]);
 
     const allChats = useQuery(api.chats.getAllChats, {
         userId: user?.id || '',
@@ -94,7 +96,7 @@ const InboxPage = () => {
         };
 
         fetchChats();
-    }, [allChats]);
+    }, [allChats, me]);
 
     useEffect(() => {
         if (chatId && allChats) {
@@ -103,11 +105,12 @@ const InboxPage = () => {
                 setCurrentChatId(chat._id)
             }
         }
-    }, [chatId, allChats])
+    }, [chatId, allChats, me])
 
-    // If no user, this will render null due to the useLayoutEffect redirect
     if (!user || !user.id) {
-        return null;
+        const callbackUrl = encodeURIComponent("/home/inbox")
+        router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+        return null
     }
 
     return (

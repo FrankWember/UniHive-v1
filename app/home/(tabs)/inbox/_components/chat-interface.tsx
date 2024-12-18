@@ -108,7 +108,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatI
                         <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
                       </Avatar>
                       <div
-                        className={`flex flex-col mx-2 p-2 rounded-lg max-w-[75%] ${
+                        className={`flex flex-col mx-2 p-2 rounded-lg max-w-[80%] ${
                           message.senderId === userId ? 'bg-primary text-primary-foreground' : 'bg-secondary'
                         }`}
                       >
