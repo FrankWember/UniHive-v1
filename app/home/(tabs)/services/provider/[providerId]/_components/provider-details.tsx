@@ -20,7 +20,7 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
   return (
     <Card className="w-full my-4">
       <CardHeader className="flex flex-row items-center space-x-4">
-        <Avatar className="h-48 w-48">
+        <Avatar className="h-36 w-36 md:h-48 md:w-48">
           <AvatarImage src={provider.image} alt={provider.name} className="object-cover" />
           <AvatarFallback>{provider.name[0]}</AvatarFallback>
         </Avatar>

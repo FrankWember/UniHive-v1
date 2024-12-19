@@ -1,10 +1,8 @@
 "use client"
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
 import { Separator } from '@/components/ui/separator'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,10 +15,11 @@ import { Service, ServiceOffer, ServiceReview, User } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { submitReview, updateReview } from '@/actions/service-reviews'
-import { useMediaQuery } from '@/hooks/use-media-query'
 import { ReviewsSection } from './review-section'
 import { ServiceInfo } from './service-info'
-import { OfferCard } from './offer-card'
+import { ImagesSection } from './images-section'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { OffersSection } from './offers-section'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -54,35 +53,21 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
-  const [currentImgIndex, setCurrentImageIndex] = useState(0)
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  const isMobile = useIsMobile()
   const my_review = reviews.find(review => review.reviewer.id === user?.id)
   const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
 
-  // Carousel stuff
-  const [api, setApi] = React.useState<CarouselApi>()
-  const [current, setCurrent] = React.useState(0)
-  const [count, setCount] = React.useState(0)
 
-  React.useEffect(() => {
-    if (!api) {
-      return
-    }
- 
-    setCount(api.scrollSnapList().length)
-    setCurrent(api.selectedScrollSnap() + 1)
- 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap() + 1)
-    })
-  }, [api])
+  const ratingMemo = React.useMemo(() => {
+    const average = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length || 0
+    const counts = reviews.reduce((acc, review) => {
+      acc[review.rating] = (acc[review.rating] || 0) + 1
+      return acc
+    }, {} as Record<number, number>)
+    return { average, counts }
+  }, [reviews])
 
-
-  const averageRating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length || 0
-  const ratingCounts = reviews.reduce((acc, review) => {
-    acc[review.rating] = (acc[review.rating] || 0) + 1
-    return acc
-  }, {} as Record<number, number>)
+  const { average: averageRating, counts: ratingCounts } = ratingMemo
 
   const handleSubmitReview = async () => {
     try {
@@ -108,142 +93,13 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
   
 
-  if (!isMobile) {
-    return (
-      <div className='flex flex-col w-full max-w-7xl min-h-screen h-full justify-center mx-auto px-12 overflow-hidden'>
-        <div className='flex w-full justify-between px-3 py-4'>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/home/services">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href={`/home/services?category=${service.category[0]}`}>{service.category[0]}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{service.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          {service.isMobileService && (
-            <Badge variant='success'>
-              Mobile Service
-            </Badge>
-          )}      
-        </div>
-        <div className='flex space-x-8'>
-          {/* Service Images */}
-          <div className='flex flex-col w-full gap-3 m-4'>
-            <Carousel setApi={setApi} className="w-full mx-auto">
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {service.images.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <div className="w-full aspect-square relative">
-                      <Image 
-                        src={image} 
-                        alt={`Service Image ${index + 1}`} 
-                        className='object-cover rounded w-full' 
-                        fill
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="absolute bottom-8 right-14 flex items-center gap-2">
-                <CarouselPrevious />
-                <CarouselNext />
-              </div>
-            </Carousel>
-            <div className='flex gap-4 justify start'>
-              {service.images.map((image, index) => (
-                <div 
-                  key={index} 
-                  className={`rounded ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} 
-                  onClick={() => {
-                    api?.scrollTo(index);
-                    setCurrentImageIndex(index);
-                  }}
-                >
-                  <Image 
-                    src={image} 
-                    alt={`Service Image ${index + 1}`} 
-                    className='object-cover aspect-square rounded' 
-                    width={80} 
-                    height={80} 
-                  />
-                </div>
-              ))}
-            </div>
-
-            <Separator className='my-8' />
-
-            {/* Reviews section */}
-            <div className="w-full px-4 mx-auto">
-              <ReviewsSection 
-                averageRating={averageRating} 
-                ratingCounts={ratingCounts} 
-                reviews={reviews} 
-                newReview={newReview} 
-                setNewReview={setNewReview} 
-                isSubmitting={isSubmitting} 
-                handleSubmitReview={handleSubmitReview}
-              />
-            </div>
-          </div>
-
-          {/* Service Info */}
-          <div className='flex flex-col w-full mx-4'>
-            <ServiceInfo 
-              service={service}
-              averageRating={averageRating}
-              reviews={reviews}
-            /> 
-            <Separator className="my-4" />
-
-            {/* Offers section */}
-            <div className='flex flex-col gap-3'>
-              {service.offers.map((offer, index)=> (
-                  <OfferCard key={index} service={service} offer={offer} />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  } else {
-    // Mobile view
+  if (isMobile) {
     return (
       <div className="w-full m-0 p-0">
         <div className="flex flex-col gap-8 p-0 m-0">
-          {/* Images section */}
-          <div className="flex flex-col gap-2">
-            <Carousel setApi={setApi} className="w-full">
-              <CarouselContent>
-                {service.images.map((image, index) => (
-                  <CarouselItem key={index}>
-                    <div className="aspect-square relative w-full">
-                      <Image
-                        src={image}
-                        alt={`${service.name} - Image ${index + 1}`}
-                        fill
-                        className="object-cover rounded-b-lg"
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="absolute bottom-8 right-14 flex items-center gap-2">
-                <CarouselPrevious />
-                <CarouselNext />
-              </div>
-            </Carousel>
-            <div className="py-1 text-center text-sm text-muted-foreground">
-              Image {current} of {count}
-            </div>
-          </div>
-  
+          {/* Images */}
+          <ImagesSection service={service} />  
+
           {/* Service Info */}
           <div className="mx-4">
             <ServiceInfo 
@@ -256,17 +112,73 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <Separator className="my-4" />
 
           {/* Offers section */}
-          <div className='flex flex-col gap-3 mx-8'>
-            <h1 className="text-3xl font-bold mb-4">Offers</h1>
-            {service.offers.map((offer, index)=> (
-                <OfferCard key={index} service={service} offer={offer} />
-            ))}
+          <div className="mx-8">
+            <OffersSection service={service} />
           </div>
 
           <Separator className="my-4" />
-  
+
           {/* Reviews section */}
           <div className="mx-8">
+            <ReviewsSection 
+              averageRating={averageRating} 
+              ratingCounts={ratingCounts} 
+              reviews={reviews} 
+              newReview={newReview} 
+              setNewReview={setNewReview} 
+              isSubmitting={isSubmitting} 
+              handleSubmitReview={handleSubmitReview}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div className='grid grid-cols-2 w-full max-w-8xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
+        <div className='flex flex-col gap-4 w-full fixed'>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/home/services">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/home/services?category=${service.category[0]}`} className='hover:underline'>{service.category[0]}</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{service.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+
+          {/* Images */}
+          <div className=''>
+            <ImagesSection service={service} />
+          </div>
+        </div>
+        {/* Empty div to replace the fixed images */}
+        <div className='w-1/2 h-64 relative'></div> 
+          
+        <div className='flex flex-col w-full mx-4'>
+          {/* Service Info */}
+          <ServiceInfo 
+            service={service}
+            averageRating={averageRating}
+            reviews={reviews}
+          /> 
+          <Separator className="my-4" />
+
+          {/* Offers section */}
+          <div className="w-full px-4 mx-auto">
+            <OffersSection service={service} />
+          </div>
+
+          <Separator className='my-8' />
+
+          {/* Reviews section */}
+          <div className="w-full px-4 mx-auto">
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
