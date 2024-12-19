@@ -75,7 +75,9 @@ export async function getProviderById(id: string) {
         name: true,
         email: true,
         image: true,
-        phone: true
+        phone: true,
+        isOnboarded: true,
+        createdAt: true
       },
     })
     return provider

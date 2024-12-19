@@ -59,6 +59,7 @@ export async function updateProfileImage(url: string) {
     where: { id: user.id },
     data: {
       image: url,
+      isOnboarded: true
     },
   })
 
