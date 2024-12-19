@@ -15,15 +15,23 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
   const user = await currentUser()
 
   const categories = [
-    { name: "Barber", imageUrl: "/service-categories/barber.svg" },
-    { name: "Braiding", imageUrl: "/service-categories/braiding.svg" },
-    { name: "Electronics", imageUrl: "/service-categories/electronics.svg" },
-    { name: "Beauty", imageUrl: "/service-categories/beauty.svg" },
-    { name: "Housing", imageUrl: "/service-categories/housing.svg" },
-    { name: "Tutoring", imageUrl: "/service-categories/tutoring.svg" },
-    { name: "Automobile", imageUrl: "/service-categories/automobile.svg" },
-    { name: "Photography", imageUrl: "/service-categories/photography.svg" }
+    { name: "Barber", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfcerw5XdrfsMIYNHzSRKQD4XWgdmV3pCnha0b" },
+    { name: "Braiding", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf1uLQULpxSQ4XBcOsmzAE8tRkUCqKDpoLiglJ" },
+    { name: "Electronics", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfemncMwHO0No5ZUKEIDvPdJxqznT7mbFLGMg3" },
+    { name: "Makeup", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfMbubBXxlvYm2rFdR45xgNI7D1thwaiZzufos" },
+    { name: "Nails", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfYRA1s04HdjsfxSoUO07KrDbPi1JtFCmhWlIB" },
+    { name: "Housing", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHftUF1nkLhGknyo7LpxjlzH8Q5gXAVMUfO0W29" },
+    { name: "Tutoring", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf7C9FKRSg1j6dPWpUOurM8zwZ3obleVTaIEmQ" },
+    { name: "Automobile", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfV4HJcSDLK2EmsTAbnRtquWD8lZ5XC4YFSz7Q" },
+    { name: "Photography", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf9xNComcLY7iGPOM8TNVJkEvgjyqaZCdRF6l0" },
+    { name: "Tailoring", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfwg2m0tNkDTtpcZYv0Ad284yreLKoaWfnuS6l" },
+    { name: "Cooking", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfigCCPp0pbd1aFvt4ISVrmWQAcjyho7wY3kUu" },
+    { name: "Massage", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf9nJCG2xcLY7iGPOM8TNVJkEvgjyqaZCdRF6l" },
+    { name: "Cleaning", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfpaiYeTmFEcB1VQvWRSfJTUZKi6h2Ns8wqIYL" },
+    { name: "Graphic Design", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfdUy1wasny0Pftj692TKE4nuIRbzsFrHwlxYc" },
+    { name: "Music", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf7AgC0cKSg1j6dPWpUOurM8zwZ3obleVTaIEm" },
   ]
+
   
   return (
     <ServicesProvider>
@@ -77,7 +85,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                   <div className='flex flex-col gap-2'>
                     <Avatar className="h-20 w-20 md:h-24 md:w-24">
-                      <AvatarImage src={category.imageUrl} />
+                      <AvatarImage src={category.imageUrl} className='object-cover'/>
                       <AvatarFallback>{category.name[0]}</AvatarFallback>
                     </Avatar>
                     <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
