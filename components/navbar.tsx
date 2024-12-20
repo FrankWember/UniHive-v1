@@ -15,7 +15,6 @@ export const Navbar = () => {
         {name: "Services", link: "/home/services", children: <StoreIcon className="w-6 h-6" />},
         {name: "Products", link: "/home/products", children: <CubeIcon className="w-6 h-6" />},
         {name: "Rides", link: "/home/rides", children: <CarTaxiFrontIcon className="w-6 h-6"  />},
-        {name: "Courses", link: "/home/courses", children: <GraduationCap className="w-6 h-6" />},
         {name: "Events", link: "/home/events", children: <CalendarSearch className="w-6 h-6" />},
         {name: "Inbox", link: "/home/inbox", children: <MessageCircle className="w-6 h-6" />},
         {name: "Settings", link: "/home/settings", children: <CogIcon className="w-6 h-6" />},
