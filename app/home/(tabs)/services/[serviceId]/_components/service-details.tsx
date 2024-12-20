@@ -156,7 +156,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   } else {
     return (
       <div className='grid grid-cols-2 w-full max-w-8xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
-        <div className='flex flex-col gap-4 w-full fixed -z-10'>
+        <div className='flex flex-col gap-4 max-w-[48vw] fixed z-10'>
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -164,7 +164,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/home/services?category=${service.category[0]}`} className='hover:underline'>{service.category[0]}</BreadcrumbLink>
+                <BreadcrumbLink href={`/home/services?category=${service.category[0]}`}>{service.category[0]}</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>

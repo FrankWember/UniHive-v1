@@ -65,9 +65,9 @@ export const ImagesSection = ({
     )
 
     return (
-        <div className='flex flex-col justify-start w-1/2 gap-3 p-4 pr-20'>
-            <Carousel setApi={setApi} className="w-full mx-auto">
-            <CarouselContent className="">
+        <div className='flex flex-col justify-start w-full gap-3 p-4 pr-20'>
+            <Carousel setApi={setApi} className="w-full mx-auto rounded-lg">
+            <CarouselContent className="rounded-lg">
                 {service.images.map((image, index) => (
                 <CarouselItem key={index}>
                     <div className="w-[40rem] h-[30rem] aspect-square relative">
@@ -81,7 +81,7 @@ export const ImagesSection = ({
                 </CarouselItem>
                 ))}
             </CarouselContent>
-            <div className="absolute bottom-8 right-28 flex items-center gap-2">
+            <div className="absolute bottom-8 right-24 flex items-center gap-2">
                 <CarouselPrevious />
                 <CarouselNext />
             </div>
@@ -90,7 +90,7 @@ export const ImagesSection = ({
             {service.images.map((image, index) => (
                 <div 
                 key={index} 
-                className={`rounded ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} 
+                className={`rounded-lg ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} 
                 onClick={() => {
                     api?.scrollTo(index);
                     setCurrentImageIndex(index);
