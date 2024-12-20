@@ -9,10 +9,11 @@ import { Clock } from 'lucide-react'
 interface OfferCardProps {
     service: Service & {
         offers: ServiceOffer[]
-    }
+    },
+    userId: string|undefined
 }
 
-export const OffersSection = ({service}: OfferCardProps) => {
+export const OffersSection = ({service, userId}: OfferCardProps) => {
     const router = useRouter()
     return (
         <div className='flex flex-col gap-3'>
@@ -45,6 +46,13 @@ export const OffersSection = ({service}: OfferCardProps) => {
                     </div>
                 </div>
             ))}
+            {userId && userId===service.providerId && (
+                <div className='flex justify-end'>
+                    <Button onClick={() => router.push(`/home/services/${service.id}/offers/add`)}>
+                        Add an Offer
+                    </Button>
+                </div>
+            )}
         </div>
     )
 }

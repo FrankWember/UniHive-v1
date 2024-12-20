@@ -92,9 +92,9 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         })
     })
 
-    const copyToClipboard = async (text: string) => {
+    const copyToClipboard = (text: string) => {
         try {
-            await navigator.clipboard.writeText(text)
+            navigator.clipboard.writeText(text)
             toast({ 
                 title: 'Copied to clipboard', 
                 description: 'The link has been copied to your clipboard',

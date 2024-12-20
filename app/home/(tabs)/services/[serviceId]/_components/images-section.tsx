@@ -81,7 +81,7 @@ export const ImagesSection = ({
                 </CarouselItem>
                 ))}
             </CarouselContent>
-            <div className="absolute bottom-8 right-48 flex items-center gap-2">
+            <div className="absolute bottom-8 right-28 flex items-center gap-2">
                 <CarouselPrevious />
                 <CarouselNext />
             </div>

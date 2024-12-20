@@ -113,7 +113,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           {/* Offers section */}
           <div className="mx-8">
-            <OffersSection service={service} />
+            <OffersSection service={service} userId={user?.id} />
           </div>
 
           <Separator className="my-4" />
@@ -136,7 +136,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   } else {
     return (
       <div className='grid grid-cols-2 w-full max-w-8xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
-        <div className='flex flex-col gap-4 w-full fixed'>
+        <div className='flex flex-col gap-4 w-full fixed -z-10'>
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -161,7 +161,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
         {/* Empty div to replace the fixed images */}
         <div className='w-1/2 h-64 relative'></div> 
           
-        <div className='flex flex-col w-full mx-4'>
+        <div className='flex flex-col w-full mx-6'>
           {/* Service Info */}
           <ServiceInfo 
             service={service}
@@ -172,7 +172,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           {/* Offers section */}
           <div className="w-full px-4 mx-auto">
-            <OffersSection service={service} />
+            <OffersSection service={service} userId={user?.id} />
           </div>
 
           <Separator className='my-8' />
