@@ -5,6 +5,7 @@ import { auth } from "@/auth"
 import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage';
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from 'next/cache'
+import { Service } from "@prisma/client";
 
 export async function getServiceById(serviceId: string) {
   return await prisma.service.findUnique({
@@ -49,6 +50,37 @@ export async function getServiceById(serviceId: string) {
       // offers: true
     }
   })
+}
+
+export async function getRelatedServices (service: Service) {
+  const relatedServices = await prisma.service.findMany({
+    where: {
+      category: {
+        hasSome: service.category
+      },
+      NOT: {
+        id: service.id
+      }
+    },
+    include: {
+      offers: {
+        select: {
+          bookings: {
+            select: {
+              customer: {
+                select: {
+                  image: true
+                }
+              }
+            }
+          }
+        }
+      },
+      provider: true,
+      reviews: true
+    }
+  })
+  return relatedServices
 }
 
 export async function getBookedServiceById(bookedServiceId: string) {

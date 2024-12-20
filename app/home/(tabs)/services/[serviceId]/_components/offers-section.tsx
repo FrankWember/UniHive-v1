@@ -17,7 +17,7 @@ export const OffersSection = ({service, userId}: OfferCardProps) => {
     const router = useRouter()
     return (
         <div className='flex flex-col gap-3'>
-            <h1 className="text-2xl font-semibold">Offers</h1>
+            <h1 className="text-2xl font-semibold mb-2">Offers</h1>
             {service.offers.map((offer, index)=> (
                 <div key={index}  className="flex flex-col border rounded-md p-4">
                     <div className='flex gap-4 justify-start items-center'>

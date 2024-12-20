@@ -20,6 +20,7 @@ import { ServiceInfo } from './service-info'
 import { ImagesSection } from './images-section'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { OffersSection } from './offers-section'
+import { RelatedServicesSection } from './related-services-section'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -45,11 +46,23 @@ interface ServiceDetailsProps {
   reviews: (ServiceReview & {
     reviewer: User
   })[],
+
+  relatedServices: (Service & { 
+    reviews: ServiceReview[], 
+    provider: User,
+    offers: ({
+      bookings: ({
+        customer: {
+          image: string|null
+        }
+      })[]
+    })[]
+  })[]
 }
 
 
 
-export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews }) => {
+export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews, relatedServices }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
@@ -130,6 +143,13 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               handleSubmitReview={handleSubmitReview}
             />
           </div>
+
+          <Separator className="my-4" />
+
+          {/* Related Services section */}
+          <div className="mx-8">
+            <RelatedServicesSection relatedServices={relatedServices} />
+          </div>
         </div>
       </div>
     )
@@ -188,6 +208,13 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               isSubmitting={isSubmitting} 
               handleSubmitReview={handleSubmitReview}
             />
+          </div>
+
+          <Separator className='my-8' />
+
+          {/* Related Services section */}
+          <div className="w-full px-4 mx-auto">
+            <RelatedServicesSection relatedServices={relatedServices} />
           </div>
         </div>
       </div>

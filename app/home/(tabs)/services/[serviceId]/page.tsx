@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { ServiceDetails } from './_components/service-details'
-import { getServiceById } from '@/utils/data/services'
+import { getRelatedServices, getServiceById } from '@/utils/data/services'
 import {ServiceOptions} from './_components/service-options'
 import { Skeleton } from "@/components/ui/skeleton"
 import { BackButton } from '@/components/back-button'
@@ -21,10 +21,11 @@ const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
   const service = await getServiceById(params.serviceId)
   const reviews = await getServiceReviews(params.serviceId)
   const user = await currentUser()
-
   if (!service) {
     notFound()
   }
+
+  const relatedServices = await getRelatedServices(service!)
 
   return (
     <ServicesProvider>
@@ -33,7 +34,7 @@ const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
         {/* Content */}
         <div className="flex flex-col md:mt-[5.7rem] pb-24">
           <Suspense fallback={<Skeleton className="w-full h-[600px]" />}>
-            <ServiceDetails service={service} reviews={reviews}/>
+            <ServiceDetails service={service} reviews={reviews} relatedServices={relatedServices} />
           </Suspense>
         </div>
       </div>
