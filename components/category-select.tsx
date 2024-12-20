@@ -11,6 +11,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 
 const defaultCategories = [
   { value: "tutoring", label: "Tutoring" },
@@ -69,18 +70,21 @@ export function CategorySelect({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
-        <div className="grid gap-4">
-          {defaultCategories.map((category) => (
-            <div key={category.value} className="flex items-center space-x-2">
-              <Switch
-                id={category.value}
-                checked={value.includes(category.value)}
-                onCheckedChange={() => handleToggle(category.value)}
-              />
-              <Label htmlFor={category.value}>{category.label}</Label>
-            </div>
-          ))}
-        </div>
+        <ScrollArea className="h-80">
+          <div className="grid gap-4">
+            {defaultCategories.map((category) => (
+              <div key={category.value} className="flex items-center space-x-2">
+                <Switch
+                  id={category.value}
+                  checked={value.includes(category.value)}
+                  onCheckedChange={() => handleToggle(category.value)}
+                />
+                <Label htmlFor={category.value}>{category.label}</Label>
+              </div>
+            ))}
+          </div>
+          <ScrollBar />
+        </ScrollArea>
       </PopoverContent>
     </Popover>
   )

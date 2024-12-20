@@ -67,9 +67,6 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
             <div className='flex gap-1 justify-start items-center'>
               <div className='flex flex-col gap-[0.1rem] justify-start'>
-                <p className="text-[0.6rem] text-muted-foreground truncate w-[4rem] md:w-[6rem]">
-                  {service.defaultLocation}, SUIE
-                </p>
                 <div className="flex items-center space-x-1">
                   <span className="text-xs font-semibold">{averageRating.toFixed(1)}</span>
                   <div className="flex items-center">
