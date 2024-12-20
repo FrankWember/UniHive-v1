@@ -74,7 +74,7 @@ export const ImagesSection = ({
                     <Image 
                         src={image} 
                         alt={`Service Image ${index + 1}`} 
-                        className='object-cover rounded w-full' 
+                        className='object-cover rounded-lg w-full' 
                         fill
                     />
                     </div>
@@ -99,7 +99,7 @@ export const ImagesSection = ({
                 <Image 
                     src={image} 
                     alt={`Service Image ${index + 1}`} 
-                    className='object-cover aspect-square rounded' 
+                    className='object-cover aspect-square rounded-lg' 
                     width={80} 
                     height={80} 
                 />
