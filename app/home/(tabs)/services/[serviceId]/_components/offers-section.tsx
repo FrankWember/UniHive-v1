@@ -28,7 +28,7 @@ export const OffersSection = ({service, userId}: OfferCardProps) => {
                     </div>
                     <div className="flex items-center justify-between gap-2">
                         <div className='flex items-center gap-2'>
-                            <span className="font-semibold">${offer.price.toFixed(2)}</span>
+                            <span className="font-semibold"><span className="text-green-500">$</span>{offer.price.toFixed(2)}</span>
                         </div>
                         <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
                             Book

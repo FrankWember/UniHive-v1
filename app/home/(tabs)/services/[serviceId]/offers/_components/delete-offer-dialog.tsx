@@ -8,6 +8,7 @@ import { deleteServiceOffer } from '@/actions/service-offers'
 import { Button } from '@/components/ui/button'
 import { ServiceOffer } from '@prisma/client'
 import { useRouter } from 'next/navigation'
+import { BeatLoader } from 'react-spinners';
 
 export const DeleteOfferDialog = ({offer}: {offer: ServiceOffer}) => {
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -60,7 +61,9 @@ export const DeleteOfferDialog = ({offer}: {offer: ServiceOffer}) => {
             <DialogClose asChild>
               <Button variant="outline" disabled={isSubmitting}>Cancel</Button>
             </DialogClose>
-            <Button onClick={deleteOffer} disabled={isSubmitting}>Delete</Button>
+            <Button onClick={deleteOffer} disabled={isSubmitting}>
+              {isSubmitting ? <BeatLoader /> : "Delete"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

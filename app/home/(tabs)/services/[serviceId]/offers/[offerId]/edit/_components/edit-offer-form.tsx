@@ -107,7 +107,7 @@ export const EditOfferForm = ({offer}: {offer: ServiceOffer}) => {
                     </Alert>
                 )}
                 <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? <BeatLoader /> : "Add Offer"}
+                    {isSubmitting ? <BeatLoader /> : "Edit Offer"}
                 </Button>
             </form>
         </Form>

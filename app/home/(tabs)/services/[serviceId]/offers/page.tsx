@@ -9,10 +9,17 @@ import { currentUser } from '@/lib/auth'
 import { getServiceOffers } from '@/utils/data/services'
 import { Badge } from '@/components/ui/badge'
 import { DeleteOfferDialog } from './_components/delete-offer-dialog'
+import { redirect } from 'next/navigation'
 
 const OffersPage = async ({params}: {params: {serviceId: string}}) => {
   const offers = await getServiceOffers(params.serviceId)
   const user = await currentUser()
+
+  if (!user) {
+    const callbackUrl = encodeURIComponent(`/home/services/${params.serviceId}/offers`);
+    redirect(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+  }
+
   return (
     <div className="flex flex-col min-h-screen w-full">
         {/* Header */}
@@ -42,16 +49,25 @@ const OffersPage = async ({params}: {params: {serviceId: string}}) => {
         </div>
 
         {/* Content */}
-        <div className="flex flex-col items-center justify-center mt-20">
+        <div className="grid gap-4 items-center justify-center my-28">
+          <div className="flex items-center gap-2 mb-3">
+            <h1 className="text-2xl font-bold">Offers</h1>
+            <Badge className="my-2" variant="secondary">
+              {offers.length} offers
+            </Badge>
+          </div>
           {offers.map((offer) => (
             <div key={offer.id} className="flex flex-col justify-start border rounded-md p-3">
               <p className="text-2xl font-bold">{offer.title}</p>
               <div className="flex items-center gap-2">
                 <span className="font-semibold">${offer.price.toFixed(2)}</span>
+                <Badge className="my-2" variant="outline">
+                  {offer.duration} mins
+                </Badge>
               </div>
-              <div className="flex itemss-center justify-end gap-2">
+              <div className="flex items-center justify-end gap-2">
                 <Link href={`/home/services/${params.serviceId}/offers/${offer.id}/edit`}>
-                  <Button>Edit</Button>
+                  <Button variant="secondary">Edit</Button>
                 </Link>
                 <DeleteOfferDialog offer={offer} />
               </div>
