@@ -21,7 +21,6 @@ export async function createService(values: z.infer<typeof ServiceSchema>) {
     data: {
       name: values.name,
       price: values.price,
-      discount: values.discount || 0,
       category: values.category,
       providerId: session.user.id,
       images: values.images,
@@ -76,7 +75,6 @@ export async function updateService(
     data: {
       name: values.name,
       price: values.price,
-      discount: values.discount || 0,
       category: values.category,
       images: values.images,
       defaultLocation: values.defaultLocation,

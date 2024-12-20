@@ -40,7 +40,6 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
     defaultValues: {
       name: service.name,
       price: service.price,
-      discount: service.discount,
       category: service.category,
       images: service.images,
       defaultLocation: service.defaultLocation || "",
@@ -82,7 +81,6 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
             </FormItem>
           )}
         />
-        <div className="flex space-x-3">
           <FormField
             control={form.control}
             name="price"
@@ -96,20 +94,6 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="discount"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Discount (%)</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="5%" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="category"

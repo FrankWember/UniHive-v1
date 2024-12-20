@@ -28,17 +28,7 @@ export const OffersSection = ({service, userId}: OfferCardProps) => {
                     </div>
                     <div className="flex items-center justify-between gap-2">
                         <div className='flex items-center gap-2'>
-                            {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                            <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                            {offer.discount>0 ? (
-                            <Badge variant="success">
-                                Save up to {offer.discount}%
-                            </Badge>
-                            ):(
-                            <Badge variant="outline">
-                                No discount
-                            </Badge>
-                            )}
+                            <span className="font-semibold">${offer.price.toFixed(2)}</span>
                         </div>
                         <Button className="mr-3" onClick={() => router.push(`/home/services/${service.id}/book/${offer.id}`)}>
                             Book

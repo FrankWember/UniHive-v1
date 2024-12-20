@@ -155,13 +155,8 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 <span className='text-[0.6rem] md:text-sm mr-4'>Starts at</span>
                 <span className='text-green-500 font-semibold text-2xl'>$</span>
                 <span className="font-semibold text-2xl mr-3">
-                    {(service.price - (service.price * (service.discount || 0) / 100)).toFixed(2)}
+                    {service.price.toFixed(2)}
                 </span>
-                {service.discount > 0 && (
-                    <span className="text-base text-muted-foreground line-through">
-                        ${service.price.toFixed(2)}
-                    </span>
-                )}
             </div>
             <Card>
                 <CardHeader>

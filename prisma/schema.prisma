@@ -123,7 +123,6 @@ model Service {
   name            String
   images          String[]
   price           Float
-  discount        Int      @default(0)
   defaultLocation String?
   isMobileService Boolean  @default(false)
   category        String[]
@@ -150,7 +149,6 @@ model ServiceOffer {
   title     String
   duration  Int?
   price     Float
-  discount  Int    @default(0)
 
   service Service @relation(fields: [serviceId], references: [id])
 

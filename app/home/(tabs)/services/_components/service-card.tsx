@@ -62,7 +62,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             <p className='text-[0.75rem] md:text-[0.85rem] underline truncate w-[8rem] md:w-[12rem]'>{service.name}</p>
             <p className='space-x-1'>
               <span className='text-[0.5rem]' >Starts at</span>
-              <span className='text-base md:text-lg font-semibold'>${(service.price - (service.price * service.discount / 100)).toFixed(2)}</span>
+              <span className='text-base md:text-lg font-semibold'>${(service.price).toFixed(2)}</span>
             </p>
 
             <div className='flex gap-1 justify-start items-center'>

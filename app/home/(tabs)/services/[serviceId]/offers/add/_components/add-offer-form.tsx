@@ -30,7 +30,6 @@ export const AddOfferForm = ({serviceId}: {serviceId: string}) => {
         defaultValues: {
             title: "",
             price: 20,
-            discount: 0,
             duration: 0
         }
     })
@@ -74,19 +73,6 @@ export const AddOfferForm = ({serviceId}: {serviceId: string}) => {
                             <FormLabel>Price (USD)</FormLabel>
                             <FormControl>
                                 <Input placeholder="Price" type="number" {...field} onChange={e => field.onChange(parseFloat(e.target.value))} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="discount"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Discount (%)</FormLabel>
-                            <FormControl>
-                                <Input placeholder="Discount" type="number" {...field} onChange={e => field.onChange(parseInt(e.target.value))} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

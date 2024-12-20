@@ -47,11 +47,7 @@ const OffersPage = async ({params}: {params: {serviceId: string}}) => {
             <div key={offer.id} className="flex flex-col justify-start border rounded-md p-3">
               <p className="text-2xl font-bold">{offer.title}</p>
               <div className="flex items-center gap-2">
-                {offer.discount>0 && (<span className='text-muted-foreground line-through'>${offer.price}</span>)}
-                <span className="font-semibold">${(offer.price - (offer.price * offer.discount / 100)).toFixed(2)}</span>
-                <Badge className="ml-5" variant='success'>
-                  {offer.discount}% off
-                </Badge>
+                <span className="font-semibold">${offer.price.toFixed(2)}</span>
               </div>
               <div className="flex itemss-center justify-end gap-2">
                 <Link href={`/home/services/${params.serviceId}/offers/${offer.id}/edit`}>

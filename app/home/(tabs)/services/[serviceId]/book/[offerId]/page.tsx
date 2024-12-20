@@ -42,12 +42,7 @@ export default async function BookServicePage({ params }: { params: { serviceId:
           <CardHeader>
             <CardTitle>Booking: {service.name}</CardTitle>
             <CardDescription>
-              {offer.title} - ${offer.price - (offer.price * offer.discount / 100)}
-              {offer.discount > 0 && (
-                <span className="ml-2 text-sm line-through text-muted-foreground">
-                  ${offer.price}
-                </span>
-              )}
+              {offer.title} - ${offer.price}
             </CardDescription>
           </CardHeader>
           <CardContent>

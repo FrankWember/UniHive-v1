@@ -73,7 +73,6 @@ export const ServiceSchema = z.object({
   price: z.number().min(0, {
     message: "Price must be a positive number.",
   }),
-  discount: z.number().min(0).max(100).optional(),
   category: z.array(z.string()).min(1, {
     message: "Please select at least one category.",
   }),
@@ -97,7 +96,6 @@ export const ServiceOfferSchema = z.object({
   price: z.number().min(0, {
     message: "Price must be a positive number.",
   }),
-  discount: z.number().min(0).max(100).default(0).optional(),
   duration: z.number()
 })
 
