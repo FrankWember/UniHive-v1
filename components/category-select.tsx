@@ -18,7 +18,21 @@ const defaultCategories = [
   { value: "essay-writing", label: "Essay Writing" },
   { value: "research-assistance", label: "Research Assistance" },
   { value: "programming-help", label: "Programming Help" },
-]
+  { value: "barber", label: "Barber" },
+  { value: "braiding", label: "Braiding" },
+  { value: "electronics", label: "Electronics" },
+  { value: "makeup", label: "Makeup" },
+  { value: "nails", label: "Nails" },
+  { value: "housing", label: "Housing" },
+  { value: "automobile", label: "Automobile" },
+  { value: "photography", label: "Photography" },
+  { value: "tailoring", label: "Tailoring" },
+  { value: "cooking", label: "Cooking" },
+  { value: "massage", label: "Massage" },
+  { value: "cleaning", label: "Cleaning" },
+  { value: "graphic-design", label: "Graphic Design" },
+  { value: "music", label: "Music" },
+];
 
 export function CategorySelect({
   options,
@@ -30,8 +44,6 @@ export function CategorySelect({
   onChange: (value: string[]) => void
 }) {
   const [open, setOpen] = React.useState(false)
-  const [categories, setCategories] = React.useState(options || defaultCategories)
-  const [newCategory, setNewCategory] = React.useState("")
 
   const handleToggle = (categoryValue: string) => {
     const newValue = value.includes(categoryValue)
@@ -40,14 +52,6 @@ export function CategorySelect({
     onChange(newValue)
   }
 
-  const handleAddCategory = () => {
-    if (newCategory && !categories.some(cat => cat.value === newCategory.toLowerCase())) {
-      const newCat = { value: newCategory.toLowerCase(), label: newCategory }
-      setCategories([...categories, newCat])
-      handleToggle(newCat.value)
-      setNewCategory("")
-    }
-  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -66,7 +70,7 @@ export function CategorySelect({
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
-          {categories.map((category) => (
+          {defaultCategories.map((category) => (
             <div key={category.value} className="flex items-center space-x-2">
               <Switch
                 id={category.value}
@@ -76,22 +80,6 @@ export function CategorySelect({
               <Label htmlFor={category.value}>{category.label}</Label>
             </div>
           ))}
-          <div className="flex items-center space-x-2">
-            <Input
-              placeholder="Add new category"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  handleAddCategory()
-                }
-              }}
-            />
-            <Button type="button" size="icon" onClick={handleAddCategory}>
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </PopoverContent>
     </Popover>
