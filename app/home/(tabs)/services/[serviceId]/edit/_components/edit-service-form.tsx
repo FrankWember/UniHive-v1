@@ -23,6 +23,7 @@ import { Switch } from '@/components/ui/switch'
 import { AvailabilityInput } from '@/components/availability-input'
 import { Service } from '@prisma/client'
 import { BeatLoader } from 'react-spinners'
+import { serviceCategories } from '@/constants/categories'
 
 
 interface EditServiceFormProps {
@@ -101,7 +102,7 @@ export const EditServiceForm: React.FC<EditServiceFormProps> = ({ service }) => 
             <FormItem>
               <FormLabel>Categories</FormLabel>
               <FormControl>
-                <CategorySelect value={field.value} onChange={field.onChange} />
+                <CategorySelect options={serviceCategories} value={field.value} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

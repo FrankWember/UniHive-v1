@@ -235,6 +235,7 @@ model Product {
   stock                   Int
   images                  String[]
   categories              String[]
+  brand                   String       @default("None")
   state                   ProductState @default(NEW)
   isAvailable             Boolean      @default(true)
   delivery                Boolean      @default(true)

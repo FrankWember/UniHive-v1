@@ -1,0 +1,22 @@
+export const serviceCategories = [
+    { value: "barber", label: "Barber" },
+    { value: "braiding", label: "Braiding" },
+    { value: "electronics", label: "Electronics" },
+    { value: "makeup", label: "Makeup" },
+    { value: "nails", label: "Nails" },
+    { value: "housing", label: "Housing" },
+    { value: "automobile", label: "Automobile" },
+    { value: "photography", label: "Photography" },
+    { value: "tailoring", label: "Tailoring" },
+    { value: "cooking", label: "Cooking" },
+    { value: "massage", label: "Massage" },
+    { value: "cleaning", label: "Cleaning" },
+    { value: "graphic-design", label: "Graphic Design" },
+    { value: "music", label: "Music" },
+    { value: "tutoring", label: "Tutoring" },
+    { value: "note-taking", label: "Note Taking" },
+    { value: "essay-writing", label: "Essay Writing" },
+    { value: "research-assistance", label: "Research Assistance" },
+    { value: "programming-help", label: "Programming Help" },
+  ];
+

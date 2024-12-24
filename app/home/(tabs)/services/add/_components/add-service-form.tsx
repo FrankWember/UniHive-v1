@@ -22,6 +22,7 @@ import { ServiceSchema } from '@/constants/zod'
 import { MultiImageUpload } from '@/components/multi-image-upload'
 import { LocationInput } from '@/components/location-input'
 import { AvailabilityInput } from '@/components/availability-input'
+import { serviceCategories } from '@/constants/categories'
 
 
 export const AddServiceForm = () => {
@@ -96,6 +97,7 @@ export const AddServiceForm = () => {
               <FormLabel>Categories</FormLabel>
               <FormControl>
                 <CategorySelect 
+                  options={serviceCategories}
                   value={field.value} 
                   onChange={(newValue) => {
                     field.onChange(newValue)
