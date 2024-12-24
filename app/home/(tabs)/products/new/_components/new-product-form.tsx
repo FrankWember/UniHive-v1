@@ -39,6 +39,7 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
 import { ProductState } from '@prisma/client'
 import { LocationInput } from '@/components/location-input'
+import { productCategories } from '@/constants/categories'
 
 export function NewProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -198,13 +199,7 @@ export function NewProductForm() {
                 <FormLabel>Categories</FormLabel>
                 <FormControl>
                   <CategorySelect
-                    options={[
-                      { value: 'electronics', label: 'Electronics' },
-                      { value: 'books', label: 'Books' },
-                      { value: 'clothing', label: 'Clothing' },
-                      { value: 'home-and-garden', label: 'Home & Garden' },
-                      { value: 'sports', label: 'Sports' },
-                    ]}
+                    options={productCategories}
                     value={field.value}
                     onChange={field.onChange}
                   />

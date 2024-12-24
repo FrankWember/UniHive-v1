@@ -27,6 +27,7 @@ import { updateProduct } from '@/actions/products'
 import { ProductState } from '@prisma/client'
 import { LocationInput } from '@/components/location-input'
 import * as z from 'zod'
+import { productCategories } from '@/constants/categories'
 
 interface EditProductFormProps {
     product: Product & { seller: User }
@@ -182,13 +183,7 @@ export function EditProductForm({ product }: EditProductFormProps) {
                             <FormLabel>Categories</FormLabel>
                             <FormControl>
                             <CategorySelect
-                                options={[
-                                { value: 'electronics', label: 'Electronics' },
-                                { value: 'books', label: 'Books' },
-                                { value: 'clothing', label: 'Clothing' },
-                                { value: 'home-and-garden', label: 'Home & Garden' },
-                                { value: 'sports', label: 'Sports' },
-                                ]}
+                                options={productCategories}
                                 value={field.value}
                                 onChange={field.onChange}
                             />
