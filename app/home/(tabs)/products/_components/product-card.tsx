@@ -1,16 +1,17 @@
 "use client"
 
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Product, ProductReview } from '@prisma/client'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ShoppingCart, Star } from 'lucide-react'
+import { Heart } from 'lucide-react'
 import { useState } from 'react'
 import { addItemToCart } from '@/actions/cart'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
+import { likeProduct } from '@/actions/products'
 
 interface ProductCardProps {
   product: Product & { reviews: ProductReview[] }
@@ -18,10 +19,25 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isLiked, setIsLiked] = useState(false)
   const router = useRouter()
   const user = useCurrentUser()
   const callbackUrl = encodeURIComponent(`/home/products/${product.id}`)
   const {toast} = useToast()
+
+  React.useEffect(() => {
+    const fetchLikeStatus = async () => {
+      try {
+        const response = await fetch(`/api/products/${product.id}/favourites`)
+        const data = await response.json()
+        setIsLiked(data.isLiked)
+      } catch (error) {
+        console.error('Error fetching like status:', error)
+      }
+    }
+
+    fetchLikeStatus()
+  }, [])
 
   const averageRating = product.reviews.length > 0
     ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
@@ -55,6 +71,18 @@ export function ProductCard({ product }: ProductCardProps) {
         setIsSubmitting(false)
       }
     }
+
+    async function likeThisProduct() {
+      if (!user) {
+        toast({
+            title: 'Please log in to like a service',
+            description: 'You need to be logged in to like a service.',
+        })
+        return
+      }
+      const like = await likeProduct(product.id)
+      setIsLiked(like)
+    }
   return (
     <Link href={`/home/products/${product.id}`}>
       <div className="flex flex-col gap-2 border-none">
@@ -65,6 +93,9 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover rounded"
           />
+          <Button className='absolute top-2 right-4 ' onClick={likeThisProduct}>
+            <Heart className={`h-6 w-6 ${isLiked ? 'fill-red-500 text-red-500' : 'fill-none'}`}/>
+          </Button>
         </div>
         <div className="p-2">
           <div className="flex justify-between">

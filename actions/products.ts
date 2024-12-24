@@ -234,3 +234,35 @@ export async function isFavouriteProduct (productId: string) {
       return false
     }
   }
+
+  export async function likeProduct (productId: string) {
+    const user = await currentUser()
+    const userId = user?.id
+    if (!userId) {
+      throw new Error("You must be logged in to like a service")
+    }
+  
+    const like = await prisma.favouriteProduct.findFirst({
+      where: {
+        productId: productId,
+        userId: userId
+      }
+    })
+  
+    if (like) {
+      await prisma.favouriteProduct.delete({
+        where: {
+          id: like.id
+        }
+      })
+      return false
+    } else {
+      await prisma.favouriteProduct.create({
+        data: {
+          productId: productId,
+          userId: userId
+        }
+      })
+      return true
+    }
+  }

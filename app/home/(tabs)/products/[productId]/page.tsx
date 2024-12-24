@@ -4,7 +4,7 @@ import { RelatedProducts } from './_components/related-products'
 import { getProductById, getProductReviews } from '@/utils/data/products'
 import { BackButton } from '@/components/back-button'
 import { Separator } from '@/components/ui/separator'
-import ProductOptions from './_components/product-options'
+import { ProductOptions } from './_components/product-options'
 
 export default async function ProductPage({ params }: { params: { productId: string } }) {
   const product = await getProductById(params.productId)
