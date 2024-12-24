@@ -49,10 +49,14 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     const [isLiked, setIsLiked] = React.useState(false)
 
     const newChat = useMutation(api.chats.createChat)
-    const existingChat = useQuery(api.chats.getChatByUserIds, {
-        customerId: user?.id!,
-        sellerId: service.providerId
-    })
+
+    let existingChat = undefined
+    if (user && user.id && service.providerId) {
+        existingChat = useQuery(api.chats.getChatByUserIds, {
+            customerId: user.id,
+            sellerId: service.providerId
+        })
+    }
 
     React.useEffect(() => {
         const fetchLikeStatus = async () => {
@@ -111,6 +115,11 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     const createChat = async () => {
         try {
             let chatId = ''
+            if (!user) {
+                const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
+                router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+                return
+            }
             if (existingChat){
                 chatId = existingChat._id
             } else {
