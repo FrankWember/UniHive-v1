@@ -42,10 +42,11 @@ model User {
   serviceReviews    ServiceReview[]
   bookedServices    ServiceBooking[]
 
-  products         Product[]
-  productsRequests ProductRequest[]
-  productReviews   ProductReview[]
-  carts            Cart[]
+  products          Product[]
+  favouriteProducts FavouriteProduct[]
+  productsRequests  ProductRequest[]
+  productReviews    ProductReview[]
+  carts             Cart[]
 
   driver           Driver?
   ridesRequested   Ride[]
@@ -156,7 +157,7 @@ model ServiceOffer {
 }
 
 model ServiceBooking {
-  id         String     @id @default(cuid())
+  id         String        @id @default(cuid())
   offerId    String
   customerId String
   paymentId  String?
@@ -164,8 +165,8 @@ model ServiceBooking {
   time       Json?
   status     BookingStatus
   location   String?
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
   offer    ServiceOffer @relation(fields: [offerId], references: [id])
   customer User         @relation(fields: [customerId], references: [id])
@@ -181,7 +182,7 @@ enum BookingStatus {
 
 model ServiceReview {
   id         String   @id @default(cuid())
-  serviceId  String 
+  serviceId  String
   reviewerId String
   rating     Int
   comment    String
@@ -244,10 +245,11 @@ model Product {
   updatedAt               DateTime     @updatedAt
 
   // Relations
-  seller          User             @relation(fields: [sellerId], references: [id])
+  seller          User               @relation(fields: [sellerId], references: [id])
   sellerId        String
   cartItems       CartItem[]
   productRequests ProductRequest[]
+  favourites      FavouriteProduct[]
   reviews         ProductReview[]
 
   @@index([sellerId])
@@ -258,6 +260,15 @@ enum ProductState {
   USED
   REFURBISHED
   DAMAGED
+}
+
+model FavouriteProduct {
+  id        String @id @default(cuid())
+  userId    String
+  productId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 model ProductReview {

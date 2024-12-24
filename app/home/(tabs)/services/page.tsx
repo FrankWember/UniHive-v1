@@ -43,13 +43,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         </div>
         <div className="flex items-center space-x-3">
           <SearchBar />
-          {user?(
-            <Link href={`/home/services/cart`}>
-              <Button variant="outline" size="icon">
-                <ShoppingCart className="h-4 w-4" />
-              </Button>
-            </Link>
-          ):(
+          {user && (
             <Link href={`/auth/sign-up`}>
               <Button>
                 Join

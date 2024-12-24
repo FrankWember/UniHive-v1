@@ -5,6 +5,7 @@ import * as z from 'zod'
 import { productSchema } from '@/constants/zod'
 import { Product, User } from "@prisma/client"
 import { sendEmail } from "@/lib/mail"
+import { currentUser } from "@/lib/auth"
 
 
 export async function createProduct(values: z.infer<typeof productSchema>, sellerId: string) {
@@ -212,3 +213,24 @@ export async function updateProductReview (reviewId: string, rating: number, com
     })
     return review
 }
+
+export async function isFavouriteProduct (productId: string) {
+    const user = await currentUser()
+    const userId = user?.id
+    if (!userId) {
+      throw new Error("You must be logged in to like a service")
+    }
+  
+    const like = await prisma.favouriteProduct.findFirst({
+      where: {
+        productId: productId,
+        userId: userId
+      }
+    })
+  
+    if (like) {
+      return true
+    } else {
+      return false
+    }
+  }

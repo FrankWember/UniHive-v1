@@ -1,11 +1,12 @@
 "use client"
 
-import { ProductReview, User, Product as GeneralProduct } from '@prisma/client'
+import { ProductReview, User, Product as GeneralProduct, FavouriteProduct } from '@prisma/client'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 type Product = GeneralProduct & {
   seller: User
   reviews: ProductReview[]
+  favourites: FavouriteProduct[]
 }
 
 type ProductsContextType = {

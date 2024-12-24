@@ -57,7 +57,7 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   return (
     <Link href={`/home/products/${product.id}`}>
-      <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 shadow-sm border-none">
+      <div className="flex flex-col gap-2 border-none">
         <div className="relative w-full min-h-48 h-full">
           <Image
             src={product.images[0] || '/placeholder.png'}
@@ -66,24 +66,7 @@ export function ProductCard({ product }: ProductCardProps) {
             className="object-cover rounded"
           />
         </div>
-        <CardContent className="p-4">
-          <h3 className="font-semibold text-base mb-2">{product.name}</h3>
-          <div className="flex items-center space-x-3">
-            <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-            <div className="flex items-center">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`h-4 w-4 ${
-                    star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              ({product.reviews.length})
-            </div>
-          </div>
+        <div className="p-2">
           <div className="flex justify-between">
             {product.discount>0 ? (
               <div className='flex items-center space-x-2'>
@@ -93,17 +76,10 @@ export function ProductCard({ product }: ProductCardProps) {
             ):((
               <p className="text-base font-semibold py-1">${product.price.toFixed(2)}</p>
             ))}
-            <Button 
-              onClick={addToCart} 
-              disabled={isSubmitting} 
-              className="rounded-full bg-yellow-500 hover:bg-yellow-600" 
-              size="icon"
-              >
-                <ShoppingCart className="w-4 h-4"/>
-            </Button>
           </div>
-        </CardContent>
-      </Card>
+          <h3 className="text-base">{product.name}</h3>
+        </div>
+      </div>
     </Link>
   )
 }

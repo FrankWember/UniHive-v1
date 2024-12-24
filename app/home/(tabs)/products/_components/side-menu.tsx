@@ -27,18 +27,8 @@ import {
 
 export const SideMenu = () => {
   const router = useRouter()
-  const [openCategories, setOpenCategories] = React.useState(true)
   const [openSeller, setOpenSeller] = React.useState(true)
   const [openCustomer, setOpenCustomer] = React.useState(true)
-
-  const categories = [
-    { name: 'All', path: '/home/products' },
-    { name: 'Electronics', path: '/home/products?category=electronics' },
-    { name: 'Books', path: '/home/products?category=books' },
-    { name: 'Clothing', path: '/home/products?category=clothing' },
-    { name: 'jewelry', path: '/home/products?category=home-garden' },
-    { name: 'Sports', path: '/home/products?category=sports' },
-  ]
 
   return (
     <Sheet>
@@ -56,33 +46,6 @@ export const SideMenu = () => {
         </SheetHeader>
         <ScrollArea className="w-full h-[80vh]">
           <div className="space-y-4 py-4">
-            <div className="px-3 py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-                <Button
-                  variant="secondary"
-                  className="w-full justify-start"
-                  onClick={() => setOpenCategories(!openCategories)}
-                >
-                  <LayoutGrid className="mr-2 h-4 w-4" />
-                  Categories
-                  <ChevronDown className={cn("ml-auto h-4 w-4 transition-transform", openCategories ? "rotate-180" : "")} />
-                </Button>
-              </h2>
-              {openCategories && (
-                <div className="ml-4 mt-2 space-y-1">
-                  {categories.map((category) => (
-                    <Button
-                      key={category.name}
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => router.push(category.path)}
-                    >
-                      {category.name}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
             <div className="px-3 py-2">
               <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
                 <Button
