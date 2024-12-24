@@ -155,50 +155,49 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
     )
   } else {
     return (
-      <div className='grid grid-cols-2 w-full max-w-8xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
-        <div className='flex flex-col gap-4 max-w-[48vw] fixed z-10'>
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/home/services">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href={`/home/services?category=${service.category[0]}`}>{service.category[0]}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>{service.name}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+      <div className='flex flex-col gap-6 w-full max-w-7xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/home/services">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/home/services?category=${service.category[0]}`}>{service.category[0]}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{service.name}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-          {/* Images */}
-          <div className=''>
-            <ImagesSection service={service} />
-          </div>
-        </div>
-        {/* Empty div to replace the fixed images */}
-        <div className='w-1/2 h-64 relative'></div> 
+        {/* Images */}
+        <ImagesSection service={service} />
+
+        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
           
-        <div className='flex flex-col w-full mx-6'>
           {/* Service Info */}
-          <ServiceInfo 
-            service={service}
-            averageRating={averageRating}
-            reviews={reviews}
-          /> 
-          <Separator className="my-4" />
+          <div className="w-full px-4 mx-auto">
+            <Separator className="my-4" />
+            <ServiceInfo 
+              service={service}
+              averageRating={averageRating}
+              reviews={reviews}
+            /> 
+          </div>
 
           {/* Offers section */}
           <div className="w-full px-4 mx-auto">
+            <Separator className="my-4" />
             <OffersSection service={service} userId={user?.id} />
           </div>
 
-          <Separator className='my-8' />
+          
 
           {/* Reviews section */}
           <div className="w-full px-4 mx-auto">
+            <Separator className="my-4" />
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
@@ -209,13 +208,12 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               handleSubmitReview={handleSubmitReview}
             />
           </div>
+        </div>
+        <Separator className='my-8' />
 
-          <Separator className='my-8' />
-
-          {/* Related Services section */}
-          <div className="w-full px-4 mx-auto">
-            <RelatedServicesSection relatedServices={relatedServices} />
-          </div>
+        {/* Related Services section */}
+        <div className="w-full px-4 mx-auto">
+          <RelatedServicesSection relatedServices={relatedServices} />
         </div>
       </div>
     )

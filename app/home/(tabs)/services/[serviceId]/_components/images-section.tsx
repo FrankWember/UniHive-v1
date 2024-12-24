@@ -3,6 +3,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
 import Image from 'next/image'
 import React, { useState } from 'react'
+import { cn } from '@/lib/utils'
 
 interface Props {
     service: {
@@ -65,47 +66,17 @@ export const ImagesSection = ({
     )
 
     return (
-        <div className='flex flex-col justify-start w-full gap-3 p-4 pr-20'>
-            <Carousel setApi={setApi} className="w-full mx-auto rounded-lg">
-            <CarouselContent className="rounded-lg">
-                {service.images.map((image, index) => (
-                <CarouselItem key={index}>
-                    <div className="w-[40rem] h-[30rem] aspect-square relative">
-                    <Image 
-                        src={image} 
-                        alt={`Service Image ${index + 1}`} 
-                        className='object-cover rounded-lg w-full' 
-                        fill
-                    />
-                    </div>
-                </CarouselItem>
-                ))}
-            </CarouselContent>
-            <div className="absolute bottom-8 right-24 flex items-center gap-2">
-                <CarouselPrevious />
-                <CarouselNext />
-            </div>
-            </Carousel>
-            <div className='flex gap-4 justify-start'>
+        <div className='grid grid-cols-4 grid-row-2 gap-3 w-full h-[35rem]'>
             {service.images.map((image, index) => (
-                <div 
-                key={index} 
-                className={`rounded-lg ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} 
-                onClick={() => {
-                    api?.scrollTo(index);
-                    setCurrentImageIndex(index);
-                }}
-                >
-                <Image 
-                    src={image} 
-                    alt={`Service Image ${index + 1}`} 
-                    className='object-cover aspect-square rounded-lg' 
-                    width={80} 
-                    height={80} 
-                />
+                <div key={index} className={cn('relative w-full h-full', index === 0 && 'col-span-2 row-span-2')}>
+                    <Image
+                        src={image}
+                        alt={`${service.name} - Image ${index + 1}`}
+                        fill
+                        className="object-cover rounded-lg"
+                    />
                 </div>
             ))}
-            </div>
         </div>
     )
 }

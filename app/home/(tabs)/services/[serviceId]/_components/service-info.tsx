@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardTitle, CardHeader, CardFooter } from "@/components/ui/card"
-import { Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
+import { Book, Calendar, Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Service, ServiceOffer, User } from '@prisma/client'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
@@ -16,6 +16,8 @@ import { isFavouriteService, likeService } from "@/actions/services"
 import { useRouter } from "next/navigation"
 import { useMutation, useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
+import { Separator } from "@/components/ui/separator"
+import { format } from 'date-fns'
 
 interface ServiceInfoProps {
     service: Service & {
@@ -138,86 +140,97 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
 
     return (
         <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
-            <p className="text-2xl underline font-bold">{service.name}</p>
-            <div className="flex items-center space-x-3">
-                <div className="text-xl font-semibold">{averageRating.toFixed(1)}</div>
-                <div className="flex items-center">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                            key={star}
-                            className={`h-6 w-6 ${
-                                star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                            }`}
-                        />
-                    ))}
+            <div className="flex flex-col gap-2">
+                <p className="text-3xl font-semibold">{service.name}</p>
+                <div className="flex items-center space-x-2">
+                    <Star
+                        className={`h-6 w-6 text-yellow-500 fill-yellow-500`}
+                    />
+                    <span className="text-xl font-semibold">{averageRating.toFixed(1)}</span>
+                    <div className="text-base text-muted-foreground underline">
+                        #{reviews.length} reviews
+                    </div>
+                    {service.isMobileService && (
+                        <Badge variant='success' className="ml-8">
+                            Mobile
+                        </Badge>
+                    )}    
                 </div>
-                <div className="text-sm text-muted-foreground">
-                    ({reviews.length})
-                </div>
-                {service.isMobileService && (
-                    <Badge variant='success' className="ml-8">
-                        Mobile
-                    </Badge>
-                )}    
-            </div>
-            <div className="flex items-center mt-2">
-                <span className='text-[0.6rem] md:text-sm mr-4'>Starts at</span>
-                <span className='text-green-500 font-semibold text-2xl'>$</span>
-                <span className="font-semibold text-2xl mr-3">
-                    {service.price.toFixed(2)}
+                <span className="flex items-center mt-2">
+                    <span className='text-sm md:text-sm mr-4'>Starts at</span>
+                    <span className='text-green-500 font-semibold text-2xl'>$</span>
+                    <span className="font-semibold text-2xl mr-3">
+                        {service.price.toFixed(2)}
+                    </span>
                 </span>
+                <div className="flex gap-3">
+                    <Button className="flex items-center" variant="outline">
+                        <MapPin className="mr-1 h-4 w-4" />
+                        {service.defaultLocation}
+                    </Button>
+                </div>
             </div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Provider</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2">
-                    <div className="flex gap-3 items-center">
+            <Separator />
+            <div className="flex flex-col gap-2">
+                <h2 className="text-xl font-semibold">Provider</h2>
+                <div className="flex flex-col gap-2">
+                    <div className="flex gap-6 ">
                         <Avatar className="h-16 w-16">
                             <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} className="object-cover" />
                             <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
                         </Avatar>
-                        <span className="flex gap-1 items-center h-16">
-                            <span className="flex items-center justify-start text-lg font-semibold">
+                        <span className="flex flex-col gap-1 items-center justify-start h-16">
+                            <span className="flex items-center justify-start text-lg font-semibold gap-1">
                                 {service.provider.name}
-                                <VerifiedIcon className="h-8 w-8" />
+                                <VerifiedIcon className="h-6 w-6" />
                             </span>
+                            <span className="text-sm text-muted-foreground">Since {format(service.provider.createdAt, 'MMMM yyyy')}</span>
                         </span>
                     </div>
-                    <div className="flex gap-3">
-                        <Badge variant="secondary" className="text-[0.6rem]">
-                            {providerClientsLength} clients served
-                        </Badge>
-                        <Button className="flex text-[0.6rem] h-6 mr-3" variant="secondary">
-                            <MapPin className="mr-1 h-4 w-4" />
-                            {service.defaultLocation}
-                        </Button>
-                    </div>
-                    <div className='flex gap-2 p-1 justify-between'>
+                    {customerList.length > 0 && (
                         <div className="flex -space-x-4 overflow-hidden">
-                            {customerList.slice(0, 7).map((booking, index) => (
-                                <Avatar key={index} className="inline-block h-8 w-8">
-                                    <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
-                                    <AvatarFallback>C</AvatarFallback>
-                                </Avatar>
-                            ))}
-                            <p className="text-xs underline ml-3">{customerList.length} active customers</p>
-                        </div>
-                        <div className="flex gap-3 justify-end">
-                            <Button variant="outline" size="icon" onClick={()=>copyToClipboard(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
-                                <Share1Icon />
-                            </Button>
-                            <Button variant="outline" size="icon" onClick={handleLike}>
-                                <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                            </Button> 
-                            <Button size="icon" onClick={createChat}>
-                                <MessageCircle className="h-4 w-4" />
-                            </Button>        
-                        </div>
+                        {customerList.slice(0, 7).map((booking, index) => (
+                            <Avatar key={index} className="inline-block h-8 w-8">
+                                <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
+                                <AvatarFallback>C</AvatarFallback>
+                            </Avatar>
+                        ))}
+                        <p className="text-xs underline ml-3">{customerList.length} active customers</p>
                     </div>
-                </CardContent>
-                
-            </Card>
+                    )}
+                    <div className="flex gap-3 justify-end">
+                        <Button variant="outline" size="icon" onClick={()=>copyToClipboard(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
+                            <Share1Icon />
+                        </Button>
+                        <Button variant="outline" size="icon" onClick={handleLike}>
+                            <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                        </Button> 
+                        <Button size="icon" onClick={createChat}>
+                            <MessageCircle className="h-4 w-4" />
+                        </Button>        
+                    </div>
+                </div>
+            </div>
+            <Separator />
+
+            <div className="grid grid-cols-8 gap-y-6 my-4">
+                <Star className="h-8 w-8" />
+                <div className="col-span-7 flex flex-col">
+                    <h3 className="font-semibold">Trusted Reviews</h3>
+                    <p className="text-sm text-muted-foreground">All review are verified and originate only from authentic users and customers for this service</p>
+                </div>
+                <Book className="h-8 w-8" />
+                <div className="col-span-7 flex flex-col">
+                    <h3 className="font-semibold">Efficient Bookings</h3>
+                    <p className="text-sm text-muted-foreground">We offer a fast and efficient booking process. Schedule your service appointment in seconds</p>
+                </div>
+                <Calendar className="h-8 w-8" />
+                <div className="col-span-7 flex flex-col">
+                    <h3 className="font-semibold">Refund within 48 hours</h3>
+                    <p className="text-sm text-muted-foreground">Get a full refund in case of cancellation or refusal within 48 hours</p>
+                </div>
+            </div>
+            <Separator />
 
             <div className="flex w-full">
                 <WeeklyAvailabilityCalendar availability={service.availability!} />

@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Availability, CalendarEvent, generateEvents, formatTimeRange, parseAvailability } from "@/utils/helpers/calendar-helpers"
 import { Prisma } from '@prisma/client'
+import { Separator } from '@/components/ui/separator'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface WeeklyAvailabilityCalendarProps {
   availability: Prisma.JsonValue;
@@ -60,6 +62,7 @@ function formatTime(timeString: string): string {
 }
 
 export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityCalendarProps) {
+  const isMobile = useIsMobile()
   
   const { events, availableDays } = useMemo(() => {
     const parsedAvailability = parseAvailability(availability);
@@ -102,15 +105,16 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 w-full">
-      <Card className="flex-grow w-full">
-        <CardHeader>
-          <CardTitle>Weekly Availability</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="flex flex-col md:flex-row gap-4 w-full">
+      <div className="flex-grow w-full">
+          <h2 className="text-2xl font-semibold mb-2">Availability</h2>
           <Calendar
             mode="single"
-            className="rounded-md border w-full"
+            className="w-full"
+            classNames={{
+              day: "h-10 w-10",
+              head_cell: "w-10"
+            }}
             disabled={isDateDisabled}
             modifiers={{
               available: eventDates,
@@ -121,13 +125,11 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
               }
             }}
           />
-        </CardContent>
-      </Card>
-      <Card className="w-full min-w-64">
-        <CardHeader>
-          <CardTitle>Availability Summary</CardTitle>
-        </CardHeader>
-        <CardContent>
+      </div>
+      <Separator orientation={isMobile?"horizontal":"vertical"} />
+      <div className="w-full min-w-64">
+          <h2 className="text-2xl font-semibold mb-2">Availability Summary</h2>
+        <div>
           <ScrollArea className="h-[300px]">
             {Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(new Date()), i)).map((day) => (
               <div key={day.toISOString()} className="mb-4">
@@ -136,8 +138,8 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
               </div>
             ))}
           </ScrollArea>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

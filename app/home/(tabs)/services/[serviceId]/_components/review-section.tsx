@@ -118,33 +118,31 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
       </Dialog>
       <div className="space-y-4">
         {currentReviews.map((review) => (
-          <Card key={review.id}>
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-4 mb-2">
-                <Avatar>
-                  <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} />
-                  <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-semibold">{review.reviewer.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(review.reviewDate).toLocaleDateString()}
-                  </div>
+          <div key={review.id} className='pt-6 border-t flex flex-col gap-1'>
+            <div className="flex items-center space-x-4 mb-2">
+              <Avatar>
+                <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} className='object-center'/>
+                <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="font-semibold">{review.reviewer.name}</div>
+                <div className="text-sm text-muted-foreground">
+                  {new Date(review.reviewDate).toLocaleDateString()}
                 </div>
               </div>
-              <div className="flex items-center mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${
-                      star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="text-sm">{review.comment}</p>
-            </CardContent>
-          </Card>
+            </div>
+            <div className="flex items-center mb-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  className={`h-4 w-4 ${
+                    star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <p className="text-sm">{review.comment}</p>
+          </div>
         ))}
       </div>
       <div className="flex justify-between items-center mt-4">

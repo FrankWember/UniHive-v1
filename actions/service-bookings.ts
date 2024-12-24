@@ -219,9 +219,8 @@ export async function cancelBooking(bookingId: string, userId: string) {
             throw new Error("Unauthorized")
         }
 
-        const updatedBooking = await prisma.serviceBooking.update({
-            where: { id: bookingId },
-            data: { status: BookingStatus.CANCELLED }
+        const updatedBooking = await prisma.serviceBooking.delete({
+            where: { id: bookingId }
         })
 
         // Send email to both parties
