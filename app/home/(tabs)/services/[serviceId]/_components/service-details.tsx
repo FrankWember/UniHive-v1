@@ -155,7 +155,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
     )
   } else {
     return (
-      <div className='flex flex-col gap-6 w-full max-w-7xl min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
+      <div className='flex flex-col gap-6 w-full max-w-[90rem] min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
