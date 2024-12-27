@@ -106,27 +106,6 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
 
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full">
-      <div className="flex-grow w-full">
-          <h2 className="text-2xl font-semibold mb-2">Availability</h2>
-          <Calendar
-            mode="single"
-            className="w-full"
-            classNames={{
-              day: "h-10 w-10",
-              head_cell: "w-10"
-            }}
-            disabled={isDateDisabled}
-            modifiers={{
-              available: eventDates,
-            }}
-            modifiersStyles={{
-              available: {
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-              }
-            }}
-          />
-      </div>
-      <Separator orientation={isMobile?"horizontal":"vertical"} />
       <div className="w-full min-w-64">
           <h2 className="text-2xl font-semibold mb-2">Availability Summary</h2>
         <div>

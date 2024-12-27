@@ -155,7 +155,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
     )
   } else {
     return (
-      <div className='flex flex-col gap-6 w-full max-w-[90rem] min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-8 overflow-hidden'>
+      <div className='flex flex-col gap-6 w-full max-w-[90rem] min-h-screen h-full justify-center mx-auto px-12 lg:px-20 py-4 overflow-hidden'>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -179,7 +179,6 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           
           {/* Service Info */}
           <div className="w-full px-4 mx-auto">
-            <Separator className="my-4" />
             <ServiceInfo 
               service={service}
               averageRating={averageRating}
@@ -189,7 +188,6 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           {/* Offers section */}
           <div className="w-full px-4 mx-auto">
-            <Separator className="my-4" />
             <OffersSection service={service} userId={user?.id} />
           </div>
 

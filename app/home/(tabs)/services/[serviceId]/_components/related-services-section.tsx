@@ -22,7 +22,7 @@ export const RelatedServicesSection = ({
   return (
     <div className="flex flex-col gap-3">
       <h2 className="text-2xl font-semibold">Related Services</h2>
-      <div className="grid grid-cols-2 gap-3 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-6">
         {relatedServices.map((service) => (
           <ServiceCard key={service.id} service={service} />
         ))}

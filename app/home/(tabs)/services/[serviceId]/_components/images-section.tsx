@@ -66,7 +66,7 @@ export const ImagesSection = ({
     )
 
     return (
-        <div className='grid grid-cols-4 grid-row-2 gap-3 w-full h-[35rem]'>
+        <div className='grid grid-cols-4 grid-row-2 gap-3 w-full h-[30rem]'>
             {service.images.map((image, index) => (
                 <div key={index} className={cn('relative w-full h-full', index === 0 && 'col-span-2 row-span-2')}>
                     <Image
