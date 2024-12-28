@@ -11,17 +11,17 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Command, CommandEmpty, CommandGroup,  CommandItem } from "@/components/ui/command"
+import { Command, CommandEmpty, CommandGroup,  CommandInput,  CommandItem, CommandList } from "@/components/ui/command"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 export function ProductCategorySelect({
-  options,
+  options = [],
   value = [],
   onChange,
   custom = false
 }: {
-  options: string[]
+  options?: string[]
   value?: string[]
   onChange: (value: string[]) => void
   custom?: boolean
@@ -41,9 +41,9 @@ export function ProductCategorySelect({
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     setFilteredOptions(
-      options.filter(option =>
+      options?.filter(option =>
         option.toLowerCase().includes(query.toLowerCase())
-      )
+      ) || []
     )
   }
 
@@ -65,51 +65,53 @@ export function ProductCategorySelect({
         >
           {value.length > 0
             ? `${value.length} selected`
-            : "Select categories"}
+            : "Select categories..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0">
         <Command>
-          <Input
+          <CommandInput
             placeholder="Search categories..."
             value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="mb-2"
+            onValueChange={handleSearch}
           />
-          <CommandEmpty>No categories found.</CommandEmpty>
-          <CommandGroup>
-            <ScrollArea className="h-72">
-              {filteredOptions.map((option) => (
-                <CommandItem key={option}>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id={option}
-                      checked={value.includes(option)}
-                      onCheckedChange={() => handleToggle(option)}
-                    />
-                    <Label htmlFor={option}>{option}</Label>
+          <CommandList>
+            <CommandEmpty>No categories found.</CommandEmpty>
+            <CommandGroup>
+              <ScrollArea className="h-72">
+                {filteredOptions && filteredOptions.map((option) => (
+                  <CommandItem key={option}>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id={option}
+                        checked={value.includes(option)}
+                        onCheckedChange={() => handleToggle(option)}
+                      />
+                      <Label htmlFor={option}>{option}</Label>
+                    </div>
+                  </CommandItem>
+                ))}
+                {custom && (
+                  <div className="p-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        placeholder="Add custom category"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                      />
+                      <Button size="sm" onClick={handleAddCustomCategory}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </CommandItem>
-              ))}
-              {custom && (
-                <div className="p-2">
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      placeholder="Add custom category"
-                      value={customCategory}
-                      onChange={(e) => setCustomCategory(e.target.value)}
-                    />
-                    <Button size="sm" onClick={handleAddCustomCategory}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </ScrollArea>
-          </CommandGroup>
+                )}
+              </ScrollArea>
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
   )
 }
+

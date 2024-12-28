@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandEmpty,
+  CommandList,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -23,19 +24,19 @@ type Brand = {
 }
 
 type BrandSelectProps = {
-  brands: Brand[]
+  brands?: Brand[]
   selectedBrand: string | null
   onSelectBrand: (brandName: string) => void
 }
 
-export function BrandSelect({ brands, selectedBrand, onSelectBrand }: BrandSelectProps) {
+export function BrandSelect({ brands = [], selectedBrand, onSelectBrand }: BrandSelectProps) {
   const [open, setOpen] = React.useState(false)
   const [searchValue, setSearchValue] = React.useState("")
   const [customBrand, setCustomBrand] = React.useState("")
 
-  const filteredBrands = brands.filter((brand) =>
+  const filteredBrands = brands?.filter((brand) =>
     brand.name.toLowerCase().includes(searchValue.toLowerCase())
-  )
+  ) || []
 
   const handleSelectBrand = (brandName: string) => {
     onSelectBrand(brandName)
@@ -74,39 +75,42 @@ export function BrandSelect({ brands, selectedBrand, onSelectBrand }: BrandSelec
             value={searchValue}
             onValueChange={setSearchValue}
           />
-          <CommandEmpty>
-            <div className="p-2">
-              <p className="text-sm text-muted-foreground mb-2">No brand found. Add a custom brand?</p>
-              <div className="flex items-center space-x-2">
-                <Input
-                  placeholder="Enter custom brand"
-                  value={customBrand}
-                  onChange={(e) => setCustomBrand(e.target.value)}
-                />
-                <Button size="sm" onClick={handleAddCustomBrand}>
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CommandEmpty>
-          <CommandGroup>
-            {filteredBrands.map((brand) => (
-              <CommandItem
-                key={brand.name}
-                onSelect={() => handleSelectBrand(brand.name)}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 h-4 w-4",
-                    selectedBrand === brand.name ? "opacity-100" : "opacity-0"
-                  )}
-                />
-                {brand.name}
-              </CommandItem>
-            ))}
-          </CommandGroup>
+          <CommandList>
+            <CommandEmpty>
+                <div className="p-2">
+                <p className="text-sm text-muted-foreground mb-2">No brand found. Add a custom brand?</p>
+                <div className="flex items-center space-x-2">
+                    <Input
+                    placeholder="Enter custom brand"
+                    value={customBrand}
+                    onChange={(e) => setCustomBrand(e.target.value)}
+                    />
+                    <Button size="sm" onClick={handleAddCustomBrand}>
+                        <Plus className="h-4 w-4" />
+                    </Button>
+                </div>
+                </div>
+            </CommandEmpty>
+            <CommandGroup>
+                {filteredBrands && filteredBrands.map((brand) => (
+                <CommandItem
+                    key={brand.name}
+                    onSelect={() => handleSelectBrand(brand.name)}
+                >
+                    <Check
+                    className={cn(
+                        "mr-2 h-4 w-4",
+                        selectedBrand === brand.name ? "opacity-100" : "opacity-0"
+                    )}
+                    />
+                    {brand.name}
+                </CommandItem>
+                ))}
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
   )
 }
+

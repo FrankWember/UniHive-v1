@@ -10,21 +10,18 @@ import {
 } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Command, CommandEmpty, CommandGroup,  CommandItem } from "@/components/ui/command"
-import {ScrollArea} from "@/components/ui/scroll-area"
+import { Command, CommandEmpty, CommandGroup,  CommandInput,  CommandItem, CommandList } from "@/components/ui/command"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 export function CategorySelect({
-  options,
+  options = [],
   value = [],
   onChange,
-  custom = false
 }: {
-  options: { value: string; label: string }[]
+  options?: { value: string; label: string }[]
   value?: string[]
   onChange: (value: string[]) => void
-  custom?: boolean
 }) {
   const [open, setOpen] = React.useState(false)
   const [filteredOptions, setFilteredOptions] = React.useState(options)
@@ -41,18 +38,18 @@ export function CategorySelect({
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     setFilteredOptions(
-      options.filter(option =>
+      options?.filter(option =>
         option.label.toLowerCase().includes(query.toLowerCase())
-      )
+      ) || []
     )
   }
 
-  const handleAddCustomCategory = () => {
-    if (customCategory && !options.some(opt => opt.value === customCategory)) {
-      onChange([...value, customCategory])
-      setCustomCategory("")
-    }
-  }
+  // const handleAddCustomCategory = () => {
+  //   if (customCategory && !options.some(opt => opt.value === customCategory)) {
+  //     onChange([...value, customCategory])
+  //     setCustomCategory("")
+  //   }
+  // }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -71,45 +68,47 @@ export function CategorySelect({
       </PopoverTrigger>
       <PopoverContent className="w-80 p-0">
         <Command>
-          <Input
+          <CommandInput
             placeholder="Search categories..."
             value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="mb-2"
+            onValueChange={handleSearch}
           />
-          <CommandEmpty>No categories found.</CommandEmpty>
-          <CommandGroup>
-            <ScrollArea className="h-72">
-              {filteredOptions.map((option) => (
-                <CommandItem key={option.value}>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id={option.value}
-                      checked={value.includes(option.value)}
-                      onCheckedChange={() => handleToggle(option.value)}
-                    />
-                    <Label htmlFor={option.value}>{option.label}</Label>
+          <CommandList>
+            <CommandEmpty>No categories found.</CommandEmpty>
+            <CommandGroup>
+              <ScrollArea className="h-72">
+                {filteredOptions && filteredOptions.length > 0 && filteredOptions.map((option) => (
+                  <CommandItem key={option.value}>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id={option.value}
+                        checked={value.includes(option.value)}
+                        onCheckedChange={() => handleToggle(option.value)}
+                      />
+                      <Label htmlFor={option.value}>{option.label}</Label>
+                    </div>
+                  </CommandItem>
+                ))}
+                {/* {custom && (
+                  <div className="p-2">
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        placeholder="Add custom category"
+                        value={customCategory}
+                        onChange={(e) => setCustomCategory(e.target.value)}
+                      />
+                      <Button size="sm" onClick={handleAddCustomCategory}>
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
-                </CommandItem>
-              ))}
-              {custom && (
-                <div className="p-2">
-                  <div className="flex items-center space-x-2">
-                    <Input
-                      placeholder="Add custom category"
-                      value={customCategory}
-                      onChange={(e) => setCustomCategory(e.target.value)}
-                    />
-                    <Button size="sm" onClick={handleAddCustomCategory}>
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </ScrollArea>
-          </CommandGroup>
+                )} */}
+              </ScrollArea>
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
   )
 }
+

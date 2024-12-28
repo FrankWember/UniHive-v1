@@ -110,7 +110,6 @@ export function NewProductForm() {
               <FormControl>
                 <Textarea
                   placeholder="Describe your product"
-                  className="resize-none"
                   {...field}
                 />
               </FormControl>
@@ -192,20 +191,20 @@ export function NewProductForm() {
             </FormItem>
           )}
         />
+        <FormField
+            control={form.control}
+            name="brand"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Brand</FormLabel>
+                <FormControl>
+                  <BrandSelect brands={PRODUCT_BRANDS} selectedBrand={field.value} onSelectBrand={field.onChange} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         <div className='flex gap-4'>
-          <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <BrandSelect brands={PRODUCT_BRANDS} selectedBrand={field.value} onSelectBrand={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           <FormField
             control={form.control}
             name="categories"
