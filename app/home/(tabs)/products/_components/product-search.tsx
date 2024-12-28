@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
-import { User as UserIcon, Tag as TagIcon } from "lucide-react"
+import { UserIcon, TagIcon } from 'lucide-react'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Button } from "@/components/ui/button"
 import { useProducts } from "@/contexts/products-context"
@@ -11,7 +11,7 @@ import { useProducts } from "@/contexts/products-context"
 type SearchResult = {
   id: string
   name: string | null
-  type: "product" | "seller" | "category"
+  type: "product" | "seller" | "category" | "brand"
   sellerName: string | null
 }
 
@@ -26,7 +26,10 @@ export function SearchBar() {
 
     const filteredResults: SearchResult[] = [
       ...products
-        .filter((product) => product.name.toLowerCase().includes(query.toLowerCase()))
+        .filter((product) => 
+          product.name.toLowerCase().includes(query.toLowerCase()) ||
+          product.brand.toLowerCase().includes(query.toLowerCase())
+        )
         .map((product) => ({
           id: product.id,
           name: product.name,
@@ -53,6 +56,16 @@ export function SearchBar() {
           type: "seller" as const,
           sellerName: seller.name,
         })),
+      ...products
+        .map((product) => product.brand)
+        .filter((brand, index, self) => self.indexOf(brand) === index)
+        .filter((brand) => brand.toLowerCase().includes(query.toLowerCase()))
+        .map((brand) => ({
+          id: brand,
+          name: brand,
+          type: "brand" as const,
+          sellerName: null,
+        })),
     ]
     return filteredResults
   }, [query, products, isLoading])
@@ -65,6 +78,8 @@ export function SearchBar() {
       router.push(`/home/products/seller/${result.id}`)
     } else if (result.type === "category") {
       router.push(`/home/products?category=${result.name}`)
+    } else if (result.type === "brand") {
+      router.push(`/home/products?brand=${result.name}`)
     }
   }
 
@@ -127,6 +142,16 @@ export function SearchBar() {
               <CommandGroup heading="Categories">
                 {results
                   .filter((result) => result.type === "category")
+                  .map((result) => (
+                    <CommandItem key={result.id} onSelect={() => handleSelect(result)}>
+                      <TagIcon className="mr-2 h-4 w-4" />
+                      <span>{result.name}</span>
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+              <CommandGroup heading="Brands">
+                {results
+                  .filter((result) => result.type === "brand")
                   .map((result) => (
                     <CommandItem key={result.id} onSelect={() => handleSelect(result)}>
                       <TagIcon className="mr-2 h-4 w-4" />

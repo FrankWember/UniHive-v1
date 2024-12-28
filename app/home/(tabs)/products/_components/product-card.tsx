@@ -86,14 +86,14 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/home/products/${product.id}`}>
       <div className="flex flex-col gap-2 border-none">
-        <div className="relative w-full min-h-48 h-full">
+        <div className="relative w-full min-h-56 h-full">
           <Image
             src={product.images[0] || '/placeholder.png'}
             alt={product.name}
             fill
-            className="object-cover rounded"
+            className="object-cover rounded-lg"
           />
-          <Button className='absolute bottom-2 right-4 hover:bg-transparent/60 bg-transparent' variant="ghost" size="icon" onClick={likeThisProduct}>
+          <Button className='absolute bottom-2 right-4 z-20 hover:bg-transparent/60 bg-transparent' variant="ghost" size="icon" onClick={likeThisProduct}>
             <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : 'fill-none'}`}/>
           </Button>
         </div>
@@ -101,7 +101,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex justify-between">
             {product.discount>0 ? (
               <div className='flex items-center space-x-2'>
-                <p className="font-bold text-base">${(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</p>
+                <p className="font-bold text-base"><span className="text-green-500">$</span>{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</p>
                 <span className='text-muted-foreground line-through text-sm'>${product.price.toFixed(2)}</span>
               </div>
             ):((

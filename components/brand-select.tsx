@@ -39,7 +39,7 @@ export function BrandSelect({ brands = [], selectedBrand, onSelectBrand }: Brand
   ) || []
 
   const handleSelectBrand = (brandName: string) => {
-    onSelectBrand(brandName)
+    onSelectBrand(brandName.toLowerCase())
     setOpen(false)
     setSearchValue("")
   }

@@ -16,21 +16,22 @@ const ProductsPage = async() => {
   const user = await currentUser()
 
   const categories = [
-    { name: "Barber", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfcerw5XdrfsMIYNHzSRKQD4XWgdmV3pCnha0b" },
-    { name: "Braiding", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf1uLQULpxSQ4XBcOsmzAE8tRkUCqKDpoLiglJ" },
+    { name: "Men's Wear", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfWZI6bikI8zCJONi0axTRgfKEPehZnwcSsAuq" },
+    { name: "Women's Wear", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfKWL2ZKSRr8bpUxL1QFcoq0HazduW4jvfiDE5" },
+    { name: "Kid's Wear", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfupRIEv5zaec0hdgxYLBRviOZJpWsfl3yFIQS" },
+    { name: "Sneakers", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfzDWu6WMrY3pvhLVm8abPjn9fQKTsgtkIDoFq" },
     { name: "Electronics", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfemncMwHO0No5ZUKEIDvPdJxqznT7mbFLGMg3" },
-    { name: "Makeup", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfMbubBXxlvYm2rFdR45xgNI7D1thwaiZzufos" },
-    { name: "Nails", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfYRA1s04HdjsfxSoUO07KrDbPi1JtFCmhWlIB" },
-    { name: "Housing", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHftUF1nkLhGknyo7LpxjlzH8Q5gXAVMUfO0W29" },
-    { name: "Tutoring", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf7C9FKRSg1j6dPWpUOurM8zwZ3obleVTaIEmQ" },
+    { name: "Smartphones", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfe6Fs84HO0No5ZUKEIDvPdJxqznT7mbFLGMg3" },
+    { name: "Gadgets", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfot9pkOEzBwVpdJ9eikGyRDX07grIsH26W3AE"},
+    { name: "Gaming", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf1T9zhL7pxSQ4XBcOsmzAE8tRkUCqKDpoLigl" },
+    { name: "Furniture", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfFHKw4mUz45IQBCgG7W2Zb9jtfNhOxMu1RY8A" },
+    { name: "Cosmetics", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfMbubBXxlvYm2rFdR45xgNI7D1thwaiZzufos" },
     { name: "Automobile", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfV4HJcSDLK2EmsTAbnRtquWD8lZ5XC4YFSz7Q" },
     { name: "Photography", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf9xNComcLY7iGPOM8TNVJkEvgjyqaZCdRF6l0" },
-    { name: "Tailoring", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfwg2m0tNkDTtpcZYv0Ad284yreLKoaWfnuS6l" },
-    { name: "Cooking", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfigCCPp0pbd1aFvt4ISVrmWQAcjyho7wY3kUu" },
-    { name: "Massage", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf9nJCG2xcLY7iGPOM8TNVJkEvgjyqaZCdRF6l" },
-    { name: "Cleaning", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfpaiYeTmFEcB1VQvWRSfJTUZKi6h2Ns8wqIYL" },
-    { name: "Graphic Design", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfdUy1wasny0Pftj692TKE4nuIRbzsFrHwlxYc" },
+    { name: "Food", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfigCCPp0pbd1aFvt4ISVrmWQAcjyho7wY3kUu" },
     { name: "Music", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf7AgC0cKSg1j6dPWpUOurM8zwZ3obleVTaIEm" },
+    { name: "Art", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHfjkIj5PyLgKAhD7q1W4Vb92m3fU6i0zvFPByS" },
+    { name: "Fashion", imageUrl: "https://utfs.io/f/nYBT8PFt8ZHf7Bnq4tSg1j6dPWpUOurM8zwZ3obleVTaIEmQ" },
   ]
 
   return (
@@ -38,14 +39,14 @@ const ProductsPage = async() => {
         {/* Header */}
         <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
           <div className="flex justify-start items-center gap-3">
-              <Link href="/home/services">
+              <Link href="/home/products">
                 <Image src="/Unihive.svg" alt="logo" width={50} height={50} className="rounded-md border" />
               </Link>
           </div>
           <div className="flex items-center space-x-3">
             <SearchBar />
             {user ? (
-              <Link href={`/home/services/cart`}>
+              <Link href={`/home/products/cart`}>
                 <Button variant="outline" size="icon">
                   <ShoppingCart className="h-4 w-4" />
                   <span className="absolute top-2 right-16 w-4 h-4 text-xs text-white bg-red-500 rounded-full flex items-center justify-center">
@@ -64,11 +65,45 @@ const ProductsPage = async() => {
           </div>
         </div>
 
+        {/* Categories */}
+        <div>
+        <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8">
+          <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
+            <div className="flex flex-col gap-2">
+              <Link href={`/home/products`}>
+              <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
+                <ArrowDownAZ className='h-12 w-12' />
+              </div>
+              </Link>
+              <h2 className='text-sm md:text-base font-semibold text-center'>All</h2>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Link href={`/home/products?favourites=true`}>
+                <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
+                  <Heart className='h-12 w-12' />
+                </div>
+              </Link>
+              <h2 className='text-sm md:text-base font-semibold text-center'>Favourites</h2>
+            </div>
+            {categories.map((category) => (
+              <Link key={category.name} href={`/home/products?category=${category.name.toLocaleLowerCase()}`}>
+                <div className='flex flex-col gap-2'>
+                  <Avatar className="h-20 w-20 md:h-24 md:w-24">
+                    <AvatarImage src={category.imageUrl} className='object-cover'/>
+                    <AvatarFallback>{category.name[0]}</AvatarFallback>
+                  </Avatar>
+                  <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className='hidden' />
+        </ScrollArea>
+      </div>
+
         {/* Content */}
-        <div className="w-full mt-24 pb-24">
-          <Suspense>
+        <div className="w-full pb-24">
             <ProductList />
-          </Suspense>
         </div>
       </div>
   )

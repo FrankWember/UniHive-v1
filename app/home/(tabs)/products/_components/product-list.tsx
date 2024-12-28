@@ -13,11 +13,12 @@ export function ProductList() {
   const category = searchParams.get('category')
   const mine = searchParams.get('mine')
   const favourites = searchParams.get('favourites')
+  const brand = searchParams.get('brand')
   const user = useCurrentUser()
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-col-5 gap-6 mx-3 md:mx-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-y-4 md:gap-5 px-3 py-6">
         <Skeleton className="w-full h-48"/>
         <Skeleton className="w-full h-48"/>
         <Skeleton className="w-full h-48"/>
@@ -44,10 +45,12 @@ export function ProductList() {
     ? products.filter((product) => product.sellerId === mine)
     : favourites && user
     ? products.filter((product) => product.favourites.some((favourite) => favourite.userId === user?.id))
+    : brand 
+    ? products.filter((product) => product.brand === brand)
     : products
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-col-5 gap-3 mx-3 md:mx-auto">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-y-4 md:gap-5 px-3 py-6">
       {filteredProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

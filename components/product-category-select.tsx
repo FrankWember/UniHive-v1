@@ -35,7 +35,7 @@ export function ProductCategorySelect({
     const newValue = value.includes(categoryValue)
       ? value.filter(v => v !== categoryValue)
       : [...value, categoryValue]
-    onChange(newValue)
+    onChange(newValue.map(v => v.toLowerCase()))
   }
 
   const handleSearch = (query: string) => {
