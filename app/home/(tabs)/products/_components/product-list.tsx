@@ -19,18 +19,11 @@ export function ProductList() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-y-4 md:gap-5 px-3 py-6">
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
-        <Skeleton className="w-full h-48"/>
+        {[...Array(20)].map((_, i) => (
+          <div key={i} className="flex flex-col gap-2">
+            <Skeleton className="h-56 w-full rounded-lg" />
+          </div>
+        ))}
       </div>
     )
   }

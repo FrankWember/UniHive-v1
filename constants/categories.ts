@@ -23,6 +23,11 @@ export const SERVICE_CATEGORIES = [
 
 export const PRODUCT_CATEGORIES = [
     "electronics",
+    "smartphones",
+    "laptops",
+    "computers",
+    "tablets",
+    "gadgets",
     "clothing",
     "fashion",
     "auto",
@@ -65,13 +70,11 @@ export const PRODUCT_CATEGORIES = [
     "cosmetics",
     "skincare",
     "haircare",
-    "makeup",
     "nails",
     "sneakers",
     "men's wear",
     "women's wear",
     "kid's wear",
-    "gadgets"
 ]
 
 
