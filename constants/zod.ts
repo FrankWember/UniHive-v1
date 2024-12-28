@@ -139,6 +139,7 @@ export const productSchema = z.object({
   discount: z.number().min(0).max(100).optional(),
   stock: z.number().int().positive('Stock must be a positive integer'),
   images: z.array(z.string().url()).min(1, 'At least one image is required'),
+  brand: z.string().min(1, 'Brand is required'),
   categories: z.array(z.string()).min(1, 'At least one category is required'),
   state: z.string().default(ProductState.NEW),
   delivery: z.boolean().default(false),

@@ -64,41 +64,6 @@ const ProductsPage = async() => {
           </div>
         </div>
 
-        <div>
-        <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8">
-          <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
-            <div className="flex flex-col gap-2">
-              <Link href={`/home/products`}>
-              <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
-                <ArrowDownAZ className='h-12 w-12' />
-              </div>
-              </Link>
-              <h2 className='text-sm md:text-base font-semibold text-center'>All</h2>
-            </div>
-            <div className="flex flex-col gap-2">
-              <Link href={`/home/products?favourites=true`}>
-                <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
-                  <Heart className='h-12 w-12' />
-                </div>
-              </Link>
-              <h2 className='text-sm md:text-base font-semibold text-center'>Favourites</h2>
-            </div>
-            {categories.map((category) => (
-              <Link key={category.name} href={`/home/products?category=${category.name.toLocaleLowerCase()}`}>
-                <div className='flex flex-col gap-2'>
-                  <Avatar className="h-20 w-20 md:h-24 md:w-24">
-                    <AvatarImage src={category.imageUrl} className='object-cover'/>
-                    <AvatarFallback>{category.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <h2 className='text-sm md:text-base font-semibold text-center'>{category.name}</h2>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <ScrollBar orientation="horizontal" className='hidden' />
-        </ScrollArea>
-      </div>
-
         {/* Content */}
         <div className="w-full mt-24 pb-24">
           <Suspense>

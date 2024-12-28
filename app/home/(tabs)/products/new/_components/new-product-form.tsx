@@ -33,13 +33,14 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { MultiImageUpload } from '@/components/multi-image-upload'
 import { createProduct } from '@/actions/products'
-import { CategorySelect } from '@/components/category-select'
 import { productSchema } from '@/constants/zod'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
 import { ProductState } from '@prisma/client'
 import { LocationInput } from '@/components/location-input'
-import { productCategories } from '@/constants/categories'
+import { PRODUCT_CATEGORIES, PRODUCT_BRANDS } from '@/constants/categories'
+import { ProductCategorySelect } from '@/components/product-category-select'
+import { BrandSelect } from '@/components/brand-select'
 
 export function NewProductForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -59,6 +60,7 @@ export function NewProductForm() {
       discount: 0,
       stock: 1,
       images: [],
+      brand: '',
       categories: [],
       state: ProductState.NEW,
       delivery: false,
@@ -192,14 +194,27 @@ export function NewProductForm() {
         />
         <div className='flex gap-4'>
           <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Brand</FormLabel>
+                  <FormControl>
+                    <BrandSelect brands={PRODUCT_BRANDS} selectedBrand={field.value} onSelectBrand={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          <FormField
             control={form.control}
             name="categories"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Categories</FormLabel>
                 <FormControl>
-                  <CategorySelect
-                    options={productCategories}
+                  <ProductCategorySelect
+                    options={PRODUCT_CATEGORIES}
                     value={field.value}
                     onChange={field.onChange}
                   />

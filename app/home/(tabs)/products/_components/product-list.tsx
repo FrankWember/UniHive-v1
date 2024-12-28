@@ -17,7 +17,7 @@ export function ProductList() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-col-4 gap-6 mx-3 md:mx-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-col-5 gap-6 mx-3 md:mx-10">
         <Skeleton className="w-full h-48"/>
         <Skeleton className="w-full h-48"/>
         <Skeleton className="w-full h-48"/>
@@ -47,7 +47,7 @@ export function ProductList() {
     : products
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-col-5 gap-3 md:gap-6 mx-3 md:mx-10">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-col-5 gap-3 mx-3 md:mx-auto">
       {filteredProducts.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

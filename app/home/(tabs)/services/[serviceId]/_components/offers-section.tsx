@@ -26,7 +26,7 @@ export const OffersSection = ({service, userId}: OfferCardProps) => {
             </CardHeader>
             <CardContent>
                 {service.offers.map((offer, index)=> (
-                    <div key={index}  className="flex flex-col border-t p-4">
+                    <div key={index}  className="flex flex-col border-t py-4 px-1">
                         <div className='flex gap-4 justify-start items-center'>
                             <p className="text-xl">{offer.title}</p>
                         </div>

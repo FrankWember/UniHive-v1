@@ -93,8 +93,8 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover rounded"
           />
-          <Button className='absolute top-2 right-4 ' onClick={likeThisProduct}>
-            <Heart className={`h-6 w-6 ${isLiked ? 'fill-red-500 text-red-500' : 'fill-none'}`}/>
+          <Button className='absolute bottom-2 right-4 hover:bg-transparent/60 bg-transparent' variant="ghost" size="icon" onClick={likeThisProduct}>
+            <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : 'fill-none'}`}/>
           </Button>
         </div>
         <div className="p-2">
