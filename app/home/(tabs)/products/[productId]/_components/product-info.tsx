@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from '@/components/ui/separator'
 import { Product, User } from '@prisma/client'
-import { ShieldCheck, Star, Truck } from 'lucide-react'
+import { ShieldCheck, Star, Truck, Heart } from 'lucide-react'
+import { Share1Icon } from "@radix-ui/react-icons"
 import React from 'react'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
 import { format } from 'date-fns'
@@ -87,16 +88,16 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         }
     }
 
-    const share = async (text: string) => {
+    const share = async () => {
         if (navigator.share) {
             try {
-                await navigator.share({text: text})
+                await navigator.share({text: `https://unihive-v1.vercel.app/home/products/${product.id}`})
             } catch (error) {
                 console.error('Error sharing:', error)
             }
         } else {
             if (navigator.clipboard) {
-                await navigator.clipboard.writeText(text)
+                await navigator.clipboard.writeText(`https://unihive-v1.vercel.app/home/products/${product.id}`)
                 toast({title: 'Link copied to clipboard'})
             } else {
                 toast({title: 'Sorry, your browser does not support sharing or clipboard'})
@@ -126,6 +127,12 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         <div className='flex gap-2'>
             <Button onClick={() => addToCart(true)}>Buy now</Button>
             <ProductRequest product={product} />
+            <Button variant="outline" size="icon" onClick={share}>
+                <Share1Icon />
+            </Button>
+            <Button variant="outline" size="icon" onClick={likeThisProduct}>
+                <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            </Button> 
         </div>
         <div className="grid grid-cols-8 gap-y-6 my-4">
             <ShieldCheck className="h-8 w-8" />

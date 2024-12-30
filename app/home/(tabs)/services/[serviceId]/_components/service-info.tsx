@@ -97,7 +97,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         })
     })
 
-    const copyToClipboard = async (text: string) => {
+    const share = async (text: string) => {
         try {
             if (navigator.share) {
                 try {
@@ -206,7 +206,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </div>
                     )}
                     <div className="flex gap-3 justify-end">
-                        <Button variant="outline" size="icon" onClick={()=>copyToClipboard(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
+                        <Button variant="outline" size="icon" onClick={()=>share(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
                             <Share1Icon />
                         </Button>
                         <Button variant="outline" size="icon" onClick={handleLike}>
