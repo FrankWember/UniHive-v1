@@ -15,6 +15,8 @@ export async function getServiceById(serviceId: string) {
         include: {
           services: {
             select: {
+              name: true,
+              images: true,
               offers: {
                 select: {
                   bookings: {

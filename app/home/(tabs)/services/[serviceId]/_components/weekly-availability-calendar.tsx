@@ -107,9 +107,9 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
   return (
     <div className="flex flex-col md:flex-row gap-4 w-full">
       <div className="w-full min-w-64">
-          <h2 className="text-2xl font-semibold mb-2">Availability Summary</h2>
+          <h2 className="text-2xl font-semibold mb-4">Availability Summary</h2>
         <div>
-          <ScrollArea className="h-[300px]">
+          <ScrollArea className="">
             {Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(new Date()), i)).map((day) => (
               <div key={day.toISOString()} className="mb-4">
                 <h3 className="font-bold">{format(day, 'EEEE')}</h3>

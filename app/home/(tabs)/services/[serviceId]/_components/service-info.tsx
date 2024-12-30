@@ -177,7 +177,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </Button>
                 </div>
             </div>
-            <Separator />
+            <Separator className="md:my-4" />
             <div className="flex flex-col gap-2">
                 <h2 className="text-xl font-semibold">Provider</h2>
                 <div className="flex flex-col gap-2">
@@ -218,7 +218,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </div>
                 </div>
             </div>
-            <Separator />
+            <Separator className="md:my-4" />
 
             <div className="grid grid-cols-8 gap-y-6 my-4">
                 <Star className="h-8 w-8" />
@@ -237,7 +237,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     <p className="text-sm text-muted-foreground">Get a full refund in case of cancellation or refusal within 48 hours</p>
                 </div>
             </div>
-            <Separator />
+            <Separator className="md:my-4" />
 
             <div className="flex w-full">
                 <WeeklyAvailabilityCalendar availability={service.availability!} />
