@@ -1,33 +1,32 @@
 "use client"
 
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
-import { UserIcon, Star, MessageSquare, ShoppingCart } from 'lucide-react'
+import { VerifiedIcon } from '@/components/icons/verified-icon'
 import { Button } from '@/components/ui/button'
-import { Textarea } from "@/components/ui/textarea"
-import { Progress } from "@/components/ui/progress"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { ProductRequest } from './product-request'
 import { Product, User, ProductReview } from '@prisma/client'
 import { updateProductReview, makeProductReview } from '@/actions/products'
 import { useRouter } from 'next/navigation'
 import { addItemToCart } from '@/actions/cart'
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useToast } from '@/hooks/use-toast'
+import { ProductInfo } from './product-info'
+import { ReviewsSection } from './review-section'
 
 interface ProductDetailsProps {
   product: Product & {seller: User}
@@ -91,7 +90,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
     setIsSubmitting(false)
   }
 
-  const addToCart = async () => {
+  const addToCart = async (buyNow?: boolean) => {
     try {
       setIsSubmitting(true)
       await addItemToCart(product, user!.id!)
@@ -99,7 +98,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
         title: "Product Added to Cart",
         description: `${product.name} has been added to your shopping cart.`,
       })
-      router.push("/home/products/cart")
+      setTimeout(() => {
+        if (buyNow) router.push("/home/products")
+        else router.push("/home/products/cart")
+      }, 1000)
     } catch (error) {
       console.error('Error adding item to cart:', error)
       toast({
@@ -111,93 +113,75 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
       setIsSubmitting(false)
     }
   }
-  if (!isMobile) {
+
+  // Mobile View
+  if (isMobile) {
     return (
-      <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 overflow-hidden'>
-        <div className='flex space-x-8'>
-
-          {/* Product Images */}
-          <div className='grid grid-cols-8 max-w-[55vw] gap-3 m-4'>
-            <div className='col-span-1 flex flex-col gap-4'>
-              {product.images.map((image, index) => (
-                <div key={index} className={`w-full rounded ${currentImgIndex === index ? 'ring ring-amber-500' : ''}`} onClick={() => setCurrentImageIndex(index)}>
-                  <Image 
-                    src={image} 
-                    alt={`Product Image ${index + 1}`} 
-                    className='object-cover aspect-square rounded' 
-                    width={200} 
-                    height={200} 
-                    />
-                </div>
-              ))}
+      <div className="w-full m-0 p-0">
+          <div className="flex flex-col gap-4 p-0 m-0">
+            <div className="px-2 py-1">
+              <Breadcrumb>
+                <BreadcrumbList>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href="/home/products">Home</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink>Brand</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={`/home/products?brand=${product.brand}`}>{product.brand}</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={`/home/products?category=${product.categories[0]}`}>{product.categories[0]}</BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator />
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{product.name}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </BreadcrumbList>
+              </Breadcrumb>
             </div>
-            <div className='col-span-7'>
-              <Image 
-                src={product.images[currentImgIndex]} 
-                alt={`Product Image ${currentImgIndex + 1}`} 
-                className='object-cover aspect-square rounded' 
-                width={1000} 
-                height={1000} 
-                />
+            <div className="flex gap-4 py-1 px-4 items-center">
+              <Avatar className="h-10 w-10">
+                  <AvatarImage src={product.seller.image || undefined} alt={product.seller.name || 'provider'} className="object-cover" />
+                  <AvatarFallback>{product.seller.name ? product.seller.name[0] : 'S'}</AvatarFallback>
+              </Avatar>
+                <span className="flex items-center justify-start text-lg font-semibold gap-1">
+                    {product.seller.name}
+                    <VerifiedIcon className="h-4 w-4" />
+                </span>
             </div>
-          </div>
-
-          {/* Product Details */}
-          <div className='flex flex-col gap-4'>
-            <div className='flex flex-col gap-2'>
-              <p className='text-2xl font-bold'>{product.name}</p>
-              <div className='flex items-center gap-2'>
-                <span className='text-green-500 font-semibold text-xl'>$</span>
-                <span className='font-semibold text-xl'>{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>
-                {product.discount > 0 && (
-                  <span className='text-sm text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
-                )}
-                <Badge variant={product.stock > 0 ? "warning" : "destructive"} className="ml-3">
-                  {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-                </Badge>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-                <div className="flex items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      className={`h-4 w-4 ${
-                        star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                      }`}
-                    />
-                  ))}
+            <div className="flex flex-col gap-2">
+                <Carousel setApi={setApi} className="w-full">
+                    <CarouselContent>
+                        {product.images.map((image, index) => (
+                        <CarouselItem key={index}>
+                            <div className="aspect-square relative w-full">
+                            <Image
+                                src={image}
+                                alt={`${product.name} - Image ${index + 1}`}
+                                fill
+                                className="object-cover rounded-lg"
+                            />
+                            </div>
+                        </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <div className="absolute bottom-8 right-14 flex items-center gap-2">
+                        <CarouselPrevious />
+                        <CarouselNext />
+                    </div>
+                </Carousel>
+                <div className="py-1 text-center text-sm text-muted-foreground">
+                    Image {current} of {count}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  ({reviews.length})
-                </div>
-              </div>
-              <div className="flex flex-col space-y-2">
-                <div className="flex items-center">
-                  <UserIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  <span className="text-base">{product.seller.name}</span>
-                </div>
-                <div className="flex items-center space-x-1">
-                  <Badge variant="secondary">Account Verified</Badge>
-                  <Badge variant="outline">{product.state}</Badge>
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Button onClick={addToCart} disabled={product.stock === 0 || isSubmitting}>
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-                </Button>
-                <ProductRequest product={product} />
-              </div>
             </div>
-            <Separator />
-            <div className='flex flex-col gap-2'>
-              <h3 className='text-xl font-bold'>Description</h3>
-              <p className='text-base text-muted-foreground'>{product.description}</p>
-            </div>
-            <Separator />
-            <ReviewsSection 
+            <div className="flex flex-col px-2 py-4 gap-4">
+              <ProductInfo product={product} addToCart={addToCart} />
+              <ReviewsSection 
                 averageRating={averageRating} 
                 ratingCounts={ratingCounts} 
                 reviews={reviews} 
@@ -206,257 +190,72 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
                 isSubmitting={isSubmitting} 
                 handleSubmitReview={handleSubmitReview}
               />
+            </div>
           </div>
-        </div>
       </div>
     )
+    
   }
 
+  // Desktop View
   return (
-    <Card className="w-full min-w-[90vw] max-w-4xl mx-auto shadow-lg md:p-6 lg:p-8">
-      <CardHeader className="space-y-4">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-xl md:text-3xl font-bold truncate">{product.name}</p>
-            <div className="flex items-center mt-2">
-              <span className='text-green-500 font-semibold text-xl'>$</span>
-              <span className="font-semibold text-xl">{(product.price - (product.price * (product.discount || 0) / 100)).toFixed(2)}</span>
-              {product.discount > 0 && (
-                  <span className='text-sm text-muted-foreground line-through'>${product.price.toFixed(2)}</span>
-                )}
-              <Badge variant={product.stock > 0 ? "warning" : "destructive"} className="ml-3">
-                {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
-              </Badge>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="text-base font-semibold">{averageRating.toFixed(1)}</div>
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${
-                      star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                ({reviews.length})
-              </div>
-            </div>
-          </div>
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={product.seller.image || undefined} alt={product.seller.name || 'Seller'} />
-            <AvatarFallback>{product.seller.name ? product.seller.name[0] : 'S'}</AvatarFallback>
-          </Avatar>
-        </div>
+    <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 space-y-3 overflow-hidden'>
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/home/products">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink>Brand</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/home/products?brand=${product.brand}`}>{product.brand}</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/home/products?category=${product.categories[0]}`}>{product.categories[0]}</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{product.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
 
-        <div className="flex space-x-2 items-end justify-between">
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center">
-              <UserIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span className="text-base">{product.seller.name}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Badge variant="secondary">Account Verified</Badge>
-              <Badge variant="outline">{product.state}</Badge>
-            </div>
-          </div>
-          <div className="flex justify-end">
-            <Button onClick={addToCart} disabled={product.stock === 0 || isSubmitting}>
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        {/* Images section */}
-        <Carousel setApi={setApi} className="w-full mx-auto">
-          <CarouselContent className="-ml-2 md:-ml-4">
-            {product.images.map((image, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="aspect-square relative">
-                  <Image
-                    src={image}
-                    alt={`${product.name} - Image ${index + 1}`}
-                    fill
-                    className="object-cover rounded-lg"
-                  />
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <div className="absolute bottom-8 right-14 flex items-center gap-2">
-            <CarouselPrevious />
-            <CarouselNext />
-          </div>
-        </Carousel>
-        <div className="py-1 text-center text-sm text-muted-foreground">
-          Image {current} of {count}
-        </div>
-
-        <Separator />
-
-        {/* Tabs section */}
-        <Tabs defaultValue='description'>
-          <TabsList>
-            <TabsTrigger value="description">Description</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className='my-4'>
-            <div>
-              <p className="text-muted-foreground">{product.description}</p>
-            </div>
-          </TabsContent>
-          <TabsContent value="reviews" className="">
-            <ReviewsSection 
-              averageRating={averageRating} 
-              ratingCounts={ratingCounts} 
-              reviews={reviews} 
-              newReview={newReview} 
-              setNewReview={setNewReview} 
-              isSubmitting={isSubmitting} 
-              handleSubmitReview={handleSubmitReview}
+      <div className='grid grid-cols-2 w-full justify-center mt-5 gap-8'>
+        <div className='flex flex-col items-center gap-4'>
+          {product.images.map((image, index) => (
+            <Image
+              key={index}
+              src={image}
+              alt={product.name}
+              width={1000}
+              height={1000}
+              className='w-full h-full rounded-lg object-cover'
             />
-          </TabsContent>
-        </Tabs>
-        
-        
-        <Separator />
-        <div className="flex gap-3">
-          <Button onClick={addToCart} disabled={product.stock === 0 || isSubmitting}>
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
-          </Button>
-          <ProductRequest product={product} />
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-interface ReviewsSectionProps {
-  averageRating: number;
-  ratingCounts: Record<number, number>;
-  reviews: (ProductReview & { reviewer: User })[];
-  newReview: {
-    rating: number;
-    comment: string;
-  };
-  setNewReview: Dispatch<SetStateAction<{ rating: number; comment: string }>>;
-  isSubmitting: boolean;
-  handleSubmitReview: () => Promise<void>;
-}
-
-function ReviewsSection({
-  averageRating, 
-  ratingCounts, 
-  reviews,
-  newReview,
-  setNewReview,
-  isSubmitting,
-  handleSubmitReview
-}: ReviewsSectionProps) {
-  return (
-    <div className="flex flex-col justify-center space-y-4 w-full">
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">Reviews</h2>
-        <div className="flex items-center space-x-4">
-          <div className="text-4xl font-bold">{averageRating.toFixed(1)}</div>
-          <div className="flex items-center">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`h-5 w-5 ${
-                  star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
-          </div>
-        </div>
-        <div className="space-y-2">
-          {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-2">
-              <span className="flex text-sm w-14 text-muted-foreground">{rating} stars</span>
-              <Progress value={((ratingCounts[rating] || 0) / reviews.length * 100) || 0} className="h-2 w-full" />
-              <span className="w-12 text-sm text-muted-foreground text-right">
-                {(((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0}%
-              </span>
-            </div>
           ))}
         </div>
+        <div className='flex flex-col items-center space-y-3'>
+          <ProductInfo product={product} addToCart={addToCart} />
+        </div>
       </div>
-      <div className="space-y-4">
-        {reviews.map((review) => (
-          <Card key={review.id}>
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-4 mb-2">
-                <Avatar>
-                  <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} />
-                  <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <div className="font-semibold">{review.reviewer.name}</div>
-                  <div className="text-sm text-muted-foreground">
-                    {new Date(review.reviewDate).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${
-                      star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-              </div>
-              <p className="text-sm">{review.comment}</p>
-            </CardContent>
-          </Card>
-        ))}
+
+      {/* Review Section */}
+      <div className='w-full'>
+        <ReviewsSection 
+            averageRating={averageRating} 
+            ratingCounts={ratingCounts} 
+            reviews={reviews} 
+            newReview={newReview} 
+            setNewReview={setNewReview} 
+            isSubmitting={isSubmitting} 
+            handleSubmitReview={handleSubmitReview}
+          />
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button>
-            <MessageSquare className="mr-2 h-4 w-4" />
-            Write a Review
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Write a Review</DialogTitle>
-            <DialogDescription>Share your experience with this product</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`h-6 w-6 cursor-pointer ${
-                    star <= newReview.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                  }`}
-                  onClick={() => setNewReview({ ...newReview, rating: star })}
-                />
-              ))}
-            </div>
-            <Textarea
-              placeholder="Write your review here..."
-              value={newReview.comment}
-              onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-            />
-            <Button onClick={handleSubmitReview} disabled={isSubmitting}>
-              {isSubmitting ? 'Submitting...' : 'Submit Review'}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+
     </div>
   )
 }
+

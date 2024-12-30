@@ -1,7 +1,6 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent, CardTitle, CardHeader, CardFooter } from "@/components/ui/card"
 import { Book, Calendar, Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Service, ServiceOffer, User } from '@prisma/client'
@@ -98,13 +97,21 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         })
     })
 
-    const copyToClipboard = (text: string) => {
+    const copyToClipboard = async (text: string) => {
         try {
-            navigator.clipboard.writeText(text)
-            toast({ 
-                title: 'Copied to clipboard', 
-                description: 'The link has been copied to your clipboard',
-            })
+            if (navigator.share) {
+                try {
+                    await navigator.share({text: text})
+                } catch (error) {
+                    console.error('Error sharing:', error)
+                }
+            } else {
+                navigator.clipboard.writeText(text)
+                toast({ 
+                    title: 'Copied to clipboard', 
+                    description: 'The link has been copied to your clipboard',
+                })
+            }
         } catch (error) {
             console.error('Failed to copy to clipboard:', error)
             toast({

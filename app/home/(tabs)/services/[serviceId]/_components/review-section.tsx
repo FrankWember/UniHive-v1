@@ -116,7 +116,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-4">
         {currentReviews.map((review) => (
           <div key={review.id} className='pt-6 border-t flex flex-col gap-1'>
             <div className="flex items-center space-x-4 mb-2">
