@@ -1,14 +1,10 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel"
 import { VerifiedIcon } from '@/components/icons/verified-icon'
-import { Button } from '@/components/ui/button'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,7 +13,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { ProductRequest } from './product-request'
 import { Product, User, ProductReview } from '@prisma/client'
 import { updateProductReview, makeProductReview } from '@/actions/products'
 import { useRouter } from 'next/navigation'
@@ -27,6 +22,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useToast } from '@/hooks/use-toast'
 import { ProductInfo } from './product-info'
 import { ReviewsSection } from './review-section'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 interface ProductDetailsProps {
   product: Product & {seller: User}
@@ -53,14 +49,13 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
   const [current, setCurrent] = React.useState(0)
   const [count, setCount] = React.useState(0)
 
-  React.useEffect(() => {
-    if (!api) {
-      return
-    }
- 
+  const imagesRef = useRef<HTMLDivElement>(null)
+  const infoRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!api) return
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap() + 1)
- 
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap() + 1)
     })
@@ -194,20 +189,15 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
           </div>
       </div>
     )
-    
   }
 
   // Desktop View
   return (
-    <div className='flex flex-col w-full max-w-6xl min-h-screen h-full px-10 space-y-3 overflow-hidden'>
+    <div className='flex flex-col w-full max-w-6xl min-h-screen px-10 space-y-3'>
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/home/products">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink>Brand</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -225,36 +215,38 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
       </Breadcrumb>
 
       <div className='grid grid-cols-2 w-full justify-center mt-5 gap-8'>
-        <div className='flex flex-col items-center gap-4'>
-          {product.images.map((image, index) => (
-            <Image
-              key={index}
-              src={image}
-              alt={product.name}
-              width={1000}
-              height={1000}
-              className='w-full h-full rounded-lg object-cover'
-            />
-          ))}
+        <div ref={imagesRef} className='sticky top-4 self-start max-h-[calc(100vh-2rem)] overflow-y-auto'>
+          <div className='flex flex-col items-center gap-4'>
+            {product.images.map((image, index) => (
+              <Image
+                key={index}
+                src={image}
+                alt={product.name}
+                width={1000}
+                height={1000}
+                className='w-full h-auto rounded-lg object-cover'
+              />
+            ))}
+          </div>
         </div>
-        <div className='flex flex-col items-center space-y-3'>
-          <ProductInfo product={product} addToCart={addToCart} />
+        <div ref={infoRef} className='flex flex-col items-start space-y-3'>
+          <div className='sticky top-4'>
+            <ProductInfo product={product} addToCart={addToCart} />
+          </div>
         </div>
       </div>
 
-      {/* Review Section */}
-      <div className='w-full'>
+      <div className='w-full mt-8'>
         <ReviewsSection 
-            averageRating={averageRating} 
-            ratingCounts={ratingCounts} 
-            reviews={reviews} 
-            newReview={newReview} 
-            setNewReview={setNewReview} 
-            isSubmitting={isSubmitting} 
-            handleSubmitReview={handleSubmitReview}
-          />
+          averageRating={averageRating} 
+          ratingCounts={ratingCounts} 
+          reviews={reviews} 
+          newReview={newReview} 
+          setNewReview={setNewReview} 
+          isSubmitting={isSubmitting} 
+          handleSubmitReview={handleSubmitReview}
+        />
       </div>
-
     </div>
   )
 }

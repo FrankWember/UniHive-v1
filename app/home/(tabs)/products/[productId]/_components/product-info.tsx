@@ -30,13 +30,12 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
     const newChat = useMutation(api.chats.createChat)
     const {toast} = useToast()
 
-    let existingChat = undefined
-    if (user && user.id && product.sellerId) {
-        existingChat = useQuery(api.chats.getChatByUserIds, {
+    const existingChat = user && user.id && product.sellerId
+        ? useQuery(api.chats.getChatByUserIds, {
             customerId: user.id,
             sellerId: product.sellerId
-        })
-    }
+          })
+        : undefined
 
     React.useEffect(() => {
         const fetchLikeStatus = async () => {
@@ -50,7 +49,7 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         }
     
         fetchLikeStatus()
-      }, [])
+      }, [product.id])
 
     async function likeThisProduct() {
         if (!user) {
@@ -66,19 +65,20 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
 
     const createChat = async () => {
         try {
-            let chatId = ''
             if (!user) {
                 const callbackUrl = encodeURIComponent(`/home/products/${product.id}`)
                 router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
                 return
             }
+            let chatId = ''
             if (existingChat){
                 chatId = existingChat._id
             } else {
-                chatId = await newChat({ sellerId: product.sellerId, customerId: user!.id!, type: 'products' })
+                chatId = await newChat({ sellerId: product.sellerId, customerId: user.id!, type: 'products' })
             }
             router.push(`/home/inbox?chatId=${chatId}`)
-        } catch {
+        } catch (error) {
+            console.error('Error creating chat:', error)
             toast({
                 title: 'Failed to create chat',
                 description: 'Please try again later',
@@ -154,7 +154,7 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         <Separator />
         <div className='flex flex-col space-y-4'>
             <p className="text-muted-foreground text-sm whitespace-pre-line">{product.description}</p>
-            <p className="text-base underline font-semibold">
+            <p className="flex text-base underline font-semibold gap-3">
                 {product.categories.map((cat, idx)=>(
                     <span key={idx}>#{cat}</span>
                 ))}
