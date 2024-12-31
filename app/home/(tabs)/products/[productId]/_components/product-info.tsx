@@ -16,6 +16,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { likeProduct } from '@/actions/products'
 import { ProductRequest } from './product-request'
+import { BeatLoader } from 'react-spinners'
 
 interface ProductInfoProps {
     product: Product & {
@@ -30,6 +31,9 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
     const [isLiked, setIsLiked] = React.useState(false)
     const newChat = useMutation(api.chats.createChat)
     const {toast} = useToast()
+    const [isSharing, setIsSharing] = React.useState(false)
+    const [isLiking, setIsLiking] = React.useState(false)
+    const [creatingChat, setCreatingChat] = React.useState(false)
 
     const existingChat = user && user.id && product.sellerId
         ? useQuery(api.chats.getChatByUserIds, {
@@ -53,19 +57,22 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
       }, [product.id])
 
     async function likeThisProduct() {
+        setIsLiking(true)
         if (!user) {
           toast({
-              title: 'Please log in to like a service',
-              description: 'You need to be logged in to like a service.',
+              title: 'Please log in to like a product',
+              description: 'You need to be logged in to like a product.',
           })
           return
         }
         const like = await likeProduct(product.id)
         setIsLiked(like)
+        setIsLiking(false)
       }
 
     const createChat = async () => {
         try {
+            setCreatingChat(true)
             if (!user) {
                 const callbackUrl = encodeURIComponent(`/home/products/${product.id}`)
                 router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
@@ -85,23 +92,42 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
                 description: 'Please try again later',
                 variant: 'destructive'
             })
+        } finally {
+            setCreatingChat(false)
         }
     }
 
     const share = async () => {
-        if (navigator.share) {
-            try {
-                await navigator.share({text: `https://unihive-v1.vercel.app/home/products/${product.id}`})
-            } catch (error) {
-                console.error('Error sharing:', error)
-            }
-        } else {
-            if (navigator.clipboard) {
-                await navigator.clipboard.writeText(`https://unihive-v1.vercel.app/home/products/${product.id}`)
-                toast({title: 'Link copied to clipboard'})
+        try {
+            const discountedPrice = product.discount? product.price - (product.price * product.discount / 100) : product.price
+            const message = `Available from ${discountedPrice}`
+            const productUrl = `https://unihive.vercel.app/home/products/${product.id}`
+            setIsSharing(true)
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: product.name, 
+                        text: message, 
+                        url: productUrl,
+                    })
+                } catch (error) {
+                    console.error('Error sharing:', error)
+                }
             } else {
-                toast({title: 'Sorry, your browser does not support sharing or clipboard'})
+                navigator.clipboard.writeText(`${product.name}\n ${message}\n ${productUrl}`)
+                toast({ 
+                    title: 'Copied to clipboard', 
+                    description: 'The link has been copied to your clipboard',
+                })
             }
+        } catch (error) {
+            console.error('Failed to copy to clipboard:', error)
+            toast({
+                title: 'Failed to copy to clipboard',
+                description: 'Please try again later',
+            })
+        } finally {
+            setIsSharing(false)
         }
     }
 
@@ -127,11 +153,11 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         <div className='flex gap-2'>
             <Button onClick={() => addToCart(true)}>Buy now</Button>
             <ProductRequest product={product} />
-            <Button variant="outline" size="icon" onClick={share}>
-                <Share1Icon />
+            <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
+                {isSharing ? <BeatLoader /> : <Share1Icon />}
             </Button>
-            <Button variant="outline" size="icon" onClick={likeThisProduct}>
-                <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+            <Button variant="outline" size="icon" onClick={likeThisProduct} disabled={isLiking}>
+                {isLiking ? <BeatLoader /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
             </Button> 
         </div>
         <div className="grid grid-cols-8 gap-y-6 my-4">
@@ -185,7 +211,9 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
             </div>
             <div className='flex gap-3 justify-end'>
                 <Button onClick={() => router.push(`/home/products/sellers/${product.seller.id}`)}>Portfolio</Button>
-                <Button variant='outline' onClick={createChat}>Contact</Button>
+                <Button variant='outline' onClick={createChat} disabled={creatingChat}>
+                    {creatingChat ? <BeatLoader /> : "Contact"}
+                </Button>
             </div>
         </div>
         <Separator />

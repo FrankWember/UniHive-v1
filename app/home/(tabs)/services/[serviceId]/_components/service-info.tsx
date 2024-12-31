@@ -17,6 +17,7 @@ import { useMutation, useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Separator } from "@/components/ui/separator"
 import { format } from 'date-fns'
+import { BeatLoader } from "react-spinners"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -48,6 +49,9 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     const user = useCurrentUser()
     const router = useRouter()
     const [isLiked, setIsLiked] = React.useState(false)
+    const [isSharing, setIsSharing] = React.useState(false)
+    const [isLiking, setIsLiking] = React.useState(false)
+    const [creatingChat, setCreatingChat] = React.useState(false)
 
     const newChat = useMutation(api.chats.createChat)
 
@@ -74,6 +78,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     }, [service.id])
 
     const handleLike = async () => {
+        setIsLiking(true)
         if (!user) {
             toast({
                 title: 'Please log in to like a service',
@@ -83,6 +88,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         }
         const like = await likeService(service.id)
         setIsLiked(like)
+        setIsLiking(false)
     }
     
     let customerList: ({customer: {image: string|null}})[] = []
@@ -97,16 +103,23 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         })
     })
 
-    const share = async (text: string) => {
+    const share = async () => {
         try {
+            const message = `Available from ${service.price}`
+            const serviceUrl = `https://unihive.vercel.app/home/services/${service.id}`
+            setIsSharing(true)
             if (navigator.share) {
                 try {
-                    await navigator.share({text: text})
+                    await navigator.share({
+                        title: service.name, 
+                        text: message, 
+                        url: serviceUrl,
+                    })
                 } catch (error) {
                     console.error('Error sharing:', error)
                 }
             } else {
-                navigator.clipboard.writeText(text)
+                navigator.clipboard.writeText(`${service.name}\n ${message}\n ${serviceUrl}`)
                 toast({ 
                     title: 'Copied to clipboard', 
                     description: 'The link has been copied to your clipboard',
@@ -118,11 +131,14 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 title: 'Failed to copy to clipboard',
                 description: 'Please try again later',
             })
+        } finally {
+            setIsSharing(false)
         }
     }
 
     const createChat = async () => {
         try {
+            setCreatingChat(true)
             let chatId = ''
             if (!user) {
                 const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
@@ -141,6 +157,8 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 description: 'Please try again later',
                 variant: 'destructive'
             })
+        } finally {
+            setCreatingChat(false)
         }
     }
     
@@ -206,14 +224,14 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     </div>
                     )}
                     <div className="flex gap-3 justify-end">
-                        <Button variant="outline" size="icon" onClick={()=>share(`https://unihive-app.vercel.app/home/services/${service.id}`)}>
-                            <Share1Icon />
+                        <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
+                            {isSharing ? <BeatLoader /> : <Share1Icon />}
                         </Button>
-                        <Button variant="outline" size="icon" onClick={handleLike}>
-                            <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                        <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
+                            {isLiking ? <BeatLoader /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
                         </Button> 
-                        <Button size="icon" onClick={createChat}>
-                            <MessageCircle className="h-4 w-4" />
+                        <Button size="icon" onClick={createChat} disabled={creatingChat}>
+                            {creatingChat ? <BeatLoader/> : <MessageCircle className="h-4 w-4" />}
                         </Button>        
                     </div>
                 </div>

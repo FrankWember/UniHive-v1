@@ -2,13 +2,11 @@
 
 import React, { useMemo } from 'react'
 import { addDays, format, isSameDay, startOfWeek, parseISO } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Availability, CalendarEvent, generateEvents, formatTimeRange, parseAvailability } from "@/utils/helpers/calendar-helpers"
 import { Prisma } from '@prisma/client'
-import { Separator } from '@/components/ui/separator'
+import { Table, TableCell, TableRow, TableBody } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 interface WeeklyAvailabilityCalendarProps {
@@ -87,7 +85,7 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
 
   const renderDaySummary = (day: Date) => {
     const dayEvents = events.filter((event: CalendarEvent) => isSameDay(event.start, day));
-    if (dayEvents.length === 0) return <p>Not available</p>;
+    if (dayEvents.length === 0) return <Badge variant='outline'>Not Available</Badge>
 
     // Convert events to time slots and consolidate them
     const timeSlots = dayEvents.map(event => [
@@ -109,14 +107,16 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
       <div className="w-full min-w-64">
           <h2 className="text-2xl font-semibold mb-4">Availability Summary</h2>
         <div>
-          <ScrollArea className="">
-            {Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(new Date()), i)).map((day) => (
-              <div key={day.toISOString()} className="mb-4">
-                <h3 className="font-bold">{format(day, 'EEEE')}</h3>
-                <div className="text-sm flex flex-wrap">{renderDaySummary(day)}</div>
-              </div>
-            ))}
-          </ScrollArea>
+          <Table className='w-full'>
+            <TableBody>
+              {Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(new Date()), i)).map((day) => (
+                <TableRow>
+                  <TableCell className="font-semibold">{format(day, 'EEEE')}</TableCell>
+                  <TableCell><div className="text-sm flex flex-wrap">{renderDaySummary(day)}</div></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
