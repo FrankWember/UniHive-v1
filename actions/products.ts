@@ -177,44 +177,7 @@ export async function rejectDiscountRequest (requestId: string) {
     })
 }
 
-export async function makeProductReview (productId: string, rating: number, comment: string, reviewerId: string) {
-    const review = await prisma.productReview.create({
-        data: {
-            productId: productId,
-            rating: rating,
-            comment: comment,
-            reviewerId: reviewerId
-        },
-        include: { product: {include: {seller: true}}, reviewer: true }
-    })
 
-    sendEmail({
-        to: review.product.seller.email!,
-        subject: "New Product Review",
-        text: `A new review has been submitted for your product ${review.product.name}.`,
-        html: `
-            <h2>New Product Review</h2>
-            <p>A new review has been submitted for your product <strong>${review.product.name}</strong>.</p>
-            <p>Rating: ${review.rating}/5</p>
-            <p>Comment: ${review.comment}</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${review.product.id}" class="button">View Review</a>
-        `
-    })
-
-    return review
-}
-
-
-export async function updateProductReview (reviewId: string, rating: number, comment: string) {
-    const review = await prisma.productReview.update({
-        where: { id: reviewId },
-        data: {
-            rating: rating,
-            comment: comment
-        }
-    })
-    return review
-}
 
 export async function isFavouriteProduct (productId: string) {
     const user = await currentUser()

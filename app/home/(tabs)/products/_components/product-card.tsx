@@ -12,6 +12,7 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/hooks/use-toast'
 import { likeProduct } from '@/actions/products'
+import { calculateProductReviewMetrics } from '@/utils/helpers/reviews'
 
 interface ProductCardProps {
   product: Product & { reviews: ProductReview[] }
@@ -39,9 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
     fetchLikeStatus()
   }, [])
 
-  const averageRating = product.reviews.length > 0
-    ? product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length
-    : 0
+  const averageRating = calculateProductReviewMetrics(product.reviews)?.overall
 
     const addToCart = async () => {
       try {

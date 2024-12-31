@@ -23,6 +23,7 @@ import { RelatedServicesSection } from './related-services-section'
 import { PortfolioSection } from './portfolio-section'
 import { ServiceReviewSchema } from '@/constants/zod'
 import * as z from 'zod'
+import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -72,23 +73,11 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const user = useCurrentUser()
   const isMobile = useIsMobile()
   const my_review = reviews.find(review => review.reviewer.id === user?.id)
-  const [newReview, setNewReview] = useState<z.infer<typeof ServiceReviewSchema>>({
-    rating: my_review?.rating || 0,
-    cleanliness: my_review?.cleanliness || 0,
-    communication: my_review?.communication || 0,
-    accuracy: my_review?.accuracy || 0,
-    checkIn: my_review?.checkIn || 0,
-    location: my_review?.location || 0,
-    value: my_review?.value || 0,
-    comment: my_review?.comment || '',
-  })
 
   const ratingMemo = React.useMemo(() => {
-    const average = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length || 0
-    const counts = reviews.reduce((acc, review) => {
-      acc[review.rating] = (acc[review.rating] || 0) + 1
-      return acc
-    }, {} as Record<number, number>)
+    const metrics = calculateServiceReviewMetrics(reviews)
+    const average = metrics?.overall!
+    const counts = metrics?.ratingCount!
     return { average, counts }
   }, [reviews])
 

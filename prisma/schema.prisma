@@ -185,7 +185,6 @@ model ServiceReview {
   id            String   @id @default(cuid())
   serviceId     String
   reviewerId    String
-  rating        Int
   comment       String
   cleanliness   Int?
   accuracy      Int?
@@ -283,12 +282,10 @@ model ProductReview {
   id            String   @id @default(cuid())
   productId     String
   reviewerId    String
-  rating        Int
-  comment       String
+  comment       String?
   meetUp        Int?
   location      Int?
   experience    Int?
-  timeliness    Int?
   communication Int?
   packaging     Int?
   value         Int?

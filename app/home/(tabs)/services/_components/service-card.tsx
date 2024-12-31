@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Star } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { VerifiedIcon } from '@/components/icons/verified-icon'
+import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 
 type ServiceProps = {
   service: Service & { 
@@ -24,9 +25,7 @@ type ServiceProps = {
 }
 
 export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
-  const averageRating = service.reviews.length > 0
-    ? service.reviews.reduce((acc, review) => acc + review.rating, 0) / service.reviews.length
-    : 0
+  const averageRating = calculateServiceReviewMetrics(service.reviews)?.overall!
 
   let customerList: ({customer: {image: string|null}})[] = []
 

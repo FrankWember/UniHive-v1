@@ -35,6 +35,7 @@ import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { submitReview, updateReview } from '@/actions/service-reviews'
 import { BeatLoader } from 'react-spinners'
+import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 
 
 interface ReviewsSectionProps {
@@ -73,7 +74,6 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   const form = useForm<ServiceReviewFormValues>({
     resolver: zodResolver(ServiceReviewSchema),
     defaultValues: {
-      rating: my_review?.rating || 0,
       cleanliness: my_review?.cleanliness || 0,
       communication: my_review?.communication || 0,
       accuracy: my_review?.accuracy || 0,
@@ -152,44 +152,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmitReview)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="rating"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rating</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center space-x-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`h-6 w-6 cursor-pointer ${
-                              star <= field.value ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                            }`}
-                            onClick={() => field.onChange(star)}
-                          />
-                        ))}
-                      </div>
-                    </FormControl>
-                    <FormDescription>Rate from 1 to 5</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="comment"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Comment</FormLabel>
-                    <FormControl>
-                      <Textarea placeholder="Write your review here..." {...field} />
-                    </FormControl>
-                    <FormDescription>Provide details about your experience</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-3">
               {['cleanliness', 'communication', 'accuracy', 'checkIn', 'location', 'value'].map((category) => (
                 <FormField
                   key={category}
@@ -216,6 +179,21 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
                   )}
                 />
               ))}
+              </div>
+              <FormField
+                control={form.control}
+                name="comment"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Comment</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Write your review here..." {...field} />
+                    </FormControl>
+                    <FormDescription>Provide details about your experience</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <BeatLoader /> : "Submit Review"}
               </Button>
@@ -243,7 +221,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
                 <Star
                   key={star}
                   className={`h-4 w-4 ${
-                    star <= review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                    star <= calculateServiceReviewMetrics([review])?.overall! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                   }`}
                 />
               ))}

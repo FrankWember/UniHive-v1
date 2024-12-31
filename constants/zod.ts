@@ -108,7 +108,6 @@ export const ServiceBookingSchema = z.object({
 })
 
 export const ServiceReviewSchema = z.object({
-  rating: z.number().min(1).max(5),
   comment: z.string().min(10, {
     message: "Comment must be at least 10 characters.",
   }),
@@ -163,16 +162,16 @@ export const productSchema = z.object({
 })
 
 export const ProductReviewSchema = z.object({
-  rating: z.number().min(1).max(5),
   comment: z.string(),
   value: z.number().min(1).max(5).optional(),
   meetUp: z.number().min(1).max(5).optional(),
   location: z.number().min(1).max(5).optional(),
   communication: z.number().min(1).max(5).optional(),
-  cleanliness: z.number().min(1).max(5).optional(),
+  packaging: z.number().min(1).max(5).optional(),
   experience: z.number().min(1).max(5).optional(),
-  timeliness: z.number().min(1).max(5).optional(),
 })
+
+export type ProductReviewFormValues = z.infer<typeof ProductReviewSchema>
 
 export const checkoutSchema = z.object({
   deliveryAddress: z.string().min(1, "Delivery address is required"),

@@ -14,7 +14,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Product, User, ProductReview } from '@prisma/client'
-import { updateProductReview, makeProductReview } from '@/actions/products'
 import { useRouter } from 'next/navigation'
 import { addItemToCart } from '@/actions/cart'
 import { useCurrentUser } from '@/hooks/use-current-user'
@@ -22,7 +21,7 @@ import { useMediaQuery } from '@/hooks/use-media-query'
 import { useToast } from '@/hooks/use-toast'
 import { ProductInfo } from './product-info'
 import { ReviewsSection } from './review-section'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { calculateProductReviewMetrics } from '@/utils/helpers/reviews'
 
 interface ProductDetailsProps {
   product: Product & {seller: User}
@@ -38,11 +37,7 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
   const isMobile = useMediaQuery("(max-width: 768px)")
   const { toast } = useToast()
 
-  const my_review = reviews.find(review => review.reviewer.id === user?.id)
-  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
-
-  // Image stuff
-  const [currentImgIndex, setCurrentImageIndex] = useState(0)
+  
 
   // Carousel stuff
   const [api, setApi] = React.useState<CarouselApi>()
@@ -61,29 +56,8 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
     })
   }, [api])
 
-  const averageRating = reviews.length > 0
-    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
-    : 0
-  const ratingCounts = reviews.reduce((acc, review) => {
-    acc[review.rating] = (acc[review.rating] || 0) + 1
-    return acc
-  }, {} as Record<number, number>)
-
-  const handleSubmitReview = async () => {
-    setIsSubmitting(true)
-    if (!user) {
-      const callbackUrl = encodeURIComponent(`/home/products/${product.id}`)
-      router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
-      return
-    }
-    if (!my_review) {
-      await makeProductReview(product.id, newReview.rating, newReview.comment, user!.id!)
-    } else {
-      await updateProductReview(my_review.id, newReview.rating, newReview.comment)
-    }
-    router.push(`/home/products/${product.id}`)
-    setIsSubmitting(false)
-  }
+  const averageRating = calculateProductReviewMetrics(reviews)?.overall
+  const ratingCounts = calculateProductReviewMetrics(reviews)?.ratingCount
 
   const addToCart = async (buyNow?: boolean) => {
     try {
@@ -177,13 +151,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
             <div className="flex flex-col px-2 py-4 gap-4">
               <ProductInfo product={product} addToCart={addToCart} />
               <ReviewsSection 
-                averageRating={averageRating} 
-                ratingCounts={ratingCounts} 
+                averageRating={averageRating!} 
+                ratingCounts={ratingCounts!} 
                 reviews={reviews} 
-                newReview={newReview} 
-                setNewReview={setNewReview} 
-                isSubmitting={isSubmitting} 
-                handleSubmitReview={handleSubmitReview}
+                productId={product.id}
               />
             </div>
           </div>
@@ -238,13 +209,10 @@ export function ProductDetails({ product, reviews }: ProductDetailsProps) {
 
       <div className='w-full mt-8'>
         <ReviewsSection 
-          averageRating={averageRating} 
-          ratingCounts={ratingCounts} 
+          averageRating={averageRating!} 
+          ratingCounts={ratingCounts!} 
           reviews={reviews} 
-          newReview={newReview} 
-          setNewReview={setNewReview} 
-          isSubmitting={isSubmitting} 
-          handleSubmitReview={handleSubmitReview}
+          productId={product.id}
         />
       </div>
     </div>
