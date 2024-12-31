@@ -67,7 +67,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             <div className='flex gap-1 justify-start items-center'>
               <div className='flex flex-col gap-[0.1rem] justify-start'>
                 <div className="flex items-center space-x-1">
-                  <span className="text-xs font-semibold">{averageRating.toFixed(1)}</span>
+                  <span className="text-xs font-semibold">{averageRating}</span>
                   <div className="flex items-center">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star

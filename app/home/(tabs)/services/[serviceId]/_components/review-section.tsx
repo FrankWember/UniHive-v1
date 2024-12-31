@@ -112,7 +112,7 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
     <div className='flex flex-col gap-4'>
       <h3 className='text-xl font-bold'>Reviews</h3>
       <div className="flex items-center space-x-4">
-        <div className="text-4xl font-bold">{averageRating.toFixed(1)}</div>
+        <div className="text-4xl font-bold">{averageRating}</div>
         <div className="flex items-center">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star

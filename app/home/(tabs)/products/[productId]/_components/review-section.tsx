@@ -123,7 +123,7 @@ export function ReviewsSection({
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">Reviews</h2>
         <div className="flex items-center space-x-4">
-          <div className="text-4xl font-bold">{averageRating.toFixed(1)}</div>
+          <div className="text-4xl font-bold">{averageRating}</div>
           <div className="flex items-center">
             {[1, 2, 3, 4, 5].map((star) => (
               <Star

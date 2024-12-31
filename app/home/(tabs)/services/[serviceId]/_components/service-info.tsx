@@ -171,7 +171,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     <Star
                         className={`h-6 w-6 text-yellow-500 fill-yellow-500`}
                     />
-                    <span className="text-xl font-semibold">{averageRating.toFixed(1)}</span>
+                    <span className="text-xl font-semibold">{averageRating}</span>
                     <div className="text-base text-muted-foreground underline">
                         #{reviews.length} reviews
                     </div>
