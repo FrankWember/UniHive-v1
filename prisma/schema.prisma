@@ -128,6 +128,7 @@ model Service {
   isMobileService Boolean  @default(false)
   category        String[]
   availability    Json
+  portfolio       String[] @default([])
 
   provider User              @relation(fields: [providerId], references: [id])
   offers   ServiceOffer[]
@@ -181,12 +182,18 @@ enum BookingStatus {
 }
 
 model ServiceReview {
-  id         String   @id @default(cuid())
-  serviceId  String
-  reviewerId String
-  rating     Int
-  comment    String
-  reviewDate DateTime @default(now())
+  id            String   @id @default(cuid())
+  serviceId     String
+  reviewerId    String
+  rating        Int
+  comment       String
+  cleanliness   Int?
+  accuracy      Int?
+  checkIn       Int?
+  communication Int?
+  location      Int?
+  value         Int?
+  reviewDate    DateTime @default(now())
 
   service  Service @relation(fields: [serviceId], references: [id])
   reviewer User    @relation(fields: [reviewerId], references: [id])
@@ -273,12 +280,19 @@ model FavouriteProduct {
 }
 
 model ProductReview {
-  id         String   @id @default(cuid())
-  productId  String
-  reviewerId String
-  rating     Int
-  comment    String
-  reviewDate DateTime @default(now())
+  id            String   @id @default(cuid())
+  productId     String
+  reviewerId    String
+  rating        Int
+  comment       String
+  meetUp        Int?
+  location      Int?
+  experience    Int?
+  timeliness    Int?
+  communication Int?
+  packaging     Int?
+  value         Int?
+  reviewDate    DateTime @default(now())
 
   product  Product @relation(fields: [productId], references: [id])
   reviewer User    @relation(fields: [reviewerId], references: [id])

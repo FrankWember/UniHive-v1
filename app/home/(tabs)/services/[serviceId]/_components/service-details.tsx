@@ -14,7 +14,6 @@ import {
 import { Service, ServiceOffer, ServiceReview, User } from '@prisma/client'
 import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { submitReview, updateReview } from '@/actions/service-reviews'
 import { ReviewsSection } from './review-section'
 import { ServiceInfo } from './service-info'
 import { ImagesSection } from './images-section'
@@ -22,6 +21,8 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { OffersSection } from './offers-section'
 import { RelatedServicesSection } from './related-services-section'
 import { PortfolioSection } from './portfolio-section'
+import { ServiceReviewSchema } from '@/constants/zod'
+import * as z from 'zod'
 
 interface ServiceDetailsProps {
   service: Service & {
@@ -71,8 +72,16 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
   const user = useCurrentUser()
   const isMobile = useIsMobile()
   const my_review = reviews.find(review => review.reviewer.id === user?.id)
-  const [newReview, setNewReview] = useState({rating: my_review?.rating || 0, comment: my_review?.comment || '' })
-
+  const [newReview, setNewReview] = useState<z.infer<typeof ServiceReviewSchema>>({
+    rating: my_review?.rating || 0,
+    cleanliness: my_review?.cleanliness || 0,
+    communication: my_review?.communication || 0,
+    accuracy: my_review?.accuracy || 0,
+    checkIn: my_review?.checkIn || 0,
+    location: my_review?.location || 0,
+    value: my_review?.value || 0,
+    comment: my_review?.comment || '',
+  })
 
   const ratingMemo = React.useMemo(() => {
     const average = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length || 0
@@ -85,27 +94,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
   const { average: averageRating, counts: ratingCounts } = ratingMemo
 
-  const handleSubmitReview = async () => {
-    try {
-      setIsSubmitting(true)
-      if (!user) {
-        const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
-        router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
-        return
-      }
-      if (!my_review) {
-        await submitReview(service.id, user!.id!, newReview.rating, newReview.comment)
-      } else {
-        await updateReview(my_review.id, newReview.rating, newReview.comment)
-      }
-      router.refresh()
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setIsSubmitting(false)
-      router.refresh()
-    }
-  }
+  
 
   
 
@@ -146,11 +135,8 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
-              reviews={reviews} 
-              newReview={newReview} 
-              setNewReview={setNewReview} 
-              isSubmitting={isSubmitting} 
-              handleSubmitReview={handleSubmitReview}
+              reviews={reviews}
+              serviceId={service.id}
             />
           </div>
 
@@ -209,11 +195,8 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
-              reviews={reviews} 
-              newReview={newReview} 
-              setNewReview={setNewReview} 
-              isSubmitting={isSubmitting} 
-              handleSubmitReview={handleSubmitReview}
+              reviews={reviews}
+              serviceId={service.id}
             />
         </div>
 

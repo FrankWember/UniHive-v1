@@ -3,14 +3,14 @@
 import { prisma } from '@/prisma/connection'
 import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/mail'
+import { ServiceReviewFormValues } from '@/constants/zod'
 
-export async function submitReview(serviceId: string, reviewerId: string, rating: number, comment: string) {
+export async function submitReview(serviceId: string, reviewerId: string, values: ServiceReviewFormValues) {
   const review = await prisma.serviceReview.create({
     data: {
       serviceId,
       reviewerId,
-      rating,
-      comment,
+      ...values
     },
     include: { service: { include: { provider: true } }, reviewer: true },
   })
@@ -33,13 +33,10 @@ export async function submitReview(serviceId: string, reviewerId: string, rating
   return review
 }
 
-export async function updateReview(reviewId: string, rating: number, comment: string) {
+export async function updateReview(reviewId: string, values: ServiceReviewFormValues) {
   const review = await prisma.serviceReview.update({
     where: { id: reviewId },
-    data: {
-      rating,
-      comment,
-    },
+    data: values
   })
   return review
 }
