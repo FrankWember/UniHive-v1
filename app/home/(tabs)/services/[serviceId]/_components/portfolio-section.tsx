@@ -1,28 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel'
+import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
 
 interface PortfolioSectionProps {
-    services: {
-        name: string,
-        images: string[]
-    }[]
+    images: string[],
 }
 
-export const PortfolioSection = ({services}: PortfolioSectionProps) => {
+export const PortfolioSection = ({images}: PortfolioSectionProps) => {
     const [api, setApi] = React.useState<CarouselApi>()
     const [current, setCurrent] = React.useState(0)
     const [count, setCount] = React.useState(0)
-
-    const formattedServices = services.flatMap((service) => {
-        return service.images.map((image) => {
-            return {
-                name: service.name,
-                image
-            }
-        })
-    })
   
 
     React.useEffect(() => {
@@ -47,23 +36,24 @@ export const PortfolioSection = ({services}: PortfolioSectionProps) => {
         <CardContent>
             <Carousel setApi={setApi} className="w-full">
                 <CarouselContent>
-                    {formattedServices.map((service, index)=>(
+                    {images.length > 0 ? images.map((image, index)=>(
                         <CarouselItem key={index}>
                             <div key={index} className="aspect-square relative w-full">
-                                <Image
-                                    src={service.image}
-                                    alt={`Image ${index + 1}`}
-                                    fill
-                                    className="object-cover rounded-lg"
-                                />
-                                {index === current - 1 && (
-                                    <div className="absolute top-8 left-14 px-3 py-1 font-semibold bg-transparent/75 rounded-lg">
-                                        <span>{service.name}</span>
-                                    </div>
-                                )}
+                                <Suspense fallback={<Skeleton className="w-full h-full" />}>
+                                    <Image
+                                        src={image}
+                                        alt={`Image ${index + 1}`}
+                                        fill
+                                        className="object-cover rounded-lg"
+                                    />
+                                </Suspense>
                             </div>
                         </CarouselItem>
-                    ))}
+                    )) : (
+                        <div className="aspect-square relative w-full text-muted-foreground text-lg flex justify-center items-center">
+                            <p>Empty Portfolio</p>
+                        </div>
+                    )}
                 </CarouselContent>
                 
                 <div className="absolute bottom-8 right-14 flex items-center gap-2">

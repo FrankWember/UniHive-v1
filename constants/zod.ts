@@ -86,7 +86,8 @@ export const ServiceSchema = z.object({
   defaultLocation: z.string()
   .min(1, "Default location is required"),
   isMobile: z.boolean().default(false),
-  availability: AvailabilitySchema
+  availability: AvailabilitySchema,
+  portfolio: z.array(z.string()).optional()
 })
 
 export const ServiceOfferSchema = z.object({

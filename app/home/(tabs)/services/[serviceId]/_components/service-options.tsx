@@ -33,7 +33,8 @@ import {
     Settings,
     Trash2,
     User,
-    PanelRight
+    PanelRight,
+    BriefcaseBusiness
 } from 'lucide-react';
 import { CardStackPlusIcon, ReaderIcon } from '@radix-ui/react-icons';
 
@@ -103,6 +104,14 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
                                         >
                                             <ReaderIcon className="mr-2 h-4 w-4" />
                                             Manage Offers
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start"
+                                            onClick={() => router.push(`/home/services/${service.id}/portfolio`)}
+                                        >
+                                            <BriefcaseBusiness className="mr-2 h-4 w-4" />
+                                            Manage Portfolio
                                         </Button>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>

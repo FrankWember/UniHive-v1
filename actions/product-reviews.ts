@@ -9,11 +9,17 @@ export async function makeProductReview (productId: string, reviewerId: string, 
         data: {
             productId: productId,
             reviewerId: reviewerId,
-            ...values
+            communication: values.communication,
+            experience: values.experience,
+            location: values.location,
+            meetUp: values.meetUp,
+            packaging: values.packaging,
+            value: values.value,
+            comment: values.comment
         },
         include: { product: {include: {seller: true}}, reviewer: true }
     })
-
+    const rating = (review.communication! + review.experience! + review.location! + review.meetUp! + review.packaging! + review.value!) / 6
     sendEmail({
         to: review.product.seller.email!,
         subject: "New Product Review",
@@ -21,7 +27,7 @@ export async function makeProductReview (productId: string, reviewerId: string, 
         html: `
             <h2>New Product Review</h2>
             <p>A new review has been submitted for your product <strong>${review.product.name}</strong>.</p>
-            <p>Rating: ${review.rating}/5</p>
+            <p>Rating: ${rating}/5</p>
             <p>Comment: ${review.comment}</p>
             <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${review.product.id}" class="button">View Review</a>
         `

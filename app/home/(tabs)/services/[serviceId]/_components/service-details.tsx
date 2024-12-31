@@ -114,7 +114,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           {/* Portfolio section */}
           <div className="mx-8">
-            <PortfolioSection services={service.provider.services} />
+            <PortfolioSection images={service.portfolio} />
           </div>
 
           <Separator className="my-4" />
@@ -174,7 +174,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           {/* Offers section */}
           <div className="flex flex-col gap-8 w-full px-4 mx-auto">
             <OffersSection service={service} userId={user?.id} />
-            <PortfolioSection services={service.provider.services} />
+            <PortfolioSection images={service.portfolio} />
           </div>
         </div>
 
