@@ -142,9 +142,9 @@ export function ReviewsSection({
           {[5, 4, 3, 2, 1].map((rating) => (
             <div key={rating} className="flex items-center space-x-2">
               <span className="flex text-sm w-14 text-muted-foreground">{rating} stars</span>
-              <Progress value={((ratingCounts[rating] || 0) / reviews.length * 100) || 0} className="h-2 w-full" />
+              <Progress value={ratingCounts && ratingCounts[rating] ? (ratingCounts[rating] / reviews.length * 100) || 0 : 0} className="h-2 w-full" />
               <span className="w-12 text-sm text-muted-foreground text-right">
-                {(((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0}%
+                {ratingCounts && ratingCounts[rating] ? (((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0 : 0}%
               </span>
             </div>
           ))}
