@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Star, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Star, MessageSquare, ChevronLeft, ChevronRight, Shield, ShieldCheck, MapPin, Key, SprayCan, MessagesSquare, CircleCheck, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
@@ -11,6 +11,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -29,11 +30,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { useMediaQuery } from '@/hooks/use-media-query'
-import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
 import { makeProductReview, updateProductReview } from '@/actions/product-reviews'
-import { Badge } from '@/components/ui/badge'
 import { BeatLoader } from 'react-spinners'
 import { calculateProductReviewMetrics } from '@/utils/helpers/reviews'
 
@@ -52,11 +50,6 @@ export function ReviewsSection({
   reviews,
   productId
 }: ReviewsSectionProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
-  const user = useCurrentUser()
-  const my_review = reviews.find(review => review.reviewer.id === user?.id)
-
   // pagnation stuff
   const [currentPage, setCurrentPage] = useState(1)
   const reviewsPerPage = 5
@@ -69,94 +62,97 @@ export function ReviewsSection({
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
   }
-
-  const form = useForm<ProductReviewFormValues>({
-    resolver: zodResolver(ProductReviewSchema),
-    defaultValues: {
-      comment: my_review?.comment || "",
-      value: my_review?.value || 0,
-      meetUp: my_review?.meetUp || 0,
-      location: my_review?.location || 0,
-      communication: my_review?.communication || 0,
-      packaging: my_review?.packaging || 0,
-      experience: my_review?.experience || 0,
-    },
-  })
-
-  const handleSubmitReview = async (values: ProductReviewFormValues) => {
-    setIsSubmitting(true)
-    try {
-        if (!user) {
-            const callbackUrl = encodeURIComponent(`/home/products/${productId}`)
-            router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
-            return
-        }
-        if (!my_review) {
-            await makeProductReview(productId, user!.id!, values)
-        } else {
-            await updateProductReview(my_review.id, values)
-        }
-    } catch {
-        console.log("An error occured")
-    } finally {
-        setIsSubmitting(false)
-        router.refresh()
-    } 
-  }
-
-  const StarRating = ({ name, value, onChange }: { name: string, value: number, onChange: (value: number) => void }) => (
-    <div className="flex items-center space-x-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          className={`h-5 w-5 cursor-pointer ${
-            star <= value ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-          }`}
-          onClick={() => onChange(star)}
-        />
-      ))}
-    </div>
-  )
+  const ratingMetrics = React.useMemo(() => {
+    let overall = calculateProductReviewMetrics(reviews)
+    return {
+      experience: overall?.experience || 0,
+      communication: overall?.communication || 0,
+      meetUp: overall?.meetUp || 0,
+      packaging: overall?.packaging || 0,
+      location: overall?.location || 0,
+      value: overall?.value || 0,
+      overall: overall?.overall || 0,
+    }
+  }, [reviews])
 
   return (
-    <div className="flex flex-col justify-center space-y-4 w-full">
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">Reviews</h2>
-        <div className="flex items-center space-x-4">
-          <div className="text-4xl font-bold">{averageRating}</div>
-          <div className="flex items-center">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star
-                key={star}
-                className={`h-5 w-5 ${
-                  star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
-          </div>
+    <div className='grid grid-cols-1 md:grid-cols-2 w-full gap-16 py-8'>
+      <div className='flex flex-col gap-6'>
+        <div className="flex items-center justify-center space-x-4 w-full">
+          <h2 className="text-8xl font-bold text-center">
+            {averageRating || 0}
+          </h2>
+          <Star className="text-yellow-500 fill-yellow-500 h-20 w-20" />
         </div>
         <div className="space-y-2">
+          <h3 className='text-xl font-semibold'>Overall Rating</h3>
           {[5, 4, 3, 2, 1].map((rating) => (
             <div key={rating} className="flex items-center space-x-2">
-              <span className="flex text-sm w-14 text-muted-foreground">{rating} stars</span>
-              <Progress value={ratingCounts && ratingCounts[rating] ? (ratingCounts[rating] / reviews.length * 100) || 0 : 0} className="h-2 w-full" />
+              <span className="flex text-sm min-w-16 text-muted-foreground">{rating} stars</span>
+              <Progress value={ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100) : 0} className="h-2 w-full" />
               <span className="w-12 text-sm text-muted-foreground text-right">
-                {ratingCounts && ratingCounts[rating] ? (((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0)) || 0 : 0}%
+                {ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0) : 0}%
               </span>
             </div>
           ))}
         </div>
+        <div className='grid grid-cols-2 md:grid-cols-1 space-y-3 space-x-1'>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <SprayCan className="h-4 w-4" />
+              <span>Experience</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.experience}</span>
+          </div>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <MessagesSquare className="h-4 w-4" />
+              <span>Communication</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.communication}</span>
+          </div>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <CircleCheck className="h-4 w-4" />
+              <span>MeetUp</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.meetUp}</span>
+          </div>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <Key className="h-4 w-4" />
+              <span>Ckeck In</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.packaging}</span>
+          </div>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <MapPin className="h-4 w-4" />
+              <span>Location</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.location}</span>
+          </div>
+          <div className="flex justify-between items-center p-3 border-b">
+            <div className="flex items-center space-x-2">
+              <Tag className="h-4 w-4" />
+              <span>Value</span>
+            </div>
+            <span className='font-semibold'>{ratingMetrics.value}</span>
+          </div>
+        </div>
       </div>
-      <div className="flex flex-col py-4 gap-4">
-        {currentReviews.map((review) => (
-          <Card key={review.id}>
-            <CardContent className="pt-6">
+
+      <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <span className="text-xl">{reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}</span>
+            <ReviewDialog reviews={reviews} productId={productId} />
+          </div>
+        <div className="grid grid-cols-1 py-4 gap-4">
+          {currentReviews.map((review) => (
+            <div key={review.id} className='pt-6 border-t flex flex-col gap-1'>
               <div className="flex items-center space-x-4 mb-2">
                 <Avatar>
-                  <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} />
+                  <AvatarImage src={review.reviewer.image || undefined} alt={review.reviewer.name || 'Reviewer'} className='object-cover'/>
                   <AvatarFallback>{review.reviewer.name ? review.reviewer.name[0] : 'R'}</AvatarFallback>
                 </Avatar>
                 <div>
@@ -171,96 +167,157 @@ export function ReviewsSection({
                   <Star
                     key={star}
                     className={`h-4 w-4 ${
-                      star <= calculateProductReviewMetrics([review])?.overall! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                      star <= ratingMetrics.overall ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                     }`}
                   />
                 ))}
               </div>
               <p className="text-sm">{review.comment}</p>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <Button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            variant="outline"
+          >
+            <ChevronLeft className="h-4 w-4 mr-2" />
+            Previous
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages}
+          </span>
+          <Button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            variant="outline"
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-2" />
+          </Button>
+        </div>
       </div>
-      <div className="flex justify-between items-center mt-4">
-        <Button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          variant="outline"
-        >
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Previous
+    </div>
+  )
+}
+
+
+const ReviewDialog = ({
+  reviews, productId
+}: {
+  reviews: (
+    ProductReview & {
+    reviewer: User
+  })[], 
+  productId: string
+}) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter()
+  const user = useCurrentUser()
+  const my_review = reviews.find(review => review.reviewer.id === user?.id)
+
+  const form = useForm<ProductReviewFormValues>({
+    resolver: zodResolver(ProductReviewSchema),
+    defaultValues: {
+      experience: my_review?.experience || 0,
+      communication: my_review?.communication || 0,
+      meetUp: my_review?.meetUp || 0,
+      packaging: my_review?.packaging || 0,
+      location: my_review?.location || 0,
+      value: my_review?.value || 0,
+      comment: my_review?.comment || '',
+    },
+  })
+
+  const handleSubmitReview = async (values: ProductReviewFormValues) => {
+    try {
+      setIsSubmitting(true)
+      if (!user) {
+        const callbackUrl = encodeURIComponent(`/home/products/${productId}`)
+        router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+        return
+      }
+      if (!my_review) {
+        await makeProductReview(productId, user!.id!, values)
+      } else {
+        await updateProductReview(my_review.id, values)
+      }
+      router.refresh()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+      router.refresh()
+    }
+  }
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>
+          <MessageSquare className="mr-2 h-4 w-4" />
+          Write a Review
         </Button>
-        <span className="text-sm text-muted-foreground">
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          variant="outline"
-        >
-          Next
-          <ChevronRight className="h-4 w-4 ml-2" />
-        </Button>
-      </div>
-      <div className='flex justify-end'>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <MessageSquare className="mr-2 h-4 w-4" />
-              Write a Review
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmitReview)} className="space-y-8">
             <DialogHeader>
               <DialogTitle>Write a Review</DialogTitle>
               <DialogDescription>Share your experience with this product</DialogDescription>
             </DialogHeader>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmitReview)} className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                    {['value', 'meetUp', 'location', 'communication', 'packaging', 'experience', 'timeliness'].map((cat) => (
-                    <FormField
-                        key={cat}
-                        control={form.control}
-                        name={cat as keyof ProductReviewFormValues}
-                        render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>{cat.charAt(0).toUpperCase() + cat.slice(1)}</FormLabel>
-                            <FormControl>
-                            <StarRating
-                                name={cat}
-                                value={+field.value!}
-                                onChange={(value) => field.onChange(value)}
-                            />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )}
-                    />
-                    ))}
-                </div>
-                <FormField
-                  control={form.control}
-                  name="comment"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Comment</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Write your review here..." {...field} />
-                      </FormControl>
-                      <FormDescription>Provide details about your experience</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? <BeatLoader /> : "Submit Review"}
-                </Button>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </div>
+        
+            <div className="grid grid-cols-2 gap-3">
+            {['experience', 'communication', 'meetUp', 'packaging', 'location', 'value'].map((category) => (
+              <FormField
+                key={category}
+                control={form.control}
+                name={category as keyof ProductReviewFormValues}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{category.charAt(0).toUpperCase() + category.slice(1)}</FormLabel>
+                    <FormControl>
+                      <div className="flex items-center space-x-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`h-6 w-6 cursor-pointer ${
+                              star <= +field.value! ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                            }`}
+                            onClick={() => field.onChange(star)}
+                          />
+                        ))}
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            </div>
+            <FormField
+              control={form.control}
+              name="comment"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="Write your review here..." {...field} />
+                  </FormControl>
+                  <FormDescription>Provide details about your experience</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter className="flex justify-end">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? <BeatLoader /> : "Submit Review"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   )
 }

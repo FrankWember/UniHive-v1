@@ -78,7 +78,8 @@ export async function updateService(
       category: values.category,
       images: values.images,
       defaultLocation: values.defaultLocation,
-      availability: splitTimeSlots(values.availability)
+      availability: splitTimeSlots(values.availability),
+      portfolio: values.portfolio,
     },
   })
 

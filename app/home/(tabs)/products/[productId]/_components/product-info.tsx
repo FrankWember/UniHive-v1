@@ -100,21 +100,30 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
     const share = async () => {
         try {
             const discountedPrice = product.discount? product.price - (product.price * product.discount / 100) : product.price
-            const message = `Available from ${discountedPrice}`
+            const message = `${product.name} Service.\nAvailable at $${discountedPrice}\nCheck it out here:`
             const productUrl = `https://unihive.vercel.app/home/products/${product.id}`
+            const fullMessage = `${message} ${productUrl}`
+
             setIsSharing(true)
             if (navigator.share) {
                 try {
                     await navigator.share({
                         title: product.name, 
-                        text: message, 
+                        text: fullMessage, 
                         url: productUrl,
                     })
                 } catch (error) {
                     console.error('Error sharing:', error)
+                    toast({
+                        title: 'Failed to share',
+                        description: 'Please try again later',
+                    })
                 }
             } else {
-                navigator.clipboard.writeText(`${product.name}\n ${message}\n ${productUrl}`)
+                // Share to WhatsApp
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`
+                window.open(whatsappUrl, '_blank')
+                navigator.clipboard.writeText(fullMessage)
                 toast({ 
                     title: 'Copied to clipboard', 
                     description: 'The link has been copied to your clipboard',

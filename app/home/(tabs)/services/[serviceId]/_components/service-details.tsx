@@ -12,7 +12,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Service, ServiceOffer, ServiceReview, User } from '@prisma/client'
-import { useRouter } from 'next/navigation'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { ReviewsSection } from './review-section'
 import { ServiceInfo } from './service-info'
@@ -21,8 +20,6 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { OffersSection } from './offers-section'
 import { RelatedServicesSection } from './related-services-section'
 import { PortfolioSection } from './portfolio-section'
-import { ServiceReviewSchema } from '@/constants/zod'
-import * as z from 'zod'
 import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 
 interface ServiceDetailsProps {
@@ -68,11 +65,8 @@ interface ServiceDetailsProps {
 
 
 export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews, relatedServices }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
   const user = useCurrentUser()
   const isMobile = useIsMobile()
-  const my_review = reviews.find(review => review.reviewer.id === user?.id)
 
   const ratingMemo = React.useMemo(() => {
     const metrics = calculateServiceReviewMetrics(reviews)

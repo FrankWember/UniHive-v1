@@ -18,7 +18,7 @@ const PortfolioPage = async ({ params }: { params: { serviceId: string } }) => {
     <div className="flex flex-col min-h-screen w-full">
       <ServiceHeader user={user} service={service} />
       {/* Content */}
-      <div className="flex flex-col md:mt-[5.7rem] pb-24 justify-center items-center">
+      <div className="flex flex-col w-full h-full md:mt-[5.7rem] pb-24 justify-center items-center">
         <Card>
             <CardHeader>
                 <CardTitle>Portfolio</CardTitle>

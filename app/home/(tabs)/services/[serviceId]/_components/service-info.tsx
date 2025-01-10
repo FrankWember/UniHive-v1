@@ -105,26 +105,35 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
 
     const share = async () => {
         try {
-            const message = `Available from ${service.price}`
+            const message = `${service.name} Service.\nAvailable from $${service.price}\nCheck it out here:`
             const serviceUrl = `https://unihive.vercel.app/home/services/${service.id}`
             setIsSharing(true)
+
+            const fullMessage = `${message} ${serviceUrl}`
+
             if (navigator.share) {
                 try {
                     await navigator.share({
                         title: service.name, 
-                        text: message, 
+                        text: fullMessage, 
                         url: serviceUrl,
                     })
                 } catch (error) {
                     console.error('Error sharing:', error)
                 }
             } else {
-                navigator.clipboard.writeText(`${service.name}\n ${message}\n ${serviceUrl}`)
+                // Share to WhatsApp
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`
+                window.open(whatsappUrl, '_blank')
+
+                navigator.clipboard.writeText(fullMessage)
                 toast({ 
                     title: 'Copied to clipboard', 
                     description: 'The link has been copied to your clipboard',
                 })
             }
+
+
         } catch (error) {
             console.error('Failed to copy to clipboard:', error)
             toast({
