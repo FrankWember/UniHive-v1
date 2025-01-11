@@ -22,10 +22,12 @@ export default function AppleIcon() {
                     borderRadius: '20%'
                 }}
             >
-                <Image
+                <img
                     src="/Unihive.png"
-                    width={500}
-                    height={500}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                    }}
                     alt="Unihive"
                 />
             </div>
