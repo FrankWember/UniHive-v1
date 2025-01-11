@@ -1,3 +1,4 @@
+import { APP_URL } from '@/constants/paths'
 import Image from 'next/image'
 import { ImageResponse } from 'next/og'
  
@@ -23,7 +24,7 @@ export default function AppleIcon() {
                 }}
             >
                 <img
-                    src="/Unihive.png"
+                    src={`{APP_URL}/Unihive.png`}
                     style={{
                         width: '100%',
                         height: '100%',

@@ -23,7 +23,7 @@ export default function Icon() {
                 }}
             >
                 <img
-                    src="/Unihive.png"
+                    src={`{APP_URL}/Unihive.png`}
                     style={{
                         width: '100%',
                         height: '100%',
