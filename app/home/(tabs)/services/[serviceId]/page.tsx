@@ -6,7 +6,52 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getServiceReviews } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
 import { ServiceHeader } from './_components/service-header'
+import type { Metadata, ResolvingMetadata } from 'next'
 
+type Props = {
+  params: Promise<{ serviceId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const serviceId = (await params).serviceId
+ 
+  const service = await getServiceById(serviceId)
+
+  if (!service) {
+    return {
+      title: 'Service not found',
+    }
+  }
+
+  const serviceDescription = `${service.name} is a ${service.category[0]} service provided by ${service.provider.name}. Available from ${service.price.toFixed(2)}. Book now!`
+ 
+  return {
+    title: service.name,
+    description: serviceDescription,
+    openGraph: {
+      title: service.name,
+      description: serviceDescription,
+      images: [
+        {
+          url: service.images[0],
+          width: 800,
+          height: 600,
+          alt: service.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: service.name,
+      description: serviceDescription,
+      images: [service.images[0]],
+    }
+  }
+}
 
 const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
   const service = await getServiceById(params.serviceId)

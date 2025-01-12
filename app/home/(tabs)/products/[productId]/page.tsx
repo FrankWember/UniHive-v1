@@ -5,6 +5,50 @@ import { getProductById, getProductReviews } from '@/utils/data/products'
 import { BackButton } from '@/components/back-button'
 import { Separator } from '@/components/ui/separator'
 import { ProductOptions } from './_components/product-options'
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+  params: Promise<{ productId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const productId = (await params).productId
+ 
+  const product = await getProductById(productId)
+
+  if (!product) {
+    return {
+      title: 'Product not found',
+    }
+  }
+ 
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [
+        {
+          url: product.images[0],
+          width: 800,
+          height: 600,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description: product.description,
+      images: [product.images[0]],
+    }
+  }
+}
 
 export default async function ProductPage({ params }: { params: { productId: string } }) {
   const product = await getProductById(params.productId)

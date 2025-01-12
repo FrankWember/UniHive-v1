@@ -5,6 +5,50 @@ import { getEventById } from '@/actions/events'
 import { Skeleton } from "@/components/ui/skeleton"
 import { BackButton } from '@/components/back-button'
 import EventOptions from './_components/event-options'
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+  params: Promise<{ eventId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const eventId = (await params).eventId
+ 
+  const event = await getEventById(eventId)
+
+  if (!event) {
+    return {
+      title: 'Event not found',
+    }
+  }
+ 
+  return {
+    title: event.title,
+    description: event.description,
+    openGraph: {
+      title: event.title,
+      description: event.description,
+      images: [
+        {
+          url: event.images[0],
+          width: 800,
+          height: 600,
+          alt: event.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.title,
+      description: event.description,
+      images: [event.images[0]],
+    }
+  }
+}
 
 const EventPage = async ({ params }: { params: { eventId: string } }) => {
   const event = await getEventById(params.eventId)
