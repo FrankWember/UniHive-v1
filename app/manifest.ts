@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
     return {
         "name": "Unihive - Empowered Campus life",
         "short_name": "Unihive",
-        "description": "A Progressive Web App built with Next.js",
+        "description": "Digitally empowered campus life. Enjoy your university experience!",
         "start_url": "/home/services",
         "display": "standalone",
         "icons": [

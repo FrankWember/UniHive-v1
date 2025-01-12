@@ -4,7 +4,7 @@ import { Navbar } from "@/components/navbar";
 import { ConvexClientProvider } from "@/components/convex-provider";
 
 export const metadata: Metadata = {
-  title: "Unihive | Home",
+  title: "Unihive Home",
   description: "Digitally empowered campus life. Enjoy your university experience!",
 };
 
