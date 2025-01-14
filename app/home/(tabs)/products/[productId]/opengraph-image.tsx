@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: { productId: string } 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {product.images && product.images.length > 0 && (
             <img
-              src={product.images[0]}
+              src="/Unihive.svg"
               alt={product.name}
               style={{ width: '300px', height: '300px', objectFit: 'cover', marginBottom: '20px' }}
             />

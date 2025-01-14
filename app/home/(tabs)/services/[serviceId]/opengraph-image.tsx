@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: { serviceId: string } 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {service.portfolio && service.portfolio.length > 0 && (
             <img
-              src={service.portfolio[0]}
+              src="/Unihive.svg"
               alt={service.name}
               style={{ width: '300px', height: '300px', objectFit: 'cover', marginBottom: '20px' }}
             />

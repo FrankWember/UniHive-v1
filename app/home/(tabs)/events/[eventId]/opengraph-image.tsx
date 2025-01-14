@@ -9,7 +9,8 @@ export const size = {
   height: 630,
 }
  
-export const contentType = 'image/png'
+export const contentType = 'image/svg'
+
  
 export default async function Image({ params }: { params: { eventId: string } }) {
   const event = await getEventById(params.eventId)
@@ -34,7 +35,7 @@ export default async function Image({ params }: { params: { eventId: string } })
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {event.images && event.images.length > 0 && (
             <img
-              src={event.images[0]}
+              src="/Unihive.svg"
               alt={event.title}
               style={{ width: '100%', height: '300px', objectFit: 'cover', marginBottom: '20px' }}
             />

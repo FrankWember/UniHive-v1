@@ -34,7 +34,7 @@ export default async function Image({ params }: { params: { eventId: string } })
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {event.images && event.images.length > 0 && (
             <img
-              src={event.images[0]}
+              src="/Unihive.svg"
               alt={event.title}
               style={{ width: '100%', height: '300px', objectFit: 'cover', marginBottom: '20px' }}
             />
