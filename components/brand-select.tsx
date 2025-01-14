@@ -63,7 +63,7 @@ export function BrandSelect({ brands = [], selectedBrand, onSelectBrand }: Brand
           className="w-full justify-between"
         >
           {selectedBrand
-            ? brands.find((brand) => brand.name === selectedBrand)?.name || customBrand
+            ? brands.find((brand) => brand.name === selectedBrand)?.name || customBrand || selectedBrand || "1 brand selected"
             : "Select brand..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>

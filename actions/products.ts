@@ -6,6 +6,7 @@ import { productSchema } from '@/constants/zod'
 import { Product, User } from "@prisma/client"
 import { sendEmail } from "@/lib/mail"
 import { currentUser } from "@/lib/auth"
+import { revalidatePath } from "next/cache"
 
 
 export async function createProduct(values: z.infer<typeof productSchema>, sellerId: string) {
@@ -25,6 +26,7 @@ export async function createProduct(values: z.infer<typeof productSchema>, selle
             averageDeliveryTime: values.averageDeliveryTime
         }
     })
+    revalidatePath("/home/products")
     return product
 }
 
@@ -47,6 +49,7 @@ export async function updateProduct(id: string, values: z.infer<typeof productSc
             averageDeliveryTime: values.averageDeliveryTime
         }
     })
+    revalidatePath("/home/products")
     return product
 }
 
