@@ -35,12 +35,13 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
     const [isLiking, setIsLiking] = React.useState(false)
     const [creatingChat, setCreatingChat] = React.useState(false)
 
-    const existingChat = user && user.id && product.sellerId
-        ? useQuery(api.chats.getChatByUserIds, {
+    let existingChat = undefined
+    if (user && user.id && product.sellerId) {
+        existingChat = useQuery(api.chats.getChatByUserIds, {
             customerId: user.id,
             sellerId: product.sellerId
-          })
-        : undefined
+        })
+    }
 
     React.useEffect(() => {
         const fetchLikeStatus = async () => {
@@ -80,7 +81,7 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
             }
             let chatId = ''
             if (existingChat){
-                chatId = existingChat._id
+                chatId = existingChat?._id
             } else {
                 chatId = await newChat({ sellerId: product.sellerId, customerId: user.id!, type: 'products' })
             }

@@ -1,36 +1,92 @@
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { User, Mail, Phone } from 'lucide-react'
+import { CalendarDays, Star } from 'lucide-react'
 import { VerifiedIcon } from '@/components/icons/verified-icon'
+import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
+import { User, Service, ServiceReview } from '@prisma/client'
+import { Table, TableRow, TableCell, TableHead, TableCaption, TableBody } from "@/components/ui/table"
 
 interface ProviderDetailsProps {
-  provider: {
-    id: string
-    name: string
-    image: string | undefined
-    email: string
-    phone: string | null,
-    isOnboarded: boolean
-    createdAt: Date
+  provider: User & {
+    services: ( Service & { 
+      reviews: ServiceReview[], 
+      provider: User,
+      offers: ({
+        bookings: ({
+          customer: {
+            image: string|null
+          }
+        })[]
+      })[]
+    })[]
   }
 }
 
 export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) => {
+
+  const ratingMetrics = React.useMemo(() => {
+    let overall = calculateServiceReviewMetrics(provider.services.flatMap(service => service.reviews))
+    return {
+      accuracy: overall?.accuracy || 0,
+      communication: overall?.communication || 0,
+      checkIn: overall?.checkIn || 0,
+      cleanliness: overall?.cleanliness || 0,
+      location: overall?.location || 0,
+      value: overall?.value || 0,
+      overall: overall?.overall || 0,
+    }
+  }, [provider.services])
+
   return (
-    <Card className="w-full my-4">
+    <Card className="mb-6 w-full h-fit">
       <CardHeader className="flex flex-row items-center space-x-4">
         <Avatar className="h-36 w-36 md:h-48 md:w-48">
-          <AvatarImage src={provider.image} alt={provider.name} className="object-cover" />
-          <AvatarFallback>{provider.name[0]}</AvatarFallback>
+          <AvatarImage src={provider.image!} alt={provider.name || 'Provider'} className="object-cover" />
+          <AvatarFallback>{provider.name![0] || 'P'}</AvatarFallback>
         </Avatar>
         <div>
           <CardTitle className="text-3xl flex items-center">{provider.name}<VerifiedIcon className="ml-3 h-8 w-8" /></CardTitle>
-          <span className='text-muted-foreground'>Since <span className='text-primary-foreground'>{new Intl.DateTimeFormat('default', { month: 'long', year: 'numeric' }).format(provider.createdAt)}</span></span>
+          <div className="flex items-center text-sm text-muted-foreground">
+            <CalendarDays className="mr-1 h-4 w-4" />
+            Joined {new Date(provider.createdAt).toLocaleDateString()}
+          </div>
         </div>
       </CardHeader>
       <CardContent>
-        {/* Add more provider details here if needed */}
+        <Table>
+          <TableCaption>Seller Ratings</TableCaption>
+          <TableBody>
+            <TableRow>
+              <TableHead>Overall</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.overall}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Check In</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.checkIn}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Location</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.location}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Communication</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.communication}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Accuracy</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.accuracy}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Cleanliness</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.cleanliness}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead>Value</TableHead>
+              <TableCell className="flex gap-1 items-center">{ratingMetrics.value}<Star className="h-4 w-4 text-yellow-500 fill-yellow-500" /></TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   )

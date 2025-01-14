@@ -104,42 +104,31 @@ export async function getAllServices () {
 export async function getProviderById(id: string) {
     const provider = await prisma.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        phone: true,
-        isOnboarded: true,
-        createdAt: true
-      },
-    })
-    return provider
-}
-
-export async function getProviderServices(providerId: string) {
-    const services = await prisma.service.findMany({
-      where: { providerId },
       include: {
-        offers: {
-          select: {
-            bookings: {
+        services: {
+          include: {
+            reviews: true,
+            provider: true,
+            offers: {
               select: {
-                customer: {
+                bookings: {
                   select: {
-                    image: true
+                    customer: {
+                      select: {
+                        image: true
+                      }
+                    }
                   }
                 }
               }
             }
           }
-        },
-        provider: true,
-        reviews: true
+        }
       },
     })
-    return services
+    return provider
 }
+
 
 export async function getMatchedServices(searchParams: { [key: string]: string | string[] | undefined }) {
     const user = await currentUser()
