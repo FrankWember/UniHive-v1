@@ -22,7 +22,7 @@ export default async function SellerPage({ params }: { params: { sellerId: strin
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mx-3 md:mx-auto py-10 my-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 px-3 md:px-8 md:mx-auto py-10 my-20">
         <SellerProfile seller={seller} />
         <SellerProducts seller={seller} />
       </div>

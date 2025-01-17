@@ -3,12 +3,14 @@ import React, { Suspense } from 'react'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '@/components/ui/carousel'
 import { Skeleton } from '@/components/ui/skeleton'
 import Image from 'next/image'
+import Link from 'next/link'
 
 interface PortfolioSectionProps {
     images: string[],
+    providerId: string
 }
 
-export const PortfolioSection = ({images}: PortfolioSectionProps) => {
+export const PortfolioSection = ({images, providerId}: PortfolioSectionProps) => {
     const [api, setApi] = React.useState<CarouselApi>()
     const [current, setCurrent] = React.useState(0)
     const [count, setCount] = React.useState(0)
@@ -31,7 +33,7 @@ export const PortfolioSection = ({images}: PortfolioSectionProps) => {
     <Card>
         <CardHeader>
             <CardTitle>Portfolio</CardTitle>
-            <CardDescription>Check out Other Works from this Provider</CardDescription>
+            <CardDescription>Check out Other Works from this Provider <Link href={`/home/services/provider/${providerId}`} className="underline text-foreground">More</Link></CardDescription>
         </CardHeader>
         <CardContent>
             <Carousel setApi={setApi} className="w-full">

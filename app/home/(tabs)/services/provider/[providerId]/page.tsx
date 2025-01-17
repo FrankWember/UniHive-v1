@@ -22,12 +22,12 @@ const ProviderPage = async ({ params }: { params: { providerId: string } }) => {
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mx-3 md:mx-auto py-10 my-20">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 px-3 md:px-8 md:mx-auto py-10 my-20">
         <Suspense fallback={<Skeleton className="w-full h-[200px]" />}>
           <ProviderDetails provider={provider} />
         </Suspense>
         <Suspense fallback={<Skeleton className="w-full h-[400px]" />}>
-          <ProviderServices services={provider.services} />
+          <ProviderServices services={provider.services} products={provider.products} />
         </Suspense>
       </div>
     </div>

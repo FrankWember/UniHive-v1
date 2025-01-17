@@ -53,6 +53,8 @@ export async function getSellerById (id: string) {
                     reviews: true,
                     cartItems: {
                         select: {
+                            quantity: true,
+                            price: true,
                             cart: {
                                 select: {
                                     customer: {
@@ -66,7 +68,26 @@ export async function getSellerById (id: string) {
                         }
                     }
                 } 
-            } 
+            },
+            services: {
+                include: {
+                    offers: {
+                      select: {
+                        bookings: {
+                          select: {
+                            customer: {
+                              select: {
+                                image: true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    provider: true,
+                    reviews: true
+                }
+            }
         }
     })
 }

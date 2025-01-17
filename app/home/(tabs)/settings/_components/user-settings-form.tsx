@@ -16,6 +16,8 @@ import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { updateUserSettings } from '@/actions/user'
 import { User } from '@prisma/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { BeatLoader } from 'react-spinners'
+import { Textarea } from '@/components/ui/textarea'
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -27,6 +29,9 @@ const formSchema = z.object({
   phone_number: z.string().min(10, {
     message: "Phone number must be at least 10 characters.",
   }),
+  bio: z.string().min(10, {
+    message: "Bio must be at least 10 characters.",
+  }).optional(),
 })
 
 export function UserSettingsForm({ userData }: { userData: User }) {
@@ -40,6 +45,7 @@ export function UserSettingsForm({ userData }: { userData: User }) {
       name: userData?.name || "",
       student_id: userData?.studentId || "",
       phone_number: userData?.phone || "",
+      bio: userData?.bio || "",
     },
   })
 
@@ -74,10 +80,10 @@ export function UserSettingsForm({ userData }: { userData: User }) {
                   <FormLabel>Name</FormLabel>
                   <div className="flex space-x-2">
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
-                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                        {isSubmitting ? "Updating..." : "Change"}
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                        {isSubmitting ? <BeatLoader /> : "Change"}
                     </Button>
                   </div>
                   <FormMessage />
@@ -92,10 +98,10 @@ export function UserSettingsForm({ userData }: { userData: User }) {
                   <FormLabel>Student ID</FormLabel>
                   <div className="flex space-x-2">
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
-                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                        {isSubmitting ? "Updating..." : "Change"}
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                        {isSubmitting ? <BeatLoader /> : "Change"}
                     </Button>
                   </div>
                   <FormMessage />
@@ -110,10 +116,28 @@ export function UserSettingsForm({ userData }: { userData: User }) {
                   <FormLabel>Phone Number</FormLabel>
                   <div className="flex space-x-2">
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} disabled={isSubmitting} />
                     </FormControl>
-                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()}>
-                        {isSubmitting ? "Updating..." : "Change"}
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                        {isSubmitting ? <BeatLoader /> : "Change"}
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <div className="flex flex-col space-y-2">
+                    <FormControl>
+                      <Textarea {...field} placeholder='Describe yourself to customers and sellers...' className='min-h-36' disabled={isSubmitting} />
+                    </FormControl>
+                    <Button type="button" onClick={() => form.handleSubmit(onSubmit)()} disabled={isSubmitting}>
+                        {isSubmitting ? <BeatLoader /> : "Change"}
                     </Button>
                   </div>
                   <FormMessage />

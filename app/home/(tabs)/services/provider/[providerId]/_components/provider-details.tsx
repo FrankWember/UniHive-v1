@@ -43,30 +43,37 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
   return (
     <Card className="mb-6 w-full h-fit">
       <CardHeader className="flex flex-row items-center space-x-4">
-        <Avatar className="h-36 w-36 md:h-48 md:w-48">
+        <Avatar className="h-20 w-20 lg:h-48 lg:w-48">
           <AvatarImage src={provider.image!} alt={provider.name || 'Provider'} className="object-cover" />
           <AvatarFallback>{provider.name![0] || 'P'}</AvatarFallback>
         </Avatar>
-        <div>
-          <CardTitle className="text-3xl flex items-center">{provider.name}<VerifiedIcon className="ml-3 h-8 w-8" /></CardTitle>
+        <div className="flex flex-col gap-2">
+          <CardTitle className="text-xl md:text-2xl lg:text-3xl flex items-center">{provider.name}<VerifiedIcon className="ml-3 h-8 w-8" /></CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
             <CalendarDays className="mr-1 h-4 w-4" />
             Joined {new Date(provider.createdAt).toLocaleDateString()}
           </div>
-          <div className="flex -space-x-3 overflow-hidden">
+          <div className="flex items-center -space-x-3 overflow-hidden">
             {customers.slice(0, 7).map((customer, index) => (
-              <Avatar key={index} className="inline-block h-6 w-6">
+              <Avatar key={index} className="inline-block h-6 w-6 md:h-8 md:w-8">
                 <AvatarImage src={customer.image!} alt="C" className="object-cover" />
                 <AvatarFallback>C</AvatarFallback>
               </Avatar>
             ))}
-            <p className="ml-6">
+            <p className="pl-6 text-sm">
               {customers.length} active customers
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
+        {provider.bio && (
+          <div className="flex flex-col space-y-3">
+            <h2 className="text-xl font-semibold">About</h2>
+            <p className="text-sm text-muted-foreground whitespace-pre-line">{provider.bio}</p>
+          </div>
+        )}
+        <h2 className="text-xl font-semibold">Ratings</h2>
         <Table>
           <TableCaption>Seller Ratings</TableCaption>
           <TableBody>

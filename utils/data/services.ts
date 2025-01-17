@@ -123,6 +123,11 @@ export async function getProviderById(id: string) {
               }
             }
           }
+        },
+        products: {
+          include: {
+            reviews: true
+          }
         }
       },
     })

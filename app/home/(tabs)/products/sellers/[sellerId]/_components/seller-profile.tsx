@@ -11,6 +11,8 @@ interface SellerProfileProps {
     products: ( Product & { 
       reviews: ProductReview[],
       cartItems: ({
+        quantity: number,
+        price: number,
         cart: {
           customer: {
             image: string|null
@@ -37,34 +39,42 @@ export function SellerProfile({ seller }: SellerProfileProps) {
   }, [seller.products])
 
   const customers = seller.products.flatMap(product => product.cartItems).map(cartItem => cartItem.cart.customer)
+  const totalQuantitySold = seller.products.reduce((acc, product) => acc + product.cartItems.reduce((acc, cartItem) => acc + cartItem.quantity, 0), 0)
 
   return (
     <Card className="mb-6 w-full h-fit">
       <CardHeader className="flex flex-row items-center gap-4">
-        <Avatar className="h-20 w-20">
+        <Avatar className="h-20 w-20 lg:h-48 lg:w-48">
           <AvatarImage src={seller.image || undefined} alt={seller.name || 'Seller'} />
           <AvatarFallback>{seller.name ? seller.name[0] : 'S'}</AvatarFallback>
         </Avatar>
-        <div>
-          <CardTitle className="text-2xl">{seller.name}</CardTitle>
+        <div className="flex flex-col gap-2">
+          <CardTitle className="text-xl md:text-2xl lg:text-3xl">{seller.name}</CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
             <CalendarDays className="mr-1 h-4 w-4" />
             Joined {new Date(seller.createdAt).toLocaleDateString()}
           </div>
-          <div className="flex -space-x-3 overflow-hidden">
+          <div className="flex items-center -space-x-3 overflow-hidden">
             {customers.slice(0, 7).map((customer, index) => (
-              <Avatar key={index} className="inline-block h-6 w-6">
+              <Avatar key={index} className="inline-block h-6 w-6 md:h-8 md:w-8">
                 <AvatarImage src={customer.image!} alt="C" className="object-cover" />
                 <AvatarFallback>C</AvatarFallback>
               </Avatar>
             ))}
-            <p className="ml-6">
-              {customers.length} active customers
+            <p className="pl-6 text-sm">
+              {customers.length} active customers and {totalQuantitySold} items sold
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="">
+        {seller.bio && (
+          <div className="flex flex-col space-y-3">
+            <h2 className="text-xl font-semibold">About</h2>
+            <p className="text-sm text-muted-foreground whitespace-pre-line">{seller.bio}</p>
+          </div>
+        )}
+        <h2 className="text-xl font-semibold">Ratings</h2>
         <Table>
           <TableCaption>Seller Ratings</TableCaption>
           <TableBody>

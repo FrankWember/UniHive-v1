@@ -21,6 +21,7 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   studentId     String?   @unique
+  bio           String?
   phone         String?
   email         String    @unique
   emailVerified DateTime?
