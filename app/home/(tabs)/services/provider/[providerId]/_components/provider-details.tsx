@@ -38,6 +38,8 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
     }
   }, [provider.services])
 
+  const customers = provider.services.flatMap(service => service.offers).flatMap(offer => offer.bookings).map(booking => booking.customer)
+
   return (
     <Card className="mb-6 w-full h-fit">
       <CardHeader className="flex flex-row items-center space-x-4">
@@ -50,6 +52,17 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
           <div className="flex items-center text-sm text-muted-foreground">
             <CalendarDays className="mr-1 h-4 w-4" />
             Joined {new Date(provider.createdAt).toLocaleDateString()}
+          </div>
+          <div className="flex -space-x-3 overflow-hidden">
+            {customers.slice(0, 7).map((customer, index) => (
+              <Avatar key={index} className="inline-block h-6 w-6">
+                <AvatarImage src={customer.image!} alt="C" className="object-cover" />
+                <AvatarFallback>C</AvatarFallback>
+              </Avatar>
+            ))}
+            <p className="ml-6">
+              {customers.length} active customers
+            </p>
           </div>
         </div>
       </CardHeader>

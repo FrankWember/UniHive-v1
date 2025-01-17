@@ -7,7 +7,18 @@ import { calculateProductReviewMetrics } from "@/utils/helpers/reviews"
 import { Table, TableRow, TableCell, TableHead, TableCaption, TableBody } from "@/components/ui/table"
 
 interface SellerProfileProps {
-  seller: User & {products: (Product & { reviews: ProductReview[] })[]}
+  seller: User & {
+    products: ( Product & { 
+      reviews: ProductReview[],
+      cartItems: ({
+        cart: {
+          customer: {
+            image: string|null
+          }
+        }
+      })[]
+    })[]
+  }
 }
 
 export function SellerProfile({ seller }: SellerProfileProps) {
@@ -25,6 +36,8 @@ export function SellerProfile({ seller }: SellerProfileProps) {
     }
   }, [seller.products])
 
+  const customers = seller.products.flatMap(product => product.cartItems).map(cartItem => cartItem.cart.customer)
+
   return (
     <Card className="mb-6 w-full h-fit">
       <CardHeader className="flex flex-row items-center gap-4">
@@ -37,6 +50,17 @@ export function SellerProfile({ seller }: SellerProfileProps) {
           <div className="flex items-center text-sm text-muted-foreground">
             <CalendarDays className="mr-1 h-4 w-4" />
             Joined {new Date(seller.createdAt).toLocaleDateString()}
+          </div>
+          <div className="flex -space-x-3 overflow-hidden">
+            {customers.slice(0, 7).map((customer, index) => (
+              <Avatar key={index} className="inline-block h-6 w-6">
+                <AvatarImage src={customer.image!} alt="C" className="object-cover" />
+                <AvatarFallback>C</AvatarFallback>
+              </Avatar>
+            ))}
+            <p className="ml-6">
+              {customers.length} active customers
+            </p>
           </div>
         </div>
       </CardHeader>

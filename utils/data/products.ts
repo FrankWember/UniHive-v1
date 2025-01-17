@@ -49,7 +49,23 @@ export async function getSellerById (id: string) {
         where: { id }, 
         include: { 
             products: { 
-                include: { reviews: true } 
+                include: { 
+                    reviews: true,
+                    cartItems: {
+                        select: {
+                            cart: {
+                                select: {
+                                    customer: {
+                                        select: {
+                                            id: true,
+                                            image: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } 
             } 
         }
     })
