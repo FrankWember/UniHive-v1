@@ -9,6 +9,7 @@ export async function updateUserSettings(data: {
   name?: string
   student_id?: string
   phone_number?: string
+  bio?: string
 }) {
   const session = await auth()
   if (!session?.user?.id) {
@@ -21,6 +22,7 @@ export async function updateUserSettings(data: {
       name: data.name,
       studentId: data.student_id,
       phone: data.phone_number,
+      bio: data.bio,
     },
   })
 
