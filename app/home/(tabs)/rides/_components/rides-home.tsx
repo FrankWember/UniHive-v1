@@ -34,7 +34,7 @@ export function RidesHome() {
           <Map center={currentLocation} destination={destination!} />
         )}
       </div>
-      <div className="p-4 bg-background z-20">
+      <div className="p-4 z-20">
         <SearchDestination onDestinationSet={handleDestinationSet} />
       </div>
     </div>

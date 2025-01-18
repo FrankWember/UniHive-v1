@@ -63,7 +63,7 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({ onDestinat
       <DrawerTrigger asChild>
         <Button 
           size="lg"
-          className="w-full flex text-muted-foreground font-semibold justify-center space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700 border" 
+          className="w-full flex text-muted-foreground font-semibold justify-center space-x-4 bg-transparent/25 dark:bg-transparent/75 hover:border-stone-700 border backdrop-blur-md" 
         >
           <Search className="mr-2 h-4 w-4" /> Where to?
         </Button>
