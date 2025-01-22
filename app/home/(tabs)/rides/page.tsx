@@ -4,7 +4,7 @@ import { RidesHome } from './_components/rides-home'
 
 const page = () => {
   return (
-    <div className='h-screen w-screen pb-20'>
+    <div className='h-screen w-screen'>
       <RidesHome />
     </div>
   )
