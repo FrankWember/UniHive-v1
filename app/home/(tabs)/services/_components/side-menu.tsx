@@ -22,7 +22,9 @@ import {
   ClipboardList,
   ChevronDown,
   PanelRight,
-  MessageCircle
+  MessageCircle,
+  Podcast,
+  CreditCard
 } from "lucide-react"
 import { useCurrentUser } from '@/hooks/use-current-user'
 
@@ -32,7 +34,6 @@ export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
   const [openSeller, setOpenSeller] = React.useState(true)
   const [openCustomer, setOpenCustomer] = React.useState(true)
-  const user = useCurrentUser()
 
 
   return (
@@ -76,6 +77,10 @@ export function SideMenu({ className }: SidebarProps) {
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/inbox`)}>
                     <MessageCircle className="mr-2 h-4 w-4" />
                     Inbox
+                  </Button>
+                  <Button variant="ghost" className="w-full justify-start" onClick={() => router.push(`/home/services/billing`)}>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Billing
                   </Button>
                   <Button variant="ghost" className="w-full justify-start" onClick={() => router.push("/home/services/analytics")}>
                     <BarChart3 className="mr-2 h-4 w-4" />

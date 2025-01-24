@@ -6,6 +6,7 @@ import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage'
 import { currentUser } from "@/lib/auth";
 import { revalidatePath } from 'next/cache'
 import { Service } from "@prisma/client";
+import exp from "constants";
 
 export async function getServiceById(serviceId: string) {
   return await prisma.service.findUnique({
@@ -269,6 +270,14 @@ export async function getBookingsByUserId (userId: string) {
                 }
             },
             customer: true
+        }
+    })
+}
+
+export async function getUserSubscription (userId: string) {
+    return await prisma.subscription.findUnique({
+        where: {
+            userId: userId
         }
     })
 }
