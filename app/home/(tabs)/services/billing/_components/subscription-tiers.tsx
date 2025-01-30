@@ -7,7 +7,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { BeatLoader } from 'react-spinners'
 import { Icons } from "@/components/ui/icons"
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { upsertSubscription } from '@/actions/subscription'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useToast } from '@/hooks/use-toast'
@@ -68,60 +67,7 @@ export const SubscriptionTiers = () => {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    {typeof window !== 'undefined' && window.paypal ? ( // Check if PayPal is loaded
-                        <PayPalButtons
-                            style={{
-                                shape: "pill",
-                                layout: "vertical",
-                            }}
-                            createSubscription={async () => {
-                                const sub = await upsertSubscription({
-                                    userId: user!.id!,
-                                    paymentMethod: "PAYPAL",
-                                    subscriptionStatus: "PENDING"
-                                })
-                                if (sub) {
-                                    toast({
-                                        title: "Subscription Initiated",
-                                        description: "Your subscription has been initiated. You will receive an email confirmation shortly.",
-                                    })
-                                    return sub.id
-                                } else {
-                                    toast({
-                                        title: "Subscription Failed",
-                                        description: "There was an error initiating your subscription. Please try again later.",
-                                        variant: "destructive"
-                                    })
-                                    return ""
-                                }
-                            }}
-                            onApprove={async (data, actions) => {
-                                const sub = await upsertSubscription({
-                                    userId: user!.id!,
-                                    paymentMethod: "PAYPAL",
-                                    subscriptionStatus: "ACTIVE",
-                                    monthlyAmount: 30
-                                })
-                                if (sub) {
-                                    toast({
-                                        title: "Subscription Approved",
-                                        description: "Your subscription has been approved. You will receive an email confirmation shortly.",
-                                    })
-                                } else {
-                                    toast({
-                                        title: "Subscription Failed",
-                                        description: "There was an error approving your subscription. Please try again later.",
-                                        variant: "destructive"
-                                    })
-                                }
-                            }}
-                            />
-                    ):(
-                        <Button variant='secondary' disabled>
-                            Loading Paypal
-                            <BeatLoader />
-                        </Button> // Fallback UI while loading
-                    )}
+                    <Button>Subscribe</Button>
                 </CardFooter>
             </Card>
     )
