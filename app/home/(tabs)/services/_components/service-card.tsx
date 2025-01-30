@@ -5,10 +5,16 @@ import Image from 'next/image'
 import { Badge } from "@/components/ui/badge"
 import { Service, ServiceReview, User } from '@prisma/client'
 import Link from 'next/link'
-import { Star } from 'lucide-react'
+import { Star, Heart } from 'lucide-react'
+import { Share1Icon } from '@radix-ui/react-icons'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
-import { VerifiedIcon } from '@/components/icons/verified-icon'
 import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
+import { parseAvailability, getClosestSlot, getClosestDayOfTheWeekAvailable } from '@/utils/helpers/availability'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { likeService } from '@/actions/services'
+import { Spinner } from '@/components/icons/spinner'
 
 type ServiceProps = {
   service: Service & { 
@@ -25,78 +31,139 @@ type ServiceProps = {
 }
 
 export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
+  const { toast } = useToast()
+  const user = useCurrentUser()
+  const [isLiked, setIsLiked] = React.useState(false)
+  const [isSharing, setIsSharing] = React.useState(false)
+  const [isLiking, setIsLiking] = React.useState(false)
   const averageRating = calculateServiceReviewMetrics(service.reviews)?.overall!
+  const availability = parseAvailability(service.availability)
+  
+  const closestDay = getClosestDayOfTheWeekAvailable(availability!)
+
+  React.useEffect(() => {
+    const fetchLikeStatus = async () => {
+        try {
+            const response = await fetch(`/api/services/${service.id}/favourites`)
+            const data = await response.json()
+            setIsLiked(data.isLiked)
+        } catch (error) {
+            console.error('Error fetching like status:', error)
+        }
+    }
+
+    fetchLikeStatus()
+  }, [service.id])
+
+  const handleLike = async () => {
+      setIsLiking(true)
+      if (!user) {
+          toast({
+              title: 'Please log in to like a service',
+              description: 'You need to be logged in to like a service.',
+          })
+          return
+      }
+      const like = await likeService(service.id)
+      setIsLiked(like)
+      setIsLiking(false)
+  }
 
   let customerList: ({customer: {image: string|null}})[] = []
-
   service.offers.map(offer=>{
-    customerList.concat(offer.bookings)
+      customerList.concat(offer.bookings)
   })
+
+  const share = async () => {
+    try {
+        const message = `${service.name} Service.\nAvailable from $${service.price}\nCheck it out here:`
+        const serviceUrl = `https://unihive.vercel.app/home/services/${service.id}`
+        setIsSharing(true)
+
+        const fullMessage = `${message} ${serviceUrl}`
+
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: service.name, 
+                    text: message, 
+                    url: serviceUrl,
+                })
+            } catch (error) {
+                console.error('Error sharing:', error)
+            }
+        } else {
+            // Share to WhatsApp
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(fullMessage)}`
+            window.open(whatsappUrl, '_blank')
+
+            navigator.clipboard.writeText(fullMessage)
+            toast({ 
+                title: 'Copied to clipboard', 
+                description: 'The link has been copied to your clipboard',
+            })
+        }
+
+
+    } catch (error) {
+        console.error('Failed to copy to clipboard:', error)
+        toast({
+            title: 'Failed to copy to clipboard',
+            description: 'Please try again later',
+        })
+    } finally {
+        setIsSharing(false)
+    }
+  }
 
   return (
     <Link href={`/home/services/${service.id}`}>
-      <div className="flex flex-col border-none rounded gap-2">
+      <div className="flex flex-col border rounded-md shadow-lg p-2 gap-2 bg-muted text-sm">
         <div className="relative h-56 w-full">
           <Image
             src={service.images[0]}
             alt={service.name}
             fill
-            className="object-cover rounded"
+            className="object-cover rounded-md"
           />
           {service.isMobileService && (
             <Badge className="absolute top-2 right-2 text-xs h-4" variant='success'>
-              Mobile Service
+              Mobile
             </Badge>
           )}
         </div>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-1 justify-start">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src={service.provider.image!} className='object-cover' />
-              <AvatarFallback>{service.provider.name![0] || service.provider.email[0]}</AvatarFallback>
-            </Avatar>
-            <VerifiedIcon className='h-4 w-4'/>
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-md font-semibold truncate max-w-[8rem]">{service.name}</h2>
+            <span className="">
+              From <span className="text-green-500">$</span>{service.price}
+            </span>
+            <span className="text-xs">Available on {closestDay}</span>
+            <span className="text-xs text-muted-foreground max-w-[6rem] truncate">{service.defaultLocation}</span>
           </div>
-          <div className="flex flex-col gap-[0.1rem] justify-start">
-            <p className='text-[0.75rem] md:text-[0.85rem] underline truncate w-[8rem] md:w-[12rem]'>{service.name}</p>
-            <p className='space-x-1'>
-              <span className='text-[0.5rem]' >Starts at</span>
-              <span className='text-base md:text-lg font-semibold'>${(service.price).toFixed(2)}</span>
-            </p>
-
-            <div className='flex gap-1 justify-start items-center'>
-              <div className='flex flex-col gap-[0.1rem] justify-start'>
-                <div className="flex items-center space-x-1">
-                  <span className="text-xs font-semibold">{averageRating}</span>
-                  <div className="flex items-center">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-2 w-2 ${
-                          star <= Math.round(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-xs">
-                    ({service.reviews.length})
-                  </span>
-                </div>
-              </div>
-
-              <div className='flex-col gap-1 p-[0.2rem]'>
-                <div className="flex -space-x-3 overflow-hidden">
-                  {customerList.slice(0, 7).map((booking, index) => (
-                    <Avatar key={index} className="inline-block h-6 w-6">
-                      <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
-                      <AvatarFallback>C</AvatarFallback>
+          <div className="relative flex flex-col items-end justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Star className="text-yellow-400 fill-yellow-400 h-6 w-6" />
+              <span className="text-lg font-bold">{(averageRating || 0).toFixed(1)}</span>
+            </div>
+            <div className="flex gap-2 justify-end absolute bottom-6 z-20">
+              <Button variant="ghost" size="icon" onClick={handleLike} disabled={isLiking}>
+                  {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
+              </Button> 
+              <Button variant="ghost" size="icon" onClick={share} disabled={isSharing}>
+                  {isSharing ? <Spinner /> : <Share1Icon />}
+              </Button>
+            </div>
+            <div className='flex flex-col gap-1'>
+              <div className="flex -space-x-4 overflow-hidden">
+                {customerList.length > 0 && customerList.slice(0, 7).map((booking, index) => (
+                    <Avatar key={index} className="inline-block h-8 w-8">
+                        <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
+                        <AvatarFallback>C</AvatarFallback>
                     </Avatar>
-                  ))}
-                </div>
-                <p className="text-[0.4rem] md:text-[0.5rem] underline">
-                  {customerList.length} active customers
-                </p>
+                ))}
               </div>
+              <p className="text-xs underline ml-3">{customerList.length} active customers</p>
             </div>
           </div>
         </div>

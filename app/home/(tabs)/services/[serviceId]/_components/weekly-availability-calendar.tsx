@@ -5,6 +5,7 @@ import { addDays, format, isSameDay, startOfWeek, parseISO } from "date-fns"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Availability, CalendarEvent, generateEvents, formatTimeRange, parseAvailability } from "@/utils/helpers/calendar-helpers"
+import { consolidateTimeSlots } from '@/utils/helpers/availability'
 import { Prisma } from '@prisma/client'
 import { Table, TableCell, TableRow, TableBody } from '@/components/ui/table'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -15,44 +16,7 @@ interface WeeklyAvailabilityCalendarProps {
 
 type TimeSlot = [string, string];
 
-function consolidateTimeSlots(slots: TimeSlot[]): TimeSlot[] {
-  if (!slots || slots.length === 0) return [];
 
-  // Sort slots by start time
-  const sortedSlots = [...slots].sort((a, b) => a[0].localeCompare(b[0]));
-  const consolidated: TimeSlot[] = [];
-  let currentSlot: TimeSlot | null = null;
-
-  for (const slot of sortedSlots) {
-    if (!currentSlot) {
-      currentSlot = [...slot];
-      continue;
-    }
-
-    // Check if slots are consecutive
-    const currentEndTime = parseISO(`1970-01-01T${currentSlot[1]}`);
-    const nextStartTime = parseISO(`1970-01-01T${slot[0]}`);
-    const timeDiff = (nextStartTime.getTime() - currentEndTime.getTime()) / (1000 * 60);
-
-    if (timeDiff <= 0) {
-      // Overlapping or continuous slots
-      currentSlot[1] = slot[1];
-    } else if (timeDiff === 15) {
-      // Adjacent slots
-      currentSlot[1] = slot[1];
-    } else {
-      // Gap between slots, create new consolidated slot
-      consolidated.push([...currentSlot]);
-      currentSlot = [...slot];
-    }
-  }
-
-  if (currentSlot) {
-    consolidated.push(currentSlot);
-  }
-
-  return consolidated;
-}
 
 function formatTime(timeString: string): string {
   const date = parseISO(`1970-01-01T${timeString}`);

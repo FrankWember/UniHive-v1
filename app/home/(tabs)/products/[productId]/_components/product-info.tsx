@@ -110,7 +110,7 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
                 try {
                     await navigator.share({
                         title: product.name, 
-                        text: fullMessage, 
+                        text: message, 
                         url: productUrl,
                     })
                 } catch (error) {

@@ -30,7 +30,7 @@ export default async function SettingsPage() {
 
       {/* Content */}
       <div className="flex flex-col items-center w-full space-y-8 py-24">
-        <Card className="w-full max-w-md mx-3">
+        <Card className="w-full max-w-xl mx-3">
           <CardHeader>
             <CardTitle>Profile</CardTitle>
             <CardDescription>View and update your profile information.</CardDescription>

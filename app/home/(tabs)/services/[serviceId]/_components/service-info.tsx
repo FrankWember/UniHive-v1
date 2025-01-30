@@ -18,6 +18,7 @@ import { api } from "@/convex/_generated/api"
 import { Separator } from "@/components/ui/separator"
 import { format } from 'date-fns'
 import { BeatLoader } from "react-spinners"
+import { Spinner } from "@/components/icons/spinner"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -115,7 +116,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 try {
                     await navigator.share({
                         title: service.name, 
-                        text: fullMessage, 
+                        text: message, 
                         url: serviceUrl,
                     })
                 } catch (error) {
@@ -205,10 +206,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 </div>
                 <div className="flex gap-3 justify-end">
                     <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
-                        {isSharing ? <BeatLoader /> : <Share1Icon />}
+                        {isSharing ? <Spinner /> : <Share1Icon />}
                     </Button>
                     <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
-                        {isLiking ? <BeatLoader /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
+                        {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
                     </Button>        
                 </div>
             </div>
@@ -245,7 +246,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                             Portfolio
                         </Button>
                         <Button size="icon" onClick={createChat} disabled={creatingChat}>
-                            {creatingChat ? <BeatLoader/> : <MessageCircle className="h-4 w-4" />}
+                            {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
                         </Button>        
                     </div>
                 </div>

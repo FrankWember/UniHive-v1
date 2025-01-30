@@ -42,7 +42,7 @@ model User {
   favouriteServices FavoriteService[]
   serviceReviews    ServiceReview[]
   bookedServices    ServiceBooking[]
-  subscription     Subscription?
+  subscription      Subscription?
 
   products          Product[]
   favouriteProducts FavouriteProduct[]
@@ -201,27 +201,36 @@ model ServiceReview {
 }
 
 model Subscription {
-  id             String   @id @default(cuid())
-  userId         String   @unique
-  user           User     @relation(fields: [userId], references: [id])
-  status         SubscriptionStatus
-  paymentMethod  PaymentMethod
-  startDate      DateTime
-  endDate        DateTime
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id            String             @id @default(cuid())
+  userId        String             @unique
+  user          User               @relation(fields: [userId], references: [id])
+  status        SubscriptionStatus
+  paymentMethod PaymentMethod
+  plan          SubscriptionPlan   @default(STANDARD)
+  monthlyAmount Float              @default(30)
+  startDate     DateTime
+  endDate       DateTime
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
 }
 
 enum SubscriptionStatus {
   ACTIVE
   CANCELLED
   EXPIRED
+  PENDING
 }
 
 enum PaymentMethod {
   VENMO
   PAYPAL
   STRIPE
+}
+
+enum SubscriptionPlan {
+  STANDARD
+  PRO
+  PREMIUM
 }
 
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------//

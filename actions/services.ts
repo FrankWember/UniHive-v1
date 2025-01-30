@@ -25,7 +25,8 @@ export async function createService(values: z.infer<typeof ServiceSchema>) {
       providerId: session.user.id,
       images: values.images,
       defaultLocation: values.defaultLocation,
-      availability: splitTimeSlots(values.availability)
+      availability: splitTimeSlots(values.availability),
+      isMobileService: values.isMobile,
     },
   })
   return service
@@ -80,6 +81,7 @@ export async function updateService(
       defaultLocation: values.defaultLocation,
       availability: splitTimeSlots(values.availability),
       portfolio: values.portfolio,
+      isMobileService: values.isMobile,
     },
   })
 

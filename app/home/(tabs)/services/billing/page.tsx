@@ -8,7 +8,7 @@ import { SubscriptionContent } from './_components/subscription-content'
 const SubscriptionPage = async () => {
     const user = await currentUser()
     if (!user || !user.id) {
-        redirect(`/auth/sign-in?callbackUrl=${encodeURIComponent("/home/services/subscription")}`)
+        redirect(`/auth/sign-in?callbackUrl=${encodeURIComponent("/home/services/billing")}`)
     }
 
     const subscription = await getUserSubscription(user.id!)
