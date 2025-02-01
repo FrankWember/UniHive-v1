@@ -136,23 +136,23 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
         <div className="flex justify-between px-1">
           <div className="flex flex-col gap-1">
             <h2 className="text-[0.8rem] md:text-[1rem] font-semibold truncate w-[6rem] md:w-[10rem]">{service.name}</h2>
-            <span className="">
-              From <span className="text-green-500">$</span>{service.price}
+            <span className="text-xs">
+              From <span className="text-green-500 text-sm">$</span>{service.price}
             </span>
-            <span className="text-[0.6rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span>
-            <span className="text-[0.6rem] md:text-xs text-muted-foreground max-w-[6rem] truncate">{service.defaultLocation}</span>
+            <span className="text-[0.4rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span>
+            <span className="text-[0.4rem] md:text-xs text-muted-foreground max-w-[6rem] truncate">{service.defaultLocation}</span>
           </div>
           <div className="relative flex flex-col items-end justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Star className="fill-foreground h-4 w-4" />
-              <span className="text-base font-bold">{(averageRating || 0).toFixed(1)}</span>
+              <Star className="fill-foreground h-3 w-3 md:h-4 md:w-4" />
+              <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
             </div>
-            <div className="flex justify-end absolute bottom-[1.6rem] z-20" onClick={(e)=>e.stopPropagation()}>
+            <div className="flex justify-end absolute bottom-[1.5rem] z-20" onClick={(e)=>e.stopPropagation()}>
               <Button variant="ghost" size="icon" className="p-1" onClick={handleLike} disabled={isLiking}>
-                  {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
+                  {isLiking ? <Spinner /> : <Heart className={`h-2 w-2 md:h-4 md:w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
               </Button> 
               <Button variant="ghost" size="icon" className="p-1" onClick={share} disabled={isSharing}>
-                  {isSharing ? <Spinner /> : <Share1Icon />}
+                  {isSharing ? <Spinner /> : <Share1Icon className="h-2 w-2 md:h-4 md:w-4" />}
               </Button>
             </div>
             <div className='flex flex-col gap-1'>
@@ -164,7 +164,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
                     </Avatar>
                 ))}
               </div> */}
-              <p className="text-xs underline ml-3">{customerList.length} active customers</p>
+              <p className="text-[0.4rem] md:text-xs underline ml-3">{customerList.length} active customers</p>
             </div>
           </div>
         </div>

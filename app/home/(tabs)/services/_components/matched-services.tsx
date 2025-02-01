@@ -2,6 +2,7 @@ import React, { Suspense } from 'react'
 import { ServiceCard } from './service-card'
 import { getMatchedServices } from '@/utils/data/services'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ServicesContent } from './services-content'
 
 interface MatchedServicesProps {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -17,22 +18,14 @@ const ServicesSkeleton = () => (
   </div>
 )
 
-const ServicesContent: React.FC<MatchedServicesProps> = async ({ searchParams }) => {
+
+
+export const MatchedServices: React.FC<MatchedServicesProps> = async ({ searchParams }) => {
   const services = await getMatchedServices(searchParams)
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 gap-y-8 md:gap-5 px-3 py-6">
-      {services.map((service) => (
-        <ServiceCard key={service.id} service={service} />
-      ))}
-    </div>
-  )
-}
-
-export const MatchedServices: React.FC<MatchedServicesProps> = ({ searchParams }) => {
-  return (
     <Suspense fallback={<ServicesSkeleton />}>
-      <ServicesContent searchParams={searchParams} />
+      <ServicesContent services={services} />
     </Suspense>
   )
 }
