@@ -81,23 +81,25 @@ export const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 w-full gap-16 py-8'>
       <div className='flex flex-col gap-6'>
-        <div className="flex items-center justify-center space-x-4 w-full">
-          <h2 className="text-8xl font-bold text-center">
-            {averageRating || 0}
-          </h2>
-          <Star className="text-yellow-500 fill-yellow-500 h-20 w-20" />
-        </div>
-        <div className="space-y-2">
-          <h3 className='text-xl font-semibold'>Overall Rating</h3>
-          {[5, 4, 3, 2, 1].map((rating) => (
-            <div key={rating} className="flex items-center space-x-2">
-              <span className="flex text-sm min-w-16 text-muted-foreground">{rating} stars</span>
-              <Progress value={ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100) : 0} className="h-2 w-full" />
-              <span className="w-12 text-sm text-muted-foreground text-right">
-                {ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0) : 0}%
-              </span>
-            </div>
-          ))}
+        <div className="grid grid-cols-5 gap-4">
+          <div className="col-span-2 flex items-center justify-center space-x-4 w-full">
+            <h2 className="text-8xl font-bold text-center">
+              {averageRating || 0}
+            </h2>
+            <Star className="text-yellow-500 fill-yellow-500 h-20 w-20" />
+          </div>
+          <div className="col-span-3 space-y-2">
+            <h3 className='text-xl font-semibold'>Overall Rating</h3>
+            {[5, 4, 3, 2, 1].map((rating) => (
+              <div key={rating} className="flex items-center space-x-2">
+                <span className="flex text-sm text-muted-foreground">{rating}</span>
+                <Progress value={ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100) : 0} className="h-2 w-full" />
+                <span className="w-12 text-sm text-muted-foreground text-right">
+                  {ratingCounts? ((ratingCounts[rating] || 0) / reviews.length * 100).toFixed(0) : 0}%
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
         <div className='grid grid-cols-2 md:grid-cols-1 space-y-3 space-x-1'>
           <div className="flex justify-between items-center p-3 border-b">

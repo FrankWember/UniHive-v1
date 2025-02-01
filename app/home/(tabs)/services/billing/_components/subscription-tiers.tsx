@@ -10,6 +10,7 @@ import { Icons } from "@/components/ui/icons"
 import { upsertSubscription } from '@/actions/subscription'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { useToast } from '@/hooks/use-toast'
+import { PricingCard } from '@/components/payments/pricing-card'
 
 const paymentMethods = [
   { id: 'venmo', name: 'Venmo', icon: Icons.venmo },
@@ -28,47 +29,19 @@ export const SubscriptionTiers = () => {
     }
 
     return (
-            <Card className="w-full mx-auto">
-                <CardHeader>
-                    <CardTitle>Premium Subscription</CardTitle>
-                    <CardDescription>Get access to all premium features for $30/month</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <span className="text-4xl font-bold">$30</span>
-                        <span className="text-muted-foreground">/month</span>
-                    </div>
-                    <ul className="space-y-2">
-                        <li className="flex items-center">
-                            <Icons.check className="mr-2 h-4 w-4 text-green-500" />
-                            <span>Publish Services</span>
-                        </li>
-                        <li className="flex items-center">
-                            <Icons.check className="mr-2 h-4 w-4 text-green-500" />
-                            <span>Get Full Analytics</span>
-                        </li>
-                        <li className="flex items-center">
-                            <Icons.check className="mr-2 h-4 w-4 text-green-500" />
-                            <span>Online Portfolio</span>
-                        </li>
-                    </ul>
-                    <RadioGroup value={selectedMethod} onValueChange={setSelectedMethod}>
-                        {paymentMethods.map((method) => (
-                            <div key={method.id} className="flex items-center space-x-2">
-                                <RadioGroupItem value={method.id} id={method.id} className='text-white border-white' />
-                                <Label htmlFor={method.id} className="flex items-center">
-                                    <method.icon className="mr-2 h-4 w-4" />
-                                    {method.name}
-                                </Label>
-                            </div>
-                        ))}
-                    </RadioGroup>
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button>Subscribe</Button>
-                </CardFooter>
-            </Card>
+        <PricingCard 
+            name="Standard"
+            price={30} 
+            period="month" 
+            features={[
+                'Basic features', 
+                'Unlimited services', 
+                'Sales Analytics',
+                'Online Payments',
+                'Priority support'
+            ]} 
+            featured={true}
+            className='w-full'
+            />
     )
 }

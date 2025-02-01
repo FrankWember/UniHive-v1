@@ -78,8 +78,8 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  <span className="text-destructive">Delete Service</span>
+                  <Trash2 className="mr-2 h-4 w-4 text-red-500" />
+                  <span className="text-red-500">Delete Service</span>
                 </DropdownMenuItem>
               </AlertDialogTrigger>
               <AlertDialogContent>

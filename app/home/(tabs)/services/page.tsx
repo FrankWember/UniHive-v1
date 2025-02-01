@@ -9,6 +9,7 @@ import { currentUser } from '@/lib/auth'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import Image from 'next/image'
+import { Separator } from '@/components/ui/separator'
 
 const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const user = await currentUser()
@@ -54,8 +55,10 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         </div>
       </div>
 
-      <div>
-        <ScrollArea className="w-screen h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8">
+      <Separator />
+
+      <div className='px-4 py-2'>
+        <ScrollArea className="w-full h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8 rounded-lg bg-muted">
           <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
             <div className="flex flex-col gap-2">
               <Link href={`/home/services`}>
@@ -88,6 +91,8 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
           <ScrollBar orientation="horizontal" className='hidden' />
         </ScrollArea>
       </div>
+
+      <Separator />
 
       {/* Content */}
       <div className="w-full pb-24">

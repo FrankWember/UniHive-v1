@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { likeService } from '@/actions/services'
 import { Spinner } from '@/components/icons/spinner'
+import { useRouter } from 'next/navigation'
 
 type ServiceProps = {
   service: Service & { 
@@ -32,6 +33,7 @@ type ServiceProps = {
 
 export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   const { toast } = useToast()
+  const router = useRouter()
   const user = useCurrentUser()
   const [isLiked, setIsLiked] = React.useState(false)
   const [isSharing, setIsSharing] = React.useState(false)
@@ -117,8 +119,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   }
 
   return (
-    <Link href={`/home/services/${service.id}`}>
-      <div className="flex flex-col border rounded-md shadow-lg p-2 gap-2 bg-muted text-sm">
+      <div className="flex flex-col rounded-md p-2 gap-2 text-sm" onClick={() => router.push(`/home/services/${service.id}`)}>
         <div className="relative h-56 w-full">
           <Image
             src={service.images[0]}
@@ -132,9 +133,9 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
             </Badge>
           )}
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between px-1">
           <div className="flex flex-col gap-1">
-            <h2 className="text-md font-semibold truncate max-w-[8rem]">{service.name}</h2>
+            <h2 className="text-md font-bold truncate max-w-[10rem]">{service.name}</h2>
             <span className="">
               From <span className="text-green-500">$</span>{service.price}
             </span>
@@ -143,31 +144,30 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
           </div>
           <div className="relative flex flex-col items-end justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Star className="text-yellow-400 fill-yellow-400 h-6 w-6" />
-              <span className="text-lg font-bold">{(averageRating || 0).toFixed(1)}</span>
+              <Star className="fill-foreground h-4 w-4" />
+              <span className="text-base font-bold">{(averageRating || 0).toFixed(1)}</span>
             </div>
-            <div className="flex gap-2 justify-end absolute bottom-6 z-20">
-              <Button variant="ghost" size="icon" onClick={handleLike} disabled={isLiking}>
+            <div className="flex gap-1 justify-end absolute bottom-[1.6rem] z-20">
+              <Button variant="ghost" size="icon" className="p-1" onClick={handleLike} disabled={isLiking}>
                   {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
               </Button> 
-              <Button variant="ghost" size="icon" onClick={share} disabled={isSharing}>
+              <Button variant="ghost" size="icon" className="p-1" onClick={share} disabled={isSharing}>
                   {isSharing ? <Spinner /> : <Share1Icon />}
               </Button>
             </div>
             <div className='flex flex-col gap-1'>
-              <div className="flex -space-x-4 overflow-hidden">
+              {/* <div className="flex -space-x-4 overflow-hidden">
                 {customerList.length > 0 && customerList.slice(0, 7).map((booking, index) => (
                     <Avatar key={index} className="inline-block h-8 w-8">
                         <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
                         <AvatarFallback>C</AvatarFallback>
                     </Avatar>
                 ))}
-              </div>
+              </div> */}
               <p className="text-xs underline ml-3">{customerList.length} active customers</p>
             </div>
           </div>
         </div>
       </div>
-    </Link>
   )
 }

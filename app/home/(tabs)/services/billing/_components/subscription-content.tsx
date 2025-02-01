@@ -5,7 +5,7 @@ import React from 'react'
 
 export const SubscriptionContent = ({subscription}: {subscription: Subscription | null}) => {
   return (
-    <Card className="w-full mx-auto">
+    <Card className="w-full mx-auto bg-muted">
         <CardHeader>
             <CardTitle>My Subscription</CardTitle>
             <CardDescription>Manage your subscriptions and billing information</CardDescription>

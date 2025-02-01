@@ -177,7 +177,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
         <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
             <div className="flex flex-col gap-2">
                 <p className="text-3xl font-semibold">{service.name}</p>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                     <Star
                         className={`h-6 w-6 text-yellow-500 fill-yellow-500`}
                     />
@@ -190,69 +190,75 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                             Mobile
                         </Badge>
                     )}    
-                </div>
-                <span className="flex items-center mt-2">
+                </div> */}
+                <span className="flex items-end mt-2">
                     <span className='text-sm md:text-sm mr-4'>Starts at</span>
-                    <span className='text-green-500 font-semibold text-2xl'>$</span>
-                    <span className="font-semibold text-2xl mr-3">
+                    <span className='text-green-500 font-semibold text-4xl'>$</span>
+                    <span className="font-semibold text-4xl mr-3">
                         {service.price.toFixed(2)}
                     </span>
                 </span>
-                <div className="flex gap-3">
+                <div className="flex justify-between gap-3">
                     <Button className="flex items-center" variant="outline">
                         <MapPin className="mr-1 h-4 w-4" />
                         {service.defaultLocation}
                     </Button>
-                </div>
-                <div className="flex gap-3 justify-end">
-                    <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
-                        {isSharing ? <Spinner /> : <Share1Icon />}
-                    </Button>
-                    <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
-                        {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
-                    </Button>        
-                </div>
-            </div>
-            <Separator className="md:my-4" />
-            <div className="flex flex-col gap-2">
-                <h2 className="text-xl font-semibold">Provider</h2>
-                <div className="flex flex-col gap-2">
-                    <div className="flex gap-6 ">
-                        <Avatar className="h-16 w-16">
-                            <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} className="object-cover" />
-                            <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
-                        </Avatar>
-                        <span className="flex flex-col gap-1 items-center justify-start h-16">
-                            <span className="flex items-center justify-start text-lg font-semibold gap-1">
-                                {service.provider.name}
-                                <VerifiedIcon className="h-6 w-6" />
-                            </span>
-                            <span className="text-sm text-muted-foreground">Since {format(service.provider.createdAt, 'MMMM yyyy')}</span>
-                        </span>
-                    </div>
-                    {customerList.length > 0 && (
-                        <div className="flex -space-x-4 overflow-hidden">
-                        {customerList.slice(0, 7).map((booking, index) => (
-                            <Avatar key={index} className="inline-block h-8 w-8">
-                                <AvatarImage src={booking.customer.image!} alt="C" className="object-cover" />
-                                <AvatarFallback>C</AvatarFallback>
-                            </Avatar>
-                        ))}
-                        <p className="text-xs underline ml-3">{customerList.length} active customers</p>
-                    </div>
-                    )}
                     <div className="flex gap-3 justify-end">
-                        <Button variant="outline" onClick={() => router.push(`/home/services/provider/${service.provider.id}`)}>
-                            Portfolio
-                        </Button>
                         <Button size="icon" onClick={createChat} disabled={creatingChat}>
                             {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
+                        </Button> 
+                        <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
+                            {isSharing ? <Spinner /> : <Share1Icon />}
+                        </Button>
+                        <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
+                            {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
                         </Button>        
                     </div>
                 </div>
+                
             </div>
-            <Separator className="md:my-4" />
 
+            <Separator className="md:my-4" />
+            <div className="flex w-full">
+                <WeeklyAvailabilityCalendar availability={service.availability!} />
+            </div>
+
+            <Separator className="md:my-4" />
+            <div className="flex flex-col gap-3">
+                <h2 className="text-xl font-semibold">Meet Your Provider</h2>
+                <div className="flex gap-6 p-3 rounded-lg border w-full">
+                    <Avatar className="h-28 w-28">
+                        <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} className="object-cover" />
+                        <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col gap-2 w-full">
+                        <span className="flex items-center justify-start text-lg font-semibold gap-1">
+                            {service.provider.name}
+                            <VerifiedIcon className="h-6 w-6" />
+                        </span>
+                        <span className="text-sm text-muted-foreground">Since {service.provider.createdAt.toLocaleDateString()}</span>
+                        <div className="flex justify-between w-full">
+                            <span className="text-sm underline">{customerList.length} active customers</span>
+                            <div className="flex gap-3 justify-end">
+                                <Button variant="outline" onClick={() => router.push(`/home/services/provider/${service.provider.id}`)}>
+                                    Portfolio
+                                </Button>
+                                <Button size="icon" onClick={createChat} disabled={creatingChat}>
+                                    {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
+                                </Button>        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {service.provider.bio?.length! > 0 && (
+                <div className="flex flex-col gap-3 p-3 rounded-lg border">
+                    <h3 className="text-xl font-semibold">About</h3>
+                    <p>{service.provider.bio}</p>
+                </div>
+            )}
+
+            <Separator className="md:my-4" />
             <div className="grid grid-cols-8 gap-y-6 my-4">
                 <Star className="h-8 w-8" />
                 <div className="col-span-7 flex flex-col">
@@ -270,11 +276,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     <p className="text-sm text-muted-foreground">Get a full refund in case of cancellation or refusal within 48 hours</p>
                 </div>
             </div>
-            <Separator className="md:my-4" />
-
-            <div className="flex w-full">
-                <WeeklyAvailabilityCalendar availability={service.availability!} />
-            </div>
+            
         </div>
     )
 }
