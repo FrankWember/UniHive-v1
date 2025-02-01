@@ -119,7 +119,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   }
 
   return (
-      <div className="flex flex-col rounded-md p-2 gap-2 text-sm" onClick={() => router.push(`/home/services/${service.id}`)}>
+      <div className="flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden" onClick={() => router.push(`/home/services/${service.id}`)}>
         <div className="relative h-56 w-full">
           <Image
             src={service.images[0]}
@@ -135,19 +135,19 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
         </div>
         <div className="flex justify-between px-1">
           <div className="flex flex-col gap-1">
-            <h2 className="text-md font-bold truncate max-w-[10rem]">{service.name}</h2>
+            <h2 className="text-[0.8rem] md:text-[1rem] font-semibold truncate w-[6rem] md:w-[10rem]">{service.name}</h2>
             <span className="">
               From <span className="text-green-500">$</span>{service.price}
             </span>
-            <span className="text-xs">Available on {closestDay}</span>
-            <span className="text-xs text-muted-foreground max-w-[6rem] truncate">{service.defaultLocation}</span>
+            <span className="text-[0.6rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span>
+            <span className="text-[0.6rem] md:text-xs text-muted-foreground max-w-[6rem] truncate">{service.defaultLocation}</span>
           </div>
           <div className="relative flex flex-col items-end justify-between gap-2">
             <div className="flex items-center gap-2">
               <Star className="fill-foreground h-4 w-4" />
               <span className="text-base font-bold">{(averageRating || 0).toFixed(1)}</span>
             </div>
-            <div className="flex gap-1 justify-end absolute bottom-[1.6rem] z-20">
+            <div className="flex justify-end absolute bottom-[1.6rem] z-20" onClick={(e)=>e.stopPropagation()}>
               <Button variant="ghost" size="icon" className="p-1" onClick={handleLike} disabled={isLiking}>
                   {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
               </Button> 

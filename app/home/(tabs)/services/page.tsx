@@ -34,7 +34,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
   
   return (
-    <div className="flex flex-col min-h-screen w-full">
+    <div className="flex flex-col min-h-screen max-w-screen overscroll-x-none w-full">
       {/* Header  */}
       <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <div className="flex justify-start items-center gap-3">
@@ -57,7 +57,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
       <Separator />
 
-      <div className='px-4 py-2'>
+      <div className='p-2 max-w-screen'>
         <ScrollArea className="w-full h-36 md:h-40 whitespace-nowrap mt-24 px-4 md:px-8 rounded-lg bg-muted">
           <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
             <div className="flex flex-col gap-2">

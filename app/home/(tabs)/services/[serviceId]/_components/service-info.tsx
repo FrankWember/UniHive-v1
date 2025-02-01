@@ -1,7 +1,7 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Book, Calendar, Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
+import { Book, BriefcaseBusiness, Calendar, Heart, MapPin, MessageCircle, Router, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Service, ServiceOffer, User } from '@prisma/client'
 import { VerifiedIcon } from "@/components/icons/verified-icon"
@@ -218,12 +218,12 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 
             </div>
 
-            <Separator className="md:my-4" />
+            <Separator className="my-4" />
             <div className="flex w-full">
                 <WeeklyAvailabilityCalendar availability={service.availability!} />
             </div>
 
-            <Separator className="md:my-4" />
+            <Separator className="my-4" />
             <div className="flex flex-col gap-3">
                 <h2 className="text-xl font-semibold">Meet Your Provider</h2>
                 <div className="flex gap-6 p-3 rounded-lg border w-full">
@@ -238,10 +238,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                         </span>
                         <span className="text-sm text-muted-foreground">Since {service.provider.createdAt.toLocaleDateString()}</span>
                         <div className="flex justify-between w-full">
-                            <span className="text-sm underline">{customerList.length} active customers</span>
+                            <span className="text-[0.6rem] md:text-xs lg:text-sm underline">{customerList.length} active customers</span>
                             <div className="flex gap-3 justify-end">
-                                <Button variant="outline" onClick={() => router.push(`/home/services/provider/${service.provider.id}`)}>
-                                    Portfolio
+                                <Button variant="outline" size='icon' onClick={() => router.push(`/home/services/provider/${service.provider.id}`)}>
+                                    <BriefcaseBusiness />
                                 </Button>
                                 <Button size="icon" onClick={createChat} disabled={creatingChat}>
                                     {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
@@ -254,11 +254,11 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
             {service.provider.bio?.length! > 0 && (
                 <div className="flex flex-col gap-3 p-3 rounded-lg border">
                     <h3 className="text-xl font-semibold">About</h3>
-                    <p>{service.provider.bio}</p>
+                    <p className="text-sm text-muted-foreground">{service.provider.bio}</p>
                 </div>
             )}
 
-            <Separator className="md:my-4" />
+            <Separator className="my-4" />
             <div className="grid grid-cols-8 gap-y-6 my-4">
                 <Star className="h-8 w-8" />
                 <div className="col-span-7 flex flex-col">
