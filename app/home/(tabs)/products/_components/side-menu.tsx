@@ -24,7 +24,7 @@ export const SideMenu = () => {
           <PanelRight className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-[25rem]">
         <DropdownMenuLabel>Campus Marketplace</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>

@@ -17,14 +17,14 @@ export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
 
   if (!allowedRoles.includes(role!)) {
     return (
-      <div className="flex flex-col h-full w-full items-center justify-center gap-4 text-center">
-        <Card className="w-full max-w-md">
+      <div className="flex flex-col h-full w-full items-center justify-center gap-4">
+        <Card className="w-full max-w-md p-4">
           <CardHeader>
             <CardTitle>Unauthorized</CardTitle>
             <CardDescription>
               You are not authorized to access this page. You need to be a Subscribed Seller to access this page. Go to you settings and request an upgrade.
             </CardDescription>
-            <CardFooter className="flex justify-end">
+            <CardFooter className="flex gap-3 justify-end">
               <Button variant="outline" onClick={() => router.push("/home/services")}>
                 Home Page
               </Button>

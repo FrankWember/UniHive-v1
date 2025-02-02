@@ -49,7 +49,7 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
           <PanelRight className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent className="w-[25rem]">
         <DropdownMenuLabel>Service Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {isOwner ? (

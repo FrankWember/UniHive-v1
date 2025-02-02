@@ -74,7 +74,7 @@ export const ServicesContent = ({ services }: { services: ServiceProps[] }) => {
                 <ChevronsUpDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="">
             <DropdownMenuLabel>Filter Options</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <div className="p-2">
@@ -131,7 +131,7 @@ export const ServicesContent = ({ services }: { services: ServiceProps[] }) => {
                 <ChevronsUpDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
+          <DropdownMenuContent className="">
             <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={sortOption} onValueChange={setSortOption}>
