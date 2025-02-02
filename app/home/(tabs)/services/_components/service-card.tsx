@@ -134,7 +134,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
           )}
         </div>
         <div className="flex justify-between px-1">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-[0.15rem] md:gap-1">
             <h2 className="text-[0.8rem] md:text-[1rem] font-semibold truncate w-[6rem] md:w-[10rem]">{service.name}</h2>
             <span className="text-xs">
               From <span className="text-green-500 text-sm">$</span>{service.price}
