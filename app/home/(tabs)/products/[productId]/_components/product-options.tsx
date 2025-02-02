@@ -49,7 +49,7 @@ export const ProductOptions = ({ product }: ProductOptionsProps) => {
           <PanelRight className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[25rem]">
+      <DropdownMenuContent className="w-[20rem]">
         <DropdownMenuLabel>Product Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {isOwner ? (

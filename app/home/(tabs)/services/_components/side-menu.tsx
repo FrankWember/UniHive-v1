@@ -26,7 +26,7 @@ export function SideMenu({ className }: SidebarProps) {
           <PanelRight className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[25rem]">
+      <DropdownMenuContent className="w-[20rem]">
         <DropdownMenuLabel>Campus Marketplace</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
