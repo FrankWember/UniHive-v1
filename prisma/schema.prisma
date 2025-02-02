@@ -14,6 +14,7 @@ generator client {
 
 enum UserRole {
   STUDENT
+  SELLER
   ADMIN
 }
 
@@ -24,6 +25,7 @@ model User {
   bio           String?
   phone         String?
   email         String    @unique
+  
   emailVerified DateTime?
   image         String?
   password      String?
@@ -131,6 +133,9 @@ model Service {
   category        String[]
   availability    Json
   portfolio       String[] @default([])
+  isAvailable     Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt @default(now())
 
   provider User              @relation(fields: [providerId], references: [id])
   offers   ServiceOffer[]
@@ -243,6 +248,8 @@ model Driver {
   carModel      String
   carColor      String
   carCapacity   Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
@@ -259,6 +266,8 @@ model Ride {
   status        String
   isPaid        Boolean  @default(false)
   paymentId     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
 
   driver    Driver   @relation(fields: [driverId], references: [id])
   passenger User     @relation(fields: [passengerId], references: [id])
@@ -452,39 +461,6 @@ model AssignmentVote {
   @@unique([assignmentId, userId])
 }
 
-// model Chat {
-//   id            String @id @default(cuid())
-//   name          String
-//   studyGroupId  String?
-
-//   studyGroup   StudyGroup?       @relation(fields: [studyGroupId], references: [id])
-//   participants ChatParticipant[]
-//   messages     Message[]
-// }
-
-// model ChatParticipant {
-//   id     String @id @default(cuid())
-//   userId String
-//   chatId String
-
-//   user User @relation(fields: [userId], references: [id])
-//   chat Chat @relation(fields: [chatId], references: [id])
-
-//   @@unique([userId, chatId])
-// }
-
-// model Message {
-//   id       String   @id @default(cuid())
-//   chatId   String
-//   senderId String
-//   content  String
-//   files String[]
-//   sendTime DateTime @default(now())
-
-//   chat   Chat @relation(fields: [chatId], references: [id])
-//   sender User @relation(fields: [senderId], references: [id])
-// }
-
 // ------------------------------------------------------------------------------------------------------------------------ //
 // EVENTS
 
@@ -497,6 +473,8 @@ model Event {
   images      String[]
   dateTime    DateTime
   location    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @default(now())
 
   creator   User            @relation(fields: [creatorId], references: [id])
   attendees EventAttendee[]

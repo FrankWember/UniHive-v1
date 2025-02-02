@@ -4,6 +4,7 @@ import {prisma} from "@/prisma/connection"
 import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import { currentUser } from "@/lib/auth"
+import { UserRole } from "@prisma/client"
 
 export async function updateUserSettings(data: {
   name?: string
@@ -66,4 +67,14 @@ export async function updateProfileImage(url: string) {
   })
 
   revalidatePath('/home/settings')
+}
+
+export async function changeUserRole(userId: string, role: UserRole) {
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      role: role
+    }
+  })
+  return user
 }

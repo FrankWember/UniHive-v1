@@ -252,7 +252,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                 </div>
             </div>
             {service.provider.bio?.length! > 0 && (
-                <div className="flex flex-col gap-3 p-3 rounded-lg border">
+                <div className="flex flex-col gap-3 p-4 rounded-lg border">
                     <h3 className="text-xl font-semibold">About</h3>
                     <p className="text-sm text-muted-foreground">{service.provider.bio}</p>
                 </div>
