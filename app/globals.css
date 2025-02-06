@@ -103,9 +103,6 @@ html {
   scroll-margin-top: 4rem; /* Adjust this value based on your header height */
 }
 
-@import 'leaflet/dist/leaflet.css';
-@import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
-
 .map-container {
   position: fixed;
   top: 0;
