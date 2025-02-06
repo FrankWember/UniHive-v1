@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
+const PAYPAL_CLIENT_ID = process.env.NEXT_PRIVATE_PAYPAL_CLIENT_ID!;
 const PAYPAL_SECRET = process.env.PAYPAL_SECRET!;
 const PAYPAL_API_URL = process.env.PAYPAL_BASE_URL!;
 

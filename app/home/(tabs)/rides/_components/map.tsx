@@ -150,7 +150,7 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
   useEffect(() => {
     const initMap = async () => {
       const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+        apiKey: process.env.NEXT_PRIVATE_GOOGLE_MAPS_API_KEY!,
         version: "weekly",
         libraries: ["places"]
       })
