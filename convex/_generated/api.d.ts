@@ -14,7 +14,10 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as chats from "../chats.js";
+import type * as driver from "../driver.js";
 import type * as messages from "../messages.js";
+import type * as passenger from "../passenger.js";
+import type * as rides from "../rides.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,7 +29,10 @@ import type * as messages from "../messages.js";
  */
 declare const fullApi: ApiFromModules<{
   chats: typeof chats;
+  driver: typeof driver;
   messages: typeof messages;
+  passenger: typeof passenger;
+  rides: typeof rides;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
