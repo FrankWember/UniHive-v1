@@ -107,7 +107,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-zinc-200 border-zinc-400 dark:bg-zinc-900 dark:border-zinc-800">
+    <Card className="w-full max-w-2xl mx-auto bg-zinc-50 border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
       <CardHeader>
         <CardTitle>Driver Registration</CardTitle>
         <CardDescription>
@@ -299,7 +299,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                     <FormItem 
                         className={cn(
                             "flex flex-row items-center space-x-3 space-y-0 px-4 py-3 border rounded-lg cursor-pointer transition-colors",
-                            field.value ? "border-red-600 bg-red-600/10" : "border-zinc-800 hover:border-zinc-700"
+                            field.value ? "border-red-600 bg-red-600/10" : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-700"
                         )}>
                       <FormControl>
                         <Checkbox
@@ -325,7 +325,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                     <FormItem
                         className={cn(
                             "flex flex-row items-center space-x-3 space-y-0 px-4 py-3 border rounded-lg cursor-pointer transition-colors",
-                            field.value ? "border-red-600 bg-red-600/10" : "border-zinc-800 hover:border-zinc-700"
+                            field.value ? "border-red-600 bg-red-600/10" : "border-zinc-300 hover:border-zinc-400 dark:border-zinc-800 dark:hover:border-zinc-700"
                         )}>
                       <FormControl>
                         <Checkbox
