@@ -17,6 +17,7 @@ import { api } from '@/convex/_generated/api'
 import { likeProduct } from '@/actions/products'
 import { ProductRequest } from './product-request'
 import { BeatLoader } from 'react-spinners'
+import { APP_URL } from '@/constants/paths'
 
 interface ProductInfoProps {
     product: Product & {
@@ -102,7 +103,7 @@ export const ProductInfo = ({product, addToCart}: ProductInfoProps) => {
         try {
             const discountedPrice = product.discount? product.price - (product.price * product.discount / 100) : product.price
             const message = `${product.name} Service.\nAvailable at $${discountedPrice}\nCheck it out here:`
-            const productUrl = `https://unihive.vercel.app/home/products/${product.id}`
+            const productUrl = `${APP_URL}/home/products/${product.id}`
             const fullMessage = `${message} ${productUrl}`
 
             setIsSharing(true)

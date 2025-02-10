@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator"
 import { format } from 'date-fns'
 import { BeatLoader } from "react-spinners"
 import { Spinner } from "@/components/icons/spinner"
+import { APP_URL } from "@/constants/paths"
 
 interface ServiceInfoProps {
     service: Service & {
@@ -107,7 +108,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     const share = async () => {
         try {
             const message = `${service.name} Service.\nAvailable from $${service.price}\nCheck it out here:`
-            const serviceUrl = `https://unihive.vercel.app/home/services/${service.id}`
+            const serviceUrl = `${APP_URL}/home/services/${service.id}`
             setIsSharing(true)
 
             const fullMessage = `${message} ${serviceUrl}`

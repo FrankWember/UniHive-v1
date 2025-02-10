@@ -16,6 +16,7 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { likeService } from '@/actions/services'
 import { Spinner } from '@/components/icons/spinner'
 import { useRouter } from 'next/navigation'
+import { APP_URL } from '@/constants/paths'
 
 type ServiceProps = {
   service: Service & { 
@@ -79,7 +80,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   const share = async () => {
     try {
         const message = `${service.name} Service.\nAvailable from $${service.price}\nCheck it out here:`
-        const serviceUrl = `https://unihive.vercel.app/home/services/${service.id}`
+        const serviceUrl = `${APP_URL}/home/services/${service.id}`
         setIsSharing(true)
 
         const fullMessage = `${message} ${serviceUrl}`

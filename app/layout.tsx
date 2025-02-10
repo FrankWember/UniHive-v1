@@ -66,10 +66,10 @@ export default function RootLayout({
             type="image/<generated>"
             sizes="<generated>"
           />
-          <link 
-            rel="icon" 
-            href="/favicon.ico" 
-            sizes="32x32" 
+          <link
+            rel="manifest"
+            href="/manifest?<generated>"
+            type="application/manifest+json"
             />
         </head>
         <body
