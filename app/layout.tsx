@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { Analytics } from "@vercel/analytics/react"
 import { SessionProvider } from "next-auth/react";
+import { APP_URL } from "@/constants/paths";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,8 +18,31 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Unihive",
-  description: "Digitally empowered campus life. Enjoy your university experience!",
+  title: {
+    default: "Unihive",
+    template: "%s | unihive"
+  },
+  metadataBase: new URL(APP_URL),
+  keywords: [
+    "Unihive Marketplace", "Marketplace for University Students", "Student Marketplace", "Buy and Sell University Products", "Unihive", "University Services", "Student Services", "Campus Marketplace", "Unihive Platform", "Digital Marketplace for Students"
+  ],
+  openGraph: {
+    title: "Unihive Marketplace",
+    description: "A Platform for University Students to share their products and servcies",
+    creators: ["@Unihive"],
+    images: [`${APP_URL}/Unihive.png`],
+    url: APP_URL,
+    siteName: "Unihive",
+    
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@Unihive",
+    title: "Unihive Marketplace",
+    site: APP_URL,
+    description: "A Platform for University Students to share their products and servcies",
+    images: [`${APP_URL}/Unihive.png`],
+  },
 };
 
 export default function RootLayout({

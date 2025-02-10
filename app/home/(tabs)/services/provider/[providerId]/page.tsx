@@ -5,7 +5,46 @@ import { ProviderServices } from './_components/provider-services'
 import { getProviderById } from '@/utils/data/services'
 import { Skeleton } from "@/components/ui/skeleton"
 import { BackButton } from '@/components/back-button'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { APP_URL } from '@/constants/paths'
 
+export async function generateMetadata(
+  { params, parent } : { params: { providerId: string }; parent: ResolvingMetadata }
+) {
+  try {
+    const provider = await getProviderById(params.providerId)
+
+    if (!provider) {
+      return {
+        title: 'Provider not found',
+        description: 'The Provider you are looking for does not exist.',
+      }
+    }
+  
+    return {
+      openGraph: {
+        title: provider.name,
+        description: provider.bio,
+        images: [provider.image],
+        creators: [`@${provider.name || provider.email}`],
+        url: `${APP_URL}/home/products/providers${provider.id}`
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: provider.name,
+        description: provider.bio,
+        images: [provider.image],
+        creator: `@${provider.name || provider.email}`,
+        site: `${APP_URL}/home/products/providers/${provider.id}`
+      }
+    }
+  } catch (error) {
+    return {
+      title: 'Provider not found',
+      description: 'The Provider you are looking for does not exist.',
+    }
+  }
+}
 const ProviderPage = async ({ params }: { params: { providerId: string } }) => {
   const provider = await getProviderById(params.providerId)
 

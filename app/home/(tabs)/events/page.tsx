@@ -3,6 +3,23 @@ import { SearchBar } from './_components/search-bar'
 import { SideMenu } from './_components/side-menu'
 import { MatchedEvents } from './_components/matched-events'
 import { EventsProvider } from '@/contexts/events-context'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Events",
+  description: "Events on Unihive",
+  openGraph: {
+    title: "Events",
+    description: "Events on Unihive",
+    images: ["https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfMUoWNQlvYm2rFdR45xgNI7D1thwaiZzufosb"]
+  },
+  twitter: {
+    title: "Events",
+    description: "Events on Unihive",
+    card: "summary_large_image",
+    images: ["https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfMUoWNQlvYm2rFdR45xgNI7D1thwaiZzufosb"]
+  }
+}
 
 const EventsPage = ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   return (

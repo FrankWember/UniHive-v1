@@ -3,6 +3,46 @@ import { SellerProfile } from './_components/seller-profile'
 import { SellerProducts } from './_components/seller-products'
 import { getSellerById } from '@/utils/data/products'
 import { BackButton } from '@/components/back-button'
+import type { Metadata, ResolvingMetadata } from 'next'
+import { APP_URL } from '@/constants/paths'
+
+export async function generateMetadata(
+  { params, parent } : { params: { sellerId: string }; parent: ResolvingMetadata }
+) {
+  try {
+    const seller = await getSellerById(params.sellerId)
+
+    if (!seller) {
+      return {
+        title: 'Seller not found',
+        description: 'The Seller you are looking for does not exist.',
+      }
+    }
+  
+    return {
+      openGraph: {
+        title: seller.name,
+        description: seller.bio,
+        images: [seller.image],
+        creators: [`@${seller.name || seller.email}`],
+        url: `${APP_URL}/home/products/sellers${seller.id}`
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: seller.name,
+        description: seller.bio,
+        images: [seller.image],
+        creator: `@${seller.name || seller.email}`,
+        site: `${APP_URL}/home/products/sellers/${seller.id}`
+      }
+    }
+  } catch (error) {
+    return {
+      title: 'Seller not found',
+      description: 'The Seller you are looking for does not exist.',
+    }
+  }
+}
 
 export default async function SellerPage({ params }: { params: { sellerId: string } }) {
   const seller = await getSellerById(params.sellerId)
