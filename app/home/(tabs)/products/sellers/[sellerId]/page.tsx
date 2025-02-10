@@ -6,11 +6,18 @@ import { BackButton } from '@/components/back-button'
 import type { Metadata, ResolvingMetadata } from 'next'
 import { APP_URL } from '@/constants/paths'
 
+type Props = {
+  params: Promise<{ sellerId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
 export async function generateMetadata(
-  { params, parent } : { params: { sellerId: string }; parent: ResolvingMetadata }
-) {
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   try {
-    const seller = await getSellerById(params.sellerId)
+    const sellerId = (await params).sellerId
+    const seller = await getSellerById(sellerId)
 
     if (!seller) {
       return {
@@ -21,17 +28,17 @@ export async function generateMetadata(
   
     return {
       openGraph: {
-        title: seller.name,
-        description: seller.bio,
-        images: [seller.image],
+        title: seller.name || seller.email,
+        description: seller.bio!,
+        images: [seller.image!],
         creators: [`@${seller.name || seller.email}`],
         url: `${APP_URL}/home/products/sellers${seller.id}`
       },
       twitter: {
         card: 'summary_large_image',
-        title: seller.name,
-        description: seller.bio,
-        images: [seller.image],
+        title: seller.name || seller.email,
+        description: seller.bio!,
+        images: [seller.image!],
         creator: `@${seller.name || seller.email}`,
         site: `${APP_URL}/home/products/sellers/${seller.id}`
       }

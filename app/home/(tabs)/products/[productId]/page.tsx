@@ -9,11 +9,18 @@ import type { Metadata, ResolvingMetadata } from 'next'
 import { APP_URL } from '@/constants/paths'
 
  
+type Props = {
+  params: Promise<{ productId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
 export async function generateMetadata(
-  { params, parent } : { params: { productId: string }; parent: ResolvingMetadata }
-) {
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   try {
-    const product = await getProductById(params.productId)
+    const productId = (await params).productId
+    const product = await getProductById(productId)
 
     if (!product) {
       return {

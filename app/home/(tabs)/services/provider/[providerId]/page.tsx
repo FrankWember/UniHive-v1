@@ -8,11 +8,18 @@ import { BackButton } from '@/components/back-button'
 import type { Metadata, ResolvingMetadata } from 'next'
 import { APP_URL } from '@/constants/paths'
 
+type Props = {
+  params: Promise<{ providerId: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+ 
 export async function generateMetadata(
-  { params, parent } : { params: { providerId: string }; parent: ResolvingMetadata }
-) {
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   try {
-    const provider = await getProviderById(params.providerId)
+    const providerId = (await params).providerId
+    const provider = await getProviderById(providerId)
 
     if (!provider) {
       return {
@@ -23,17 +30,17 @@ export async function generateMetadata(
   
     return {
       openGraph: {
-        title: provider.name,
-        description: provider.bio,
-        images: [provider.image],
+        title: provider.name || provider.email,
+        description: provider.bio!,
+        images: [provider.image!],
         creators: [`@${provider.name || provider.email}`],
         url: `${APP_URL}/home/products/providers${provider.id}`
       },
       twitter: {
         card: 'summary_large_image',
-        title: provider.name,
-        description: provider.bio,
-        images: [provider.image],
+        title: provider.name || provider.email,
+        description: provider.bio!,
+        images: [provider.image!],
         creator: `@${provider.name || provider.email}`,
         site: `${APP_URL}/home/products/providers/${provider.id}`
       }
@@ -45,6 +52,7 @@ export async function generateMetadata(
     }
   }
 }
+
 const ProviderPage = async ({ params }: { params: { providerId: string } }) => {
   const provider = await getProviderById(params.providerId)
 

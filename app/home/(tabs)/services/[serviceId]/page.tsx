@@ -17,38 +17,39 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const serviceId = (await params).serviceId
- 
-  const service = await getServiceById(serviceId)
+  try {
+    const serviceId = (await params).serviceId
+  
+    const service = await getServiceById(serviceId)
 
-  if (!service) {
+    if (!service) {
+      return {
+        title: 'Service not found',
+        description: "The Service you are looking for does not exist"
+      }
+    }
+
+    const serviceDescription = `${service.name} is a ${service.category[0]} service provided by ${service.provider.name}. Available from ${service.price.toFixed(2)}. Book now!`
+  
+    return {
+      title: service.name,
+      description: serviceDescription,
+      openGraph: {
+        title: service.name,
+        description: serviceDescription,
+        images: service.images,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: service.name,
+        description: serviceDescription,
+        images: service.images,
+      }
+    }
+  } catch {
     return {
       title: 'Service not found',
-    }
-  }
-
-  const serviceDescription = `${service.name} is a ${service.category[0]} service provided by ${service.provider.name}. Available from ${service.price.toFixed(2)}. Book now!`
- 
-  return {
-    title: service.name,
-    description: serviceDescription,
-    openGraph: {
-      title: service.name,
-      description: serviceDescription,
-      images: [
-        {
-          url: service.images[0],
-          width: 800,
-          height: 600,
-          alt: service.name,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: service.name,
-      description: serviceDescription,
-      images: [service.images[0]],
+      description: "The Service you are looking for does not exist"
     }
   }
 }
