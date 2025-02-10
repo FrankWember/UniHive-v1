@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { sendEmail } from '@/lib/mail'
 import { ServiceReviewFormValues } from '@/constants/zod'
 import { calculateProductReviewMetrics } from '@/utils/helpers/reviews'
+import { APP_URL } from "@/constants/paths"
 
 export async function submitReview(serviceId: string, reviewerId: string, values: ServiceReviewFormValues) {
   const review = await prisma.serviceReview.create({
@@ -32,7 +33,7 @@ export async function submitReview(serviceId: string, reviewerId: string, values
       <p>A new review has been submitted for your service <strong>${review.service.name}</strong>.</p>
       <p>Rating: ${rating}/5</p>
       <p>Comment: ${review.comment}</p>
-      <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/${review.serviceId}" class="button">View Review</a>
+      <a href="${APP_URL}/home/services/${review.serviceId}" class="button">View Review</a>
     `
   })
 

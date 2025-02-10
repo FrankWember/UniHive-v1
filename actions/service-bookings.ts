@@ -9,6 +9,7 @@ import { BookingStatus } from "@prisma/client"
 import { ServiceBookingSchema } from "@/constants/zod"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { parseBookingTime } from "@/utils/helpers/availability"
+import { APP_URL } from "@/constants/paths"
 
 const getTimeRange = (time: JsonValue) => {
     const { startTime, endTime } = parseBookingTime(time) ?? {}
@@ -70,7 +71,7 @@ export async function createBooking(offerId: string, values: z.infer<typeof Serv
                 <p><strong>Date:</strong> ${values.date.toLocaleDateString()}</p>
                 <p><strong>Start Time:</strong> ${startTime.toLocaleTimeString()} - ${stopTime.toLocaleTimeString()}</p>
                 <p><strong>Location:</strong> ${values.location || offer.service.defaultLocation}</p>
-                <a href="${process.env.NEXT_PUBLIC_APP_URL}/home/services/${offer.service.id}/bookings/${booking.id}">View Booking</a>
+                <a href="${APP_URL}/home/services/${offer.service.id}/bookings/${booking.id}">View Booking</a>
             `
         })
 

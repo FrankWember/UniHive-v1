@@ -7,6 +7,7 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
 import { sendEmail } from '@/lib/mail'
 import { useToast } from '@/hooks/use-toast'
+import { APP_URL } from "@/constants/paths"
 
 export const AccountUpgrade = () => {
     const user = useCurrentUser()
@@ -23,7 +24,7 @@ export const AccountUpgrade = () => {
                 <h1>The Following User has requested an upgrade to premium account:</h1>
                 <p>Name: ${user?.name}</p>
                 <p>Email: ${user?.email}</p>
-                <p>Head out to the <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin">Admin Page</a> to upgrade this account.</p>
+                <p>Head out to the <a href="${APP_URL}/admin">Admin Page</a> to upgrade this account.</p>
             `
         })
         toast({

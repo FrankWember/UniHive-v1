@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { APP_URL } from "@/constants/paths"
 
 // Function to get the current domain
 const getCurrentDomain = () => {
@@ -7,7 +8,7 @@ const getCurrentDomain = () => {
     return window.location.origin;
   } else {
     // Server-side
-    return process.env.NEXT_PUBLIC_APP_URL || 'https://unihive-v1.vercel.app'; // Fallback to localhost if env var is not set
+    return APP_URL || 'https://unihive-v1.vercel.app'; // Fallback to localhost if env var is not set
   }
 };
 

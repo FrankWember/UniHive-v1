@@ -3,6 +3,7 @@
 import { prisma } from "@/prisma/connection"
 import { sendEmail } from "@/lib/mail"
 import { ProductReviewFormValues } from "@/constants/zod"
+import { APP_URL } from "@/constants/paths"
 
 export async function makeProductReview (productId: string, reviewerId: string, values: ProductReviewFormValues) {
     const review = await prisma.productReview.create({
@@ -29,7 +30,7 @@ export async function makeProductReview (productId: string, reviewerId: string, 
             <p>A new review has been submitted for your product <strong>${review.product.name}</strong>.</p>
             <p>Rating: ${rating}/5</p>
             <p>Comment: ${review.comment}</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${review.product.id}" class="button">View Review</a>
+            <a href="${APP_URL || "https://unihive-v1.vercel.app"}/home/products/${review.product.id}" class="button">View Review</a>
         `
     })
 

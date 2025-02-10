@@ -7,6 +7,7 @@ import { Product, User } from "@prisma/client"
 import { sendEmail } from "@/lib/mail"
 import { currentUser } from "@/lib/auth"
 import { revalidatePath } from "next/cache"
+import { APP_URL } from "@/constants/paths"
 
 
 export async function createProduct(values: z.infer<typeof productSchema>, sellerId: string) {
@@ -87,7 +88,7 @@ export async function requestDiscount(product: Product & { seller: User }, price
                 <li>Total Discount: $${(product.price * quantity - price * quantity).toFixed(2)}</li>
             </ul>
             <p>Login to your account to respond to this request.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${product.id}/requests" class="button">View Discount Request</a>
+            <a href="${APP_URL || "https://unihive-v1.vercel.app"}/home/products/${product.id}/requests" class="button">View Discount Request</a>
         `
     })
 
@@ -154,7 +155,7 @@ export async function acceptDiscountRequest (requestId: string) {
                 <li>Total Discount: $${(discount.product.price * discount.quantity - discount.price * discount.quantity).toFixed(2)}</li>
             </ul>
             <p>You can now check out the product in your cart.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/cart/${my_cart.id}" class="button">Checkout</a>
+            <a href="${APP_URL || "https://unihive-v1.vercel.app"}/home/products/cart/${my_cart.id}" class="button">Checkout</a>
         `
     })
 }
@@ -175,7 +176,7 @@ export async function rejectDiscountRequest (requestId: string) {
             <h2>Discount Request Rejected</h2>
             <p>Your discount request for ${discount.product.name} has been rejected.</p>
             <p>You can still buy the product at the original price.</p>
-            <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://unihive-v1.vercel.app"}/home/products/${discount.product.id}" class="button">View Product</a>
+            <a href="${APP_URL || "https://unihive-v1.vercel.app"}/home/products/${discount.product.id}" class="button">View Product</a>
         `
     })
 }
