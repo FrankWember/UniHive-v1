@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Loader } from '@googlemaps/js-api-loader'
 import { useTheme } from 'next-themes'
+import { useGoogleMaps } from '@/contexts/google-maps-context'
 
 interface MapProps {
   center: google.maps.LatLngLiteral
@@ -141,7 +141,8 @@ const darkModeStyle = [
 ]
 
 const Map: React.FC<MapProps> = ({ center, destination }) => {
-  const mapRef = useRef<HTMLDivElement>(null)
+  const mapRef = useRef<HTMLDivElement>(null);
+  const { google, isGoogleMapsLoaded } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [directionsService, setDirectionsService] = useState<google.maps.DirectionsService | null>(null)
   const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null)
@@ -149,13 +150,10 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
 
   useEffect(() => {
     const initMap = async () => {
-      const loader = new Loader({
-        apiKey: process.env.NEXT_PRIVATE_GOOGLE_MAPS_API_KEY!,
-        version: "weekly",
-        libraries: ["places"]
-      })
+      if (!isGoogleMapsLoaded || !google) {
+        return; // Don't proceed until Google Maps is loaded
+      }
 
-      const google = await loader.load()
       const newMap = new google.maps.Map(mapRef.current!, {
         center,
         zoom: 14,
@@ -196,18 +194,18 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
         {
           origin: center,
           destination: destination,
-          travelMode: google.maps.TravelMode.DRIVING,
+          travelMode: google!.maps.TravelMode.DRIVING,
         },
         (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
+          if (status === google!.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result)
 
             // Add custom markers for origin and destination
-            const originMarker = new google.maps.Marker({
+            const originMarker = new google!.maps.Marker({
               position: center,
               map: map,
               icon: {
-                path: google.maps.SymbolPath.CIRCLE,
+                path: google!.maps.SymbolPath.CIRCLE,
                 scale: 7,
                 fillColor: "#4285F4",
                 fillOpacity: 1,
@@ -216,11 +214,11 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
               },
             })
 
-            const destinationMarker = new google.maps.Marker({
+            const destinationMarker = new google!.maps.Marker({
               position: destination,
               map: map,
               icon: {
-                path: google.maps.SymbolPath.CIRCLE,
+                path: google!.maps.SymbolPath.CIRCLE,
                 scale: 7,
                 fillColor: "#EA4335",
                 fillOpacity: 1,

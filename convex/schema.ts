@@ -71,7 +71,7 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     }),
-    status: v.union(v.literal("PENDING"), v.literal("ACCEPTED"), v.literal("REJECTED")),
+    status: v.union(v.literal("PENDING"), v.literal("AGREED"), v.literal("ACCEPTED"), v.literal("REJECTED"), v.literal("CANCELED")),
     createdAt: v.string(),
     updatedAt: v.string(),
     acceptedAt: v.optional(v.string()),
@@ -83,8 +83,9 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     })),
+    price: v.number()
   }),
-  rideOffers: defineTable({
+  ride: defineTable({
     passengerId: v.id("passengers"),
     pickupLocation: v.object({
       latitude: v.number(),
@@ -94,7 +95,7 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     }),
-    status: v.union(v.literal("PENDING"), v.literal("ACCEPTED"), v.literal("REJECTED")),
+    status: v.union(v.literal("PENDING"), v.literal("STOPPED"), v.literal("COMPLETED"), v.literal("PAID")),
     createdAt: v.string(),
     updatedAt: v.string(),
     acceptedAt: v.optional(v.string()),
@@ -106,8 +107,9 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     })),
-    price: v.number(),
-    driverPayment: v.optional(v.object({
+    percentageCompleted: v.optional(v.number()),
+    estimatedPrice: v.number(),
+    payment: v.optional(v.object({
       amount: v.number(),
       currency: v.string(),
       status: v.union(v.literal("PENDING"), v.literal("COMPLETED"), v.literal("FAILED")),

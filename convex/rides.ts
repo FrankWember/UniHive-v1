@@ -44,16 +44,18 @@ args: {
     pickupLat: v.number(),
     pickupLon: v.number(),
     dropoffLat: v.number(),
-    dropoffLon: v.number()
+    dropoffLon: v.number(),
+    price: v.number(),
 },
 handler: async (ctx, args) => {
-    const { passengerId, pickupLat, pickupLon, dropoffLat, dropoffLon } = args;
+    const { passengerId, pickupLat, pickupLon, dropoffLat, dropoffLon, price } = args;
     
     const rideRequestId = await ctx.db.insert("rideRequests", {
     passengerId,
     pickupLocation: { latitude: pickupLat, longitude: pickupLon },
     dropoffLocation: { latitude: dropoffLat, longitude: dropoffLon },
     status: "PENDING",
+    price,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
     });
