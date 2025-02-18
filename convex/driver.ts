@@ -63,3 +63,34 @@ export const updateDriverStatus = mutation({
     await ctx.db.patch(driverId, { availabilityStatus: status });
   },
 });
+
+
+export const acceptRideRequest = mutation({
+  args: { 
+    rideRequestId: v.id("rideRequests"),
+    driverId: v.id("drivers"),
+  },
+  handler: async (ctx, args) => {
+    const { rideRequestId, driverId } = args;
+    
+    const rideRequest = await ctx.db.patch(rideRequestId, { status: "ACCEPTED" });
+    
+    await ctx.db.patch(driverId, { availabilityStatus: "AVAILABLE" });
+    
+    return rideRequest;
+  },
+});
+
+export const rejectRideRequest = mutation({
+  args: {
+    rideRequestId: v.id("rideRequests"),
+  },
+  handler: async (ctx, args) => {
+    const { rideRequestId } = args;
+    
+    const rideRequest = await ctx.db.patch(rideRequestId, { status: "REJECTED" });
+
+    return rideRequest;
+  },
+});
+

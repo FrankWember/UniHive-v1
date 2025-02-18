@@ -68,3 +68,59 @@ export const getPassengerByUserId = query({
     return passenger
   }
 })
+
+export const agreeToRideRequest = mutation({
+  args: { 
+    rideRequestId: v.id("rideRequests"),
+  },
+  handler: async (ctx, args) => {
+    const { rideRequestId } = args;
+    
+    const rideRequest = await ctx.db.patch(rideRequestId, { status: "AGREED" });
+    
+    return rideRequest;
+  },
+});
+
+
+export const cancelRideRequest = mutation({
+  args: {
+    rideRequestId: v.id("rideRequests"),
+  },
+  handler: async (ctx, args) => {
+    const { rideRequestId } = args;
+    
+    const rideRequest = await ctx.db.patch(rideRequestId, { status: "CANCELED" });
+
+    return rideRequest;
+  },
+});
+
+export const payRide = mutation({
+  args: { 
+    rideId: v.id("rideRequests"),
+    payment: v.object({
+      amount: v.number(),
+      currency: v.string(),
+      paymentMethod: v.union(v.literal("STRIPE"), v.literal("CASH"), v.literal("PAYPAL"), v.literal("VENMO")),
+      paymentId: v.optional(v.string()),
+    })
+  },
+  handler: async (ctx, args) => {
+    const { rideId, payment } = args;
+    
+    const ride = await ctx.db.patch(rideId, { 
+      payment: {
+        amount: payment.amount, 
+        currency: payment.currency, 
+        paymentMethod: payment.paymentMethod, 
+        paymentId: payment.paymentId, 
+        status: "COMPLETED",
+        createdAt: new Date().toISOString(), 
+        updatedAt: new Date().toISOString()  
+      }
+    });
+
+    return ride;
+  },
+});

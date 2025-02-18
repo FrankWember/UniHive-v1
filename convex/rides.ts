@@ -63,3 +63,42 @@ handler: async (ctx, args) => {
     return rideRequestId;
 },
 });
+
+export const getRide = query({
+  args: {
+    rideId: v.id("rideRequests")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.query("rideRequests")
+      .filter(q=>q.eq(q.field("_id"), args.rideId))
+      .first()
+  }
+})
+
+export const updateRideStatus = mutation({
+  args: { 
+    rideId: v.id("rideRequests"),
+    status: v.union(v.literal("PICKED_UP"), v.literal("STOPPED"), v.literal("COMPLETED"))
+  },
+  handler: async (ctx, args) => {
+    const { rideId, status } = args;
+    
+    const ride = await ctx.db.patch(rideId, { status });
+
+    return ride;
+  },
+});
+
+export const updateRidePrice = mutation({
+  args: { 
+    rideId: v.id("rideRequests"),
+    price: v.number()
+  },
+  handler: async (ctx, args) => {
+    const { rideId, price } = args;
+    
+    const ride = await ctx.db.patch(rideId, { price });
+
+    return ride;
+  },
+});

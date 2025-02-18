@@ -71,7 +71,17 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     }),
-    status: v.union(v.literal("PENDING"), v.literal("AGREED"), v.literal("ACCEPTED"), v.literal("REJECTED"), v.literal("CANCELED")),
+    status: v.union(
+      v.literal("PENDING"), 
+      v.literal("AGREED"), 
+      v.literal("ACCEPTED"), 
+      v.literal("REJECTED"), 
+      v.literal("CANCELED"), 
+      v.literal("PICKED_UP"), 
+      v.literal("STOPPED"), 
+      v.literal("COMPLETED"), 
+      v.literal("PAID")
+    ),
     createdAt: v.string(),
     updatedAt: v.string(),
     acceptedAt: v.optional(v.string()),
@@ -83,32 +93,9 @@ export default defineSchema({
       latitude: v.number(),
       longitude: v.number()
     })),
-    price: v.number()
-  }),
-  ride: defineTable({
-    passengerId: v.id("passengers"),
-    pickupLocation: v.object({
-      latitude: v.number(),
-      longitude: v.number()
-    }),
-    dropoffLocation: v.object({
-      latitude: v.number(),
-      longitude: v.number()
-    }),
-    status: v.union(v.literal("PENDING"), v.literal("STOPPED"), v.literal("COMPLETED"), v.literal("PAID")),
-    createdAt: v.string(),
-    updatedAt: v.string(),
-    acceptedAt: v.optional(v.string()),
-    rejectedAt: v.optional(v.string()),
-    driverId: v.optional(v.id("drivers")),
-    driverRating: v.optional(v.number()),
-    driverStatus: v.optional(v.union(v.literal("AVAILABLE"), v.literal("BUSY"), v.literal("OFFLINE"))),
-    driverCurrentLocation: v.optional(v.object({
-      latitude: v.number(),
-      longitude: v.number()
-    })),
+    price: v.optional(v.number()),
+    estimatedPrice: v.optional(v.number()),
     percentageCompleted: v.optional(v.number()),
-    estimatedPrice: v.number(),
     payment: v.optional(v.object({
       amount: v.number(),
       currency: v.string(),
