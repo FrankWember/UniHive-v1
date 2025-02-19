@@ -34,7 +34,7 @@ export const findClosestDriver = query({
         }
       }
       
-      return { closestDriver, distance: minDistance };
+      return { driver: closestDriver, distance: minDistance };
     },
   });
   

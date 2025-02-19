@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const RegisterDriver = mutation({
@@ -92,5 +92,16 @@ export const rejectRideRequest = mutation({
 
     return rideRequest;
   },
+});
+
+export const getDriver = query({
+  args: {
+    driverId: v.id("drivers")
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.query("drivers")
+      .filter(q=>q.eq(q.field("_id"), args.driverId))
+      .first()
+  }
 });
 

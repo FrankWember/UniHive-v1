@@ -64,8 +64,12 @@ export const getDistanceBetweenPoints = async (
       );
     });
   } catch (error) {
-    console.error("Google Maps API loading error:", error);
-    return null; // Return null on error
+    return calculateDistance({
+      lat1: origin.lat,
+      lon1: origin.lng,
+      lat2: destination.lat,
+      lon2: destination.lng
+    });
   }
 };
 

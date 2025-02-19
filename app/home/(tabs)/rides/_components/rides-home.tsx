@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { PanelRight } from 'lucide-react'
 import { SideMenu } from './side-menu'
 import { useCurrentUser } from '@/hooks/use-current-user'
+import { RideDrawer } from './ride-drawer'
 
 
 
@@ -55,6 +56,7 @@ export function RidesHome() {
         {currentLocation && (
           <Map center={currentLocation} destination={destination!} />
         )}
+        <RideDrawer />
       </div>
       
     </div>

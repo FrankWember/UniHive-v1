@@ -51,51 +51,28 @@ export const DialogDrawerWrapper = ({
       return () => document.removeEventListener("keydown", down)
     }, [])
   
-    if (isMobile) {
-      return (
-        <Drawer open={searchIsOpen} onOpenChange={setSearchIsOpen}>
-          <DrawerTrigger asChild>
-            <Button variant="secondary">
-              <Search className="mr-2 h-4 w-4" /> Where to?
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>{title}</DrawerTitle>
-              <DrawerDescription>{description}</DrawerDescription>
-            </DrawerHeader>
-            {children}
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button variant="outline" className="w-full">
-                  Cancel
-                </Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      )
-    } else {
-      return (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button variant="secondary">
-              <Search className="mr-2 h-4 w-4" /> Where to?
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogDescription>{description}</DialogDescription>
-            </DialogHeader>
-            {children}
-            <DialogFooter className="flex justify-end gap-2">
-              <DialogClose asChild>
-                <Button variant="secondary">Cancel</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )
-    }
+    return (
+      <Drawer open={searchIsOpen} onOpenChange={setSearchIsOpen}>
+        <DrawerTrigger asChild>
+          <Button variant="secondary">
+            <Search className="mr-2 h-4 w-4" /> Where to?
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription>{description}</DrawerDescription>
+          </DrawerHeader>
+          {children}
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <Button variant="outline" className="w-full">
+                Cancel
+              </Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    )
+  
   }
