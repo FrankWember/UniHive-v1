@@ -43,17 +43,19 @@ args: {
     passengerId: v.id("passengers"),
     pickupLat: v.number(),
     pickupLon: v.number(),
+    pickupAddress: v.string(),
     dropoffLat: v.number(),
     dropoffLon: v.number(),
+    dropoffAddress: v.string(),
     price: v.number(),
 },
 handler: async (ctx, args) => {
-    const { passengerId, pickupLat, pickupLon, dropoffLat, dropoffLon, price } = args;
+    const { passengerId, pickupLat, pickupLon, pickupAddress, dropoffLat, dropoffLon, dropoffAddress, price } = args;
     
     const rideRequestId = await ctx.db.insert("rideRequests", {
     passengerId,
-    pickupLocation: { latitude: pickupLat, longitude: pickupLon },
-    dropoffLocation: { latitude: dropoffLat, longitude: dropoffLon },
+    pickupLocation: { latitude: pickupLat, longitude: pickupLon, address: pickupAddress },
+    dropoffLocation: { latitude: dropoffLat, longitude: dropoffLon, address: dropoffAddress },
     status: "PENDING",
     price,
     createdAt: new Date().toISOString(),
@@ -74,6 +76,36 @@ export const getRide = query({
       .first()
   }
 })
+
+export const getRideRequestsSortedByDistance = query({
+  args: {
+    lat: v.number(),
+    lon: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { lat, lon } = args;
+
+    const rideRequests = await ctx.db.query("rideRequests").collect();
+
+    return rideRequests.sort((a, b) => {
+      const distanceA = calculateDistance({
+        lat1: lat,
+        lon1: lon,
+        lat2: a.pickupLocation.latitude,
+        lon2: a.pickupLocation.longitude,
+      });
+
+      const distanceB = calculateDistance({
+        lat1: lat,
+        lon1: lon,
+        lat2: b.pickupLocation.latitude,
+        lon2: b.pickupLocation.longitude,
+      });
+
+      return distanceA - distanceB;
+    });
+  },
+});
 
 export const updateRideStatus = mutation({
   args: { 

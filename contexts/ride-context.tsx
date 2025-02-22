@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useCallback, useState, ReactNode } from 'react';
+import { createContext, useContext, useCallback, useState, useEffect, ReactNode } from 'react';
 import { useQuery, useMutation } from 'convex/react';
 import { api } from '../convex/_generated/api';
 import { Id } from '../convex/_generated/dataModel';
@@ -32,7 +32,7 @@ type Payment = {
   paymentId?: string;
 };
 
-type Driver = {
+export type Driver = {
     _id: Id<"drivers">;
     userId: string;
     age: number;
@@ -51,11 +51,11 @@ type Driver = {
     updatedAt: string;
 }
 
-type RideRequest = {
+export type RideRequest = {
   _id: Id<"rideRequests">;
   passengerId: Id<"passengers">;
-  pickupLocation: Location;
-  dropoffLocation: Location;
+  pickupLocation: Location & { address: string };
+  dropoffLocation: Location & { address: string };
   status: RideStatus;
   createdAt: string;
   updatedAt: string;
@@ -75,7 +75,6 @@ type RideContextType = {
     activeRideId: Id<"rideRequests"> | null;
     setActiveRideId: (rideId: Id<"rideRequests"> | null) => void;
     activeRide: RideRequest | null;
-    driver: Driver | null;
     isLoading: boolean;
     error: Error | null;
     findNearestDriver: (passengerLat: number, passengerLon: number) => Promise<void>;
@@ -83,8 +82,10 @@ type RideContextType = {
         passengerId: Id<"passengers">,
         pickupLat: number,
         pickupLon: number,
+        pickupAddress: string,
         dropoffLat: number,
         dropoffLon: number,
+        dropoffAddress: string,
         price: number
     ) => Promise<Id<"rideRequests">>;
     updateRideStatus: (rideId: Id<"rideRequests">, status: "PICKED_UP" | "STOPPED" | "COMPLETED") => Promise<void>;
@@ -93,6 +94,9 @@ type RideContextType = {
         driver: any;
         distance: number;
     } | null;
+    allClosestRides: RideRequest[] | undefined;
+    currentLocation: google.maps.LatLngLiteral | null;
+    getMyDriverAccount: (userId: string | null) => Driver | null | undefined;
 };
 
 // Create context
@@ -100,6 +104,7 @@ const RideContext = createContext<RideContextType | undefined>(undefined);
 
 // Provider component
 export function RideProvider({ children }: { children: ReactNode }) {
+    const [currentLocation, setCurrentLocation] = useState<google.maps.LatLngLiteral | null>(null)
     const [activeRideId, setActiveRideId] = useState<Id<"rideRequests"> | null>(null);
     const [nearestDriver, setNearestDriver] = useState<{ driver: Driver|null; distance: number } | null>(null);
     const [error, setError] = useState<Error | null>(null);
@@ -110,10 +115,10 @@ export function RideProvider({ children }: { children: ReactNode }) {
     api.rides.getRide, 
     activeRideId ? { rideId: activeRideId } : "skip"
   ) || null;
-  const driver = useQuery(api.driver.getDriver, activeRide?.driverId ? { driverId: activeRide?.driverId } : "skip") || null;
   const createRideRequest = useMutation(api.rides.createRideRequest);
   const updateRideStatusMutation = useMutation(api.rides.updateRideStatus);
   const updateRidePriceMutation = useMutation(api.rides.updateRidePrice);
+
 
   const findNearestDriver = useCallback(async (passengerLat: number, passengerLon: number) => {
     setIsLoading(true);
@@ -133,8 +138,10 @@ export function RideProvider({ children }: { children: ReactNode }) {
     passengerId: Id<"passengers">,
     pickupLat: number,
     pickupLon: number,
+    pickupAddress: string,
     dropoffLat: number,
     dropoffLon: number,
+    dropoffAddress: string,
     price: number
   ) => {
     setIsLoading(true);
@@ -143,8 +150,10 @@ export function RideProvider({ children }: { children: ReactNode }) {
         passengerId,
         pickupLat,
         pickupLon,
+        pickupAddress,
         dropoffLat,
         dropoffLon,
+        dropoffAddress,
         price
       });
       return rideId;
@@ -189,18 +198,45 @@ export function RideProvider({ children }: { children: ReactNode }) {
     }
   }, [updateRidePriceMutation]);
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        },
+        (error) => {
+          console.error("Error getting location:", error)
+        }
+      )
+    }
+  }, [])
+
+  const allClosestRides = useQuery(
+    api.rides.getRideRequestsSortedByDistance, 
+    currentLocation?.lat && currentLocation.lng ? { lat: currentLocation?.lat, lon: currentLocation?.lng! } : "skip"
+  ) 
+
+  const getMyDriverAccount = (userId: string | null) => {
+    return useQuery(api.driver.getDriverByUserId, userId ? { userId } : "skip")
+  }
+
   const value = {
     activeRideId,
     setActiveRideId, 
     activeRide,
-    driver,
     isLoading,
     error,
     findNearestDriver,
     createRide,
     updateRideStatus,
     updatePrice,
-    nearestDriver
+    nearestDriver,
+    allClosestRides,
+    currentLocation,
+    getMyDriverAccount
   };
 
   return (

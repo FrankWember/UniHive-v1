@@ -30,7 +30,7 @@ export const MultiFileUpload: React.FC<MultiFileUploadProps> = ({ value, onChang
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: generateClientDropzoneAccept(['application/pdf', 'application/zip', 'application/x-rar-compressed']),
+    accept: generateClientDropzoneAccept(['application/pdf', 'application/zip', 'application/x-rar-compressed', 'image/png', 'image/jpeg']),
     maxFiles: maxFiles - value.length,
     disabled: isUploading || value.length >= maxFiles,
     multiple: true,

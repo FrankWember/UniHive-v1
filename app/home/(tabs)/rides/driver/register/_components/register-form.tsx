@@ -38,6 +38,7 @@ import { MultiFileUpload } from '@/components/multi-file-upload'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { DotIcon, DotFilledIcon } from '@radix-ui/react-icons'
+import { BeatLoader } from 'react-spinners'
 
 const driverSchema = z.object({
   age: z.number().min(18, "You must be at least 18 years old"),
@@ -56,6 +57,7 @@ const driverSchema = z.object({
 type RegistrationData = z.infer<typeof driverSchema>
 
 export const RegistrationForm = ({ userId }: { userId: string }) => {
+  const [isLoading, setIsLoading] = React.useState(false)
   const [step, setStep] = React.useState(1)
   const router = useRouter()
   const registerDriver = useMutation(api.driver.RegisterDriver)
@@ -79,6 +81,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
 
   const onSubmit = async (data: RegistrationData) => {
     try {
+      setIsLoading(true)
       await registerDriver({
         userId,
         age: data.age,
@@ -92,9 +95,11 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
         carStatus: data.carStatus,
         availabilityStatus: "OFFLINE",
       })
-      router.push("/dashboard") // Redirect after successful registration
+      router.push("/home/rides")
     } catch (error) {
-      console.error("Registration failed:", error)
+      console.error("Registration failed:")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -107,18 +112,18 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto bg-zinc-50 border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
-      <CardHeader>
-        <CardTitle>Driver Registration</CardTitle>
-        <CardDescription>
-          {step === 1 && "Step 1: Personal Information"}
-          {step === 2 && "Step 2: Vehicle Information"}
-          {step === 3 && "Step 3: Terms & Agreements"}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <Card className="w-full max-w-2xl mx-auto my-20 bg-zinc-50 border-zinc-200 dark:bg-zinc-900 dark:border-zinc-800">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <CardHeader>
+              <CardTitle>Driver Registration</CardTitle>
+              <CardDescription>
+                {step === 1 && "Step 1: Personal Information"}
+                {step === 2 && "Step 2: Vehicle Information"}
+                {step === 3 && "Step 3: Terms & Agreements"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
             {step === 1 && (
               <div className="space-y-4">
                 <div className='grid grid-cols-2 gap-3'>
@@ -346,31 +351,33 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                 />
               </div>
             )}
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={prevStep}
-          disabled={step === 1}
-        >
-          Previous
-        </Button>
-        <div className='flex items-center gap-2'>
-            {Array.from({ length: 3 }, (_, index) => {
-              if (step === index + 1) {
-                return <DotFilledIcon key={index} className='h-6 w-6' />;
-              }
-              return <DotIcon key={index} />;
-            })}
-        </div>
-        {step < 3 ? (
-          <Button onClick={nextStep}>Next</Button>
-        ) : (
-          <Button onClick={form.handleSubmit(onSubmit)}>Submit</Button>
-        )}
-      </CardFooter>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button
+              variant="outline"
+              onClick={prevStep}
+              disabled={step === 1}
+            >
+              Previous
+            </Button>
+            <div className='flex items-center gap-2'>
+                {Array.from({ length: 3 }, (_, index) => {
+                  if (step === index + 1) {
+                    return <DotFilledIcon key={index} className='h-6 w-6' />;
+                  }
+                  return <DotIcon key={index} />;
+                })}
+            </div>
+            {step < 3 ? (
+              <Button onClick={nextStep}>Next</Button>
+            ) : (
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? <BeatLoader /> : "Submit"}
+              </Button>
+            )}
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }

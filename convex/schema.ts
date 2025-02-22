@@ -65,11 +65,13 @@ export default defineSchema({
     passengerId: v.id("passengers"),
     pickupLocation: v.object({
       latitude: v.number(),
-      longitude: v.number()
+      longitude: v.number(),
+      address: v.string(),
     }),
     dropoffLocation: v.object({
       latitude: v.number(),
-      longitude: v.number()
+      longitude: v.number(),
+      address: v.string(),
     }),
     status: v.union(
       v.literal("PENDING"), 

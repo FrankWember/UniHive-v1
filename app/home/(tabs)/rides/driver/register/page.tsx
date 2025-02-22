@@ -16,7 +16,7 @@ const DriverRegistrationPage = async () => {
                 <BackButton />
                 <h1 className='text-2xl font-bold'>Register as Driver</h1>
             </div>
-            <div className='flex flex-col items-center justify-center w-full h-full my-24 px-3'>
+            <div className='flex flex-col items-center justify-center w-full h-full my-24 pb-24 px-3'>
                 <RegistrationForm userId={user?.id!} />
             </div>
         </div>

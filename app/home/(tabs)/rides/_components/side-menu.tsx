@@ -26,9 +26,10 @@ import {
   History,
   MapPin
 } from "lucide-react"
+import { DashboardIcon } from '@radix-ui/react-icons'
 
 export const SideMenu = () => {
-  const router = useRouter()
+const router = useRouter()
 
   return (
     <DropdownMenu>
@@ -51,17 +52,13 @@ export const SideMenu = () => {
             <span>Driver</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
+            <DropdownMenuItem onClick={()=>router.push("/home/rides/driver")} >
+                <DashboardIcon className="mr-2 h-4 w-4" />
+                <span>Dashboard</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={()=>router.push("/home/rides/driver/register")}>
               <PlusCircle className="mr-2 h-4 w-4" />
               <span>Register as Driver</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <History className="mr-2 h-4 w-4" />
-              <span>My History</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <BarChart3 className="mr-2 h-4 w-4" />
-              <span>Analytics</span>
             </DropdownMenuItem>
           </DropdownMenuSubContent>
         </DropdownMenuSub>

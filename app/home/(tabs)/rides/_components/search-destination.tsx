@@ -110,11 +110,11 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({
     }
   }, [destination, activeRide])
 
-  const handleSelect = async (placeId: string) => {
+  const handleSelect = async (prediction: google.maps.places.AutocompletePrediction) => {
     try {
       setIsLoading(true)
       if (placesService && isGoogleMapsLoaded && google) {
-        placesService.getDetails({ placeId: placeId }, (place, status) => {
+        placesService.getDetails({ placeId: prediction.place_id }, (place, status) => {
           if (
             status === google.maps.places.PlacesServiceStatus.OK &&
             place &&
@@ -134,29 +134,45 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({
         if (!passenger) {
           createNewPassenger()
         }
+        // Use Geocoder to get the address of the current location
+        const geocoder = new google.maps.Geocoder()
+        const geocodeResult = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+          geocoder.geocode({ location: currentLocation }, (results, status) => {
+            if (status === google.maps.GeocoderStatus.OK && results) {
+              resolve(results)
+            } else {
+              reject(new Error("Failed to get address"))
+            }
+          })
+        })
 
-        const newRide = await requestRide({
+        const pickupAddress = geocodeResult[0]?.formatted_address || ""
+
+        requestRide({
           passengerId: passenger?._id!,
           pickupLat: currentLocation?.lat!,
           pickupLon: currentLocation?.lng!,
+          pickupAddress: pickupAddress,
           dropoffLat: destination?.lat!,
           dropoffLon: destination?.lng!,
+          dropoffAddress: prediction.description,
           price: calculateRidePrice({
             distanceKm: distance!,
             baseFare: BASE_FARE,
             ratePerKm: RATE_PER_KM,
             surgeMultiplier: SURGE_MULTIPLIER,
           }),
+        }).then((newRide) => {
+          setRideStatus("REQUESTED")
+          setActiveRideId(newRide)
+          setIsSearchOpen(false)
         })
-        setRideStatus("REQUESTED")
-        setActiveRideId(newRide)
       }
       setIsLoading(false)
     } catch (error) {
       console.error("Error handling search:", error)
     } finally {
       setIsLoading(false)
-      setIsSearchOpen(false)
     }
   }
 
@@ -186,7 +202,7 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({
                 key={prediction.place_id}
                 variant="outline"
                 className="relative w-full text-left justify-start h-auto py-2 truncate"
-                onClick={() => handleSelect(prediction.place_id)}
+                onClick={() => handleSelect(prediction)}
                 disabled={isLoading}
               >
                 {prediction.description}

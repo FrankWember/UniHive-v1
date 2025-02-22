@@ -72,12 +72,28 @@ export const acceptRideRequest = mutation({
   },
   handler: async (ctx, args) => {
     const { rideRequestId, driverId } = args;
+
+    const driver = await ctx.db.query("drivers").filter(q => q.eq(q.field("_id"), driverId)).first();
+    if (!driver) {
+      return false
+    }
     
-    const rideRequest = await ctx.db.patch(rideRequestId, { status: "ACCEPTED" });
+    const rideRequest = await ctx.db.patch(
+      rideRequestId, 
+      { 
+        status: "ACCEPTED", 
+        driverId: driver._id,
+        driverRating: driver.rating.length > 0 ? driver.rating.reduce((a, b) => a + b) / driver.rating.length : 0,
+        driverStatus: "AVAILABLE",
+        driverCurrentLocation: driver.currentLocation,
+        acceptedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    );
     
-    await ctx.db.patch(driverId, { availabilityStatus: "AVAILABLE" });
+    await ctx.db.patch(driverId, { availabilityStatus: "BUSY" });
     
-    return rideRequest;
+    return true;
   },
 });
 
@@ -104,4 +120,18 @@ export const getDriver = query({
       .first()
   }
 });
+
+export const getDriverByUserId = query({
+  args: {
+    userId: v.string()
+  },
+  handler: async (ctx, args) => {
+    const { userId } = args
+    const driver = await ctx.db.query("drivers")
+      .filter(q=>q.eq(q.field("userId"), userId))
+      .first()
+    return driver
+  }
+})
+
 
