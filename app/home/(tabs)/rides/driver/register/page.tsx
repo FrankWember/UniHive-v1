@@ -11,12 +11,12 @@ const DriverRegistrationPage = async () => {
     if (!user || !user.id) redirect(`auth/sign-in?callbackUrl=${encodeURIComponent("/home/rides/driver/register")}`)
 
     return (
-        <div className='flex flex-col min-h-screen w-screen'>
+        <div className='flex flex-col min-h-[60rem] h-fit w-screen'>
             <div className='flex gap-4 p-4 h-16 items-center fixed top-0 w-full border-b bg-background/80 backdrop-blur-sm'>
                 <BackButton />
                 <h1 className='text-2xl font-bold'>Register as Driver</h1>
             </div>
-            <div className='flex flex-col items-center justify-center w-full h-full my-24 pb-24 px-3'>
+            <div className='flex flex-col items-center justify-center w-full h-full my-24 py-32 px-3'>
                 <RegistrationForm userId={user?.id!} />
             </div>
         </div>

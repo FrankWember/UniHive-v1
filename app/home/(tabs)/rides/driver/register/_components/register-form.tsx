@@ -135,9 +135,8 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                             <FormLabel>Age</FormLabel>
                             <FormControl>
                                 <Input
-                                type="number"
                                 {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value))}
+                                onChange={e => field.onChange(+e.target.value)}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -149,12 +148,11 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                         name="yearsOfExperience"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Years of Driving Experience</FormLabel>
+                            <FormLabel>Years of Driving</FormLabel>
                             <FormControl>
                                 <Input
-                                type="number"
                                 {...field}
-                                onChange={e => field.onChange(parseInt(e.target.value))}
+                                onChange={e => field.onChange(+e.target.value)}
                                 />
                             </FormControl>
                             <FormMessage />
@@ -215,7 +213,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                     )}
                     />
                 </div>
-                <div className='grid grid-cols-5 gap-3 items-center'>
+                <div className='grid grid-cols-6 gap-3 items-start'>
                     <FormField
                     control={form.control}
                     name="mileage"
@@ -224,9 +222,8 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                         <FormLabel>Mileage</FormLabel>
                         <FormControl>
                             <Input
-                            type="number"
                             {...field}
-                            onChange={e => field.onChange(parseInt(e.target.value))}
+                            onChange={e => field.onChange(+e.target.value)}
                             />
                         </FormControl>
                         <FormMessage />
@@ -250,7 +247,7 @@ export const RegistrationForm = ({ userId }: { userId: string }) => {
                     control={form.control}
                     name="carStatus"
                     render={({ field }) => (
-                        <FormItem>
+                        <FormItem className='col-span-2'>
                         <FormLabel>Car Status</FormLabel>
                         <Select
                             onValueChange={field.onChange}
