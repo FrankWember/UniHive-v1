@@ -45,10 +45,11 @@ export const DashboardSection = () => {
             lat2: lat,
             lon2: lon,
         })
-        if (distance < 1000) {
-            return `${distance.toFixed(0)} m`
+        const distanceInMiles = distance * 0.000621371; // Convert meters to miles
+        if (distanceInMiles < 1) {
+            return `${(distanceInMiles * 5280).toFixed(0)} ft`; // Convert miles to feet
         } else {
-            return `${(distance / 1000).toFixed(1)} km`
+            return `${distanceInMiles.toFixed(1)} mi`; // Return miles
         }
     }
 

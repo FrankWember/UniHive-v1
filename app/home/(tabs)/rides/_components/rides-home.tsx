@@ -39,9 +39,8 @@ export function RidesHome() {
         {currentLocation && (
           <Map center={currentLocation} destination={destination!} />
         )}
-        <RideDrawer />
       </div>
-      
+      <RideDrawer />
     </div>
   )
 }

@@ -29,16 +29,17 @@ export const RideDrawer = () => {
             lat2: lat,
             lon2: lon,
         })
-        if (distance < 1000) {
-            return `${distance.toFixed(0)} m`
+        const distanceInMiles = distance * 0.000621371; // Convert meters to miles
+        if (distanceInMiles < 1) {
+            return `${(distanceInMiles * 5280).toFixed(0)} ft`; // Convert miles to feet
         } else {
-            return `${(distance / 1000).toFixed(1)} km`
+            return `${distanceInMiles.toFixed(1)} mi`; // Return miles
         }
     }
 
     function agreeRide() {
+        setIsLoading(true)
         if (activeRide) {
-            setIsLoading(true)
             agreeRideRequest({
                 rideRequestId: activeRide._id
             }).then((result) => {
@@ -68,11 +69,11 @@ export const RideDrawer = () => {
     }
 
     return (
-        <div className={`${activeRide ? "" : "hidden"} flex flex-col gap-4 justify-between h-[45vh] w-full fixed bottom-0 bg-muted/60 backdrop-blur-sm p-4 pb-24 rounded-t-lg`}>
+        <div className={`${activeRide ? "" : "hidden"} flex flex-col gap-4 justify-between max-h-[55vh] w-full fixed bottom-0 bg-muted/60 backdrop-blur-sm p-4 pb-24 rounded-t-lg z-50`}>
             <div className='flex justify-center'>
                 <div className="h-3 w-[50vw] bg-muted rounded-full" />
             </div>
-            <div className='flex gap-4 items-start p-3 rounded-lg border'>
+            <div className='flex gap-4 items-start p-3'>
                 <Avatar>
                     <AvatarFallback>P</AvatarFallback>
                 </Avatar>
@@ -80,7 +81,7 @@ export const RideDrawer = () => {
                     <span className='text-3xl font-bold'>${activeRide?.price}</span>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3" />
+                            <MapPin className="h-5 w-5" />
                             <div className="space-y-1">
                                 <div className="text-sm font-medium">{activeRide?.pickupLocation.address}</div>
                                 <div className="text-muted-foreground">{getFormattedDistance(activeRide?.pickupLocation.longitude!, activeRide?.pickupLocation.latitude!)} away</div>
@@ -88,7 +89,7 @@ export const RideDrawer = () => {
                         </div>
 
                         <div className="flex items-start gap-3">
-                            <Navigation className="h-3 w-3" />
+                            <Navigation className="h-5 w-5" />
                             <div className="space-y-1">
                                 <div className="text-sm font-medium">{activeRide?.dropoffLocation.address}</div>
                                 <div className="text-muted-foreground">{getFormattedDistance(activeRide?.dropoffLocation.longitude!, activeRide?.dropoffLocation.latitude!)} away</div>
@@ -96,7 +97,7 @@ export const RideDrawer = () => {
                         </div>
                     </div>
                     <div className='flex items-center gap-2 justify-end'>
-                        <Button onClick={cancelRide} disabled={isLoading}>
+                        <Button variant="outline" onClick={cancelRide} disabled={isLoading}>
                             {isLoading ? <BeatLoader /> : "Cancel"}
                         </Button>
                         <Button onClick={agreeRide} disabled={isLoading}>

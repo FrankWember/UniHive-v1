@@ -39,7 +39,7 @@ export const SideMenu = () => {
                     <BarChart3 className="mr-2 h-4 w-4" />
                     <span>Analytics</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={()=>router.push("/home/rides/driver")}>
+                <DropdownMenuItem onClick={()=>router.push("/home/rides")}>
                     <ExitIcon className="mr-2 h-4 w-4" />
                     <span>Exit</span>
                 </DropdownMenuItem>
