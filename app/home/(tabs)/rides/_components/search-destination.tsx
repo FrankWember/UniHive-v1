@@ -19,9 +19,6 @@ interface SearchDestinationProps {
   destination: google.maps.LatLngLiteral | null
   onDestinationSet: (lat: number, lng: number) => void
   currentLocation: google.maps.LatLngLiteral | null
-  setRideStatus: React.Dispatch<
-    React.SetStateAction<"NOTHING" | "REQUESTED" | "AGREED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED">
-  >
   userId: string
 }
 
@@ -29,7 +26,6 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({
   destination,
   onDestinationSet,
   currentLocation,
-  setRideStatus,
   userId,
 }) => {
   // Move these hooks to the top of the component, before any conditional returns
@@ -163,7 +159,6 @@ export const SearchDestination: React.FC<SearchDestinationProps> = ({
             surgeMultiplier: SURGE_MULTIPLIER,
           }),
         }).then((newRide) => {
-          setRideStatus("REQUESTED")
           setActiveRideId(newRide)
           setIsSearchOpen(false)
         })

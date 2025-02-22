@@ -2,43 +2,108 @@
 
 import React from 'react'
 import { Button } from '@/components/ui/button'
-import { CarTaxiFront } from 'lucide-react'
 import { useRide } from '@/contexts/ride-context'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { MapPin, Navigation } from 'lucide-react'
+import { useMutation } from 'convex/react'
+import { api } from '@/convex/_generated/api'
+import { useRouter } from 'next/navigation'
+import { calculateDistance } from '@/utils/helpers/distance'
+import { BeatLoader } from 'react-spinners'
+
+
 
 export const RideDrawer = () => {
-    const { activeRide, driver } = useRide()
+    const router = useRouter()
+    const { activeRide, setActiveRideId, currentLocation } = useRide()
+
+    const agreeRideRequest = useMutation(api.passenger.agreeToRideRequest)
+    const cancelRideRequest = useMutation(api.passenger.cancelRideRequest)
+
+    const [isLoading, setIsLoading] = React.useState(false)
+
+    function getFormattedDistance(lon: number, lat: number) {
+        const distance = calculateDistance({
+            lat1: currentLocation?.lat!,
+            lon1: currentLocation?.lng!,
+            lat2: lat,
+            lon2: lon,
+        })
+        if (distance < 1000) {
+            return `${distance.toFixed(0)} m`
+        } else {
+            return `${(distance / 1000).toFixed(1)} km`
+        }
+    }
+
+    function agreeRide() {
+        if (activeRide) {
+            setIsLoading(true)
+            agreeRideRequest({
+                rideRequestId: activeRide._id
+            }).then((result) => {
+                if (result) {
+                    router.push(`/home/rides/${activeRide._id}`)
+                }
+            }).finally(() => {
+                setIsLoading(false)
+            })
+        }
+    }
+
+    const cancelRide = () => {
+        if (activeRide) {
+            setIsLoading(true)
+            cancelRideRequest({
+                rideRequestId: activeRide._id
+            }).then((result) => {
+                if (result) {
+                    setActiveRideId(null)
+                    router.refresh()
+                }
+            }).finally(() => {
+                setIsLoading(false)
+            })
+        }
+    }
 
     return (
         <div className={`${activeRide ? "" : "hidden"} flex flex-col gap-4 justify-between h-[45vh] w-full fixed bottom-0 bg-muted/60 backdrop-blur-sm p-4 pb-24 rounded-t-lg`}>
             <div className='flex justify-center'>
                 <div className="h-3 w-[50vw] bg-muted rounded-full" />
             </div>
-            <div className='flex flex-col gap-4'>
-                <div className="flex gap-4">
-                    <Avatar>
-                        <AvatarImage src={driver?.carImages[0]} alt={driver?.userId} />
-                        <AvatarFallback>D</AvatarFallback>
-                    </Avatar>
-                    <div className='flex flex-col gap-2'>
-                        <div className='flex items-center gap-2'>
-                            <CarTaxiFront className='h-5 w-5' />
-                            <span className='text-sm font-bold'>{driver?.carBrand || "N/A"}</span>
+            <div className='flex gap-4 items-start p-3 rounded-lg border'>
+                <Avatar>
+                    <AvatarFallback>P</AvatarFallback>
+                </Avatar>
+                <div className='flex flex-col gap-3'>
+                    <span className='text-3xl font-bold'>${activeRide?.price}</span>
+                    <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                            <MapPin className="h-3 w-3" />
+                            <div className="space-y-1">
+                                <div className="text-sm font-medium">{activeRide?.pickupLocation.address}</div>
+                                <div className="text-muted-foreground">{getFormattedDistance(activeRide?.pickupLocation.longitude!, activeRide?.pickupLocation.latitude!)} away</div>
+                            </div>
                         </div>
-                        <span className='text-sm font-bold'>{driver?.carModel || "N/A"}</span>
+
+                        <div className="flex items-start gap-3">
+                            <Navigation className="h-3 w-3" />
+                            <div className="space-y-1">
+                                <div className="text-sm font-medium">{activeRide?.dropoffLocation.address}</div>
+                                <div className="text-muted-foreground">{getFormattedDistance(activeRide?.dropoffLocation.longitude!, activeRide?.dropoffLocation.latitude!)} away</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='flex items-center gap-2 justify-end'>
+                        <Button onClick={cancelRide} disabled={isLoading}>
+                            {isLoading ? <BeatLoader /> : "Cancel"}
+                        </Button>
+                        <Button onClick={agreeRide} disabled={isLoading}>
+                            {isLoading ? <BeatLoader /> : "Accept"}
+                        </Button>
                     </div>
                 </div>
-            </div>
-            <div className="flex flex-col gap-3">
-                <span className='text-3xl font-bold'>${activeRide?.price}</span>
-            </div>
-            <div className='flex gap-3 justify-end mb-10'>
-                <Button variant='outline'>
-                    Cancel
-                </Button>
-                <Button>
-                    Accept
-                </Button>
             </div>
         </div>
     )

@@ -75,10 +75,12 @@ export const agreeToRideRequest = mutation({
   },
   handler: async (ctx, args) => {
     const { rideRequestId } = args;
-    
-    const rideRequest = await ctx.db.patch(rideRequestId, { status: "AGREED" });
-    
-    return rideRequest;
+    try {
+      await ctx.db.patch(rideRequestId, { status: "AGREED" });
+      return true;
+    } catch {
+      return false;
+    }
   },
 });
 
@@ -89,10 +91,12 @@ export const cancelRideRequest = mutation({
   },
   handler: async (ctx, args) => {
     const { rideRequestId } = args;
-    
-    const rideRequest = await ctx.db.patch(rideRequestId, { status: "CANCELED" });
-
-    return rideRequest;
+    try {
+      await ctx.db.patch(rideRequestId, { status: "CANCELED" });
+      return true;
+    } catch {
+      return false;
+    }
   },
 });
 

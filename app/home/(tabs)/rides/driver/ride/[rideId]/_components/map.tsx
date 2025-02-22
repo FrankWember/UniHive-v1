@@ -6,7 +6,7 @@ import { useGoogleMaps } from '@/contexts/google-maps-context'
 
 interface MapProps {
   center: google.maps.LatLngLiteral
-  destination?: google.maps.LatLngLiteral
+  dropOff?: google.maps.LatLngLiteral
 }
 
 const lightModeStyle = [
@@ -140,7 +140,7 @@ const darkModeStyle = [
   }
 ]
 
-const Map: React.FC<MapProps> = ({ center, destination }) => {
+const Map: React.FC<MapProps> = ({ center, dropOff }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const { google, isGoogleMapsLoaded } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null)
@@ -189,18 +189,18 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
   }, [map, theme])
 
   useEffect(() => {
-    if (map && destination && directionsService && directionsRenderer) {
+    if (map && dropOff && directionsService && directionsRenderer) {
       directionsService.route(
         {
           origin: center,
-          destination: destination,
+          destination: dropOff,
           travelMode: google!.maps.TravelMode.DRIVING,
         },
         (result, status) => {
           if (status === google!.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result)
 
-            // Add custom markers for origin and destination
+            // Add custom markers for origin and dropOff
             const originMarker = new google!.maps.Marker({
               position: center,
               map: map,
@@ -214,8 +214,8 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
               },
             })
 
-            const destinationMarker = new google!.maps.Marker({
-              position: destination,
+            const dropOffMarker = new google!.maps.Marker({
+              position: dropOff,
               map: map,
               icon: {
                 path: google!.maps.SymbolPath.CIRCLE,
@@ -230,7 +230,7 @@ const Map: React.FC<MapProps> = ({ center, destination }) => {
         }
       )
     }
-  }, [map, center, destination, directionsService, directionsRenderer])
+  }, [map, center, dropOff, directionsService, directionsRenderer])
 
   return <div ref={mapRef} className="map-container" />
 }

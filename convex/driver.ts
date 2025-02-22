@@ -103,10 +103,12 @@ export const rejectRideRequest = mutation({
   },
   handler: async (ctx, args) => {
     const { rideRequestId } = args;
-    
-    const rideRequest = await ctx.db.patch(rideRequestId, { status: "REJECTED" });
-
-    return rideRequest;
+    try {
+      const rideRequest = await ctx.db.patch(rideRequestId, { status: "REJECTED" });
+      return true;
+    } catch {
+      return false
+    }
   },
 });
 
@@ -133,5 +135,24 @@ export const getDriverByUserId = query({
     return driver
   }
 })
+
+export const updateDriverCurrentLocation = mutation({
+  args: { 
+    rideId: v.id("rideRequests"),
+    driverId: v.id("drivers"),
+    lat: v.number(),
+    lon: v.number()
+  },
+  handler: async (ctx, args) => {
+    const { driverId, rideId, lat, lon } = args;
+    try {
+      await ctx.db.patch(driverId, { currentLocation: { latitude: lat, longitude: lon } });
+      await ctx.db.patch(rideId, { driverCurrentLocation: { latitude: lat, longitude: lon } });
+      return true
+    } catch {
+      return false
+    }
+  },
+});
 
 

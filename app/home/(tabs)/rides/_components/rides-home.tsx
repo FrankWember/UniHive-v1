@@ -8,33 +8,17 @@ import { PanelRight } from 'lucide-react'
 import { SideMenu } from './side-menu'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { RideDrawer } from './ride-drawer'
+import { useRide } from '@/contexts/ride-context'
 
 
 
 const Map = dynamic(() => import('./map'), { ssr: false })
 
 export function RidesHome() {
-  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLngLiteral | null>(null)
-  const [destination, setDestination] = useState<google.maps.LatLngLiteral | null>(null)
-  const [rideStatus, setRideStatus] = useState<"NOTHING" | "REQUESTED" | "AGREED" | "ACCEPTED" | "IN_PROGRESS" | "COMPLETED">("NOTHING")
+  const { currentLocation } = useRide()
+  const [ destination, setDestination ] = useState<google.maps.LatLngLiteral | null>(null)
 
   const user = useCurrentUser()
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          })
-        },
-        (error) => {
-          console.error("Error getting location:", error)
-        }
-      )
-    }
-  }, [])
 
   const handleDestinationSet = (lat: number, lng: number) => {
     setDestination({ lat, lng })
@@ -47,7 +31,6 @@ export function RidesHome() {
           destination={destination}
           onDestinationSet={handleDestinationSet} 
           currentLocation={currentLocation} 
-          setRideStatus={setRideStatus} 
           userId={user?.id!}
           />
         <SideMenu />

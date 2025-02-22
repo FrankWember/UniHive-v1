@@ -1,6 +1,7 @@
 "use client"
 import { RideRequest, useRide } from '@/contexts/ride-context'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { BeatLoader } from 'react-spinners'
 import { Button } from '@/components/ui/button'
 import { MapPin, Navigation } from 'lucide-react'
 import React from 'react'
@@ -13,11 +14,13 @@ import { useMutation } from 'convex/react'
 
 export const DashboardSection = () => {
     const router = useRouter()
-    const { allClosestRides, currentLocation, getMyDriverAccount } = useRide()
+    const { allClosestRides, currentLocation, getMyDriverAccount, setActiveRideId } = useRide()
     const user = useCurrentUser()
     const myAccount = getMyDriverAccount(user?.id!)
 
     const acceptRideRequest = useMutation(api.driver.acceptRideRequest)
+
+    const [isLoading, setIsLoading] = React.useState(false)
 
     if (!myAccount || !myAccount._id) {
         return (
@@ -50,13 +53,17 @@ export const DashboardSection = () => {
     }
 
     function acceptRide(ride: RideRequest) {
+        setIsLoading(true)
         acceptRideRequest({
             rideRequestId: ride._id,
             driverId: myAccount?._id!
         }).then((result) => {
             if (result) {
+                setActiveRideId(ride._id)
                 router.push(`/home/rides/driver/ride/${ride._id}`)
             }
+        }).finally(() => {
+            setIsLoading(false)
         })
     }
 
@@ -90,7 +97,9 @@ export const DashboardSection = () => {
                         </div>
                     </div>
                     <div className='flex items-center gap-2 justify-end'>
-                        <Button onClick={()=>acceptRide(ride)}>Accept</Button>
+                        <Button onClick={()=>acceptRide(ride)} disabled={isLoading}>
+                            {isLoading ? <BeatLoader /> : "Accept"}
+                        </Button>
                     </div>
                 </div>
             </div>
