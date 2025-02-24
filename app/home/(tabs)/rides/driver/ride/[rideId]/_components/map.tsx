@@ -1,206 +1,212 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from 'react'
-import { useTheme } from 'next-themes'
-import { useGoogleMaps } from '@/contexts/google-maps-context'
+import type React from "react"
+import { useEffect, useRef, useState } from "react"
+import { useTheme } from "next-themes"
+import { useGoogleMaps } from "@/contexts/google-maps-context"
 
 interface MapProps {
   center: google.maps.LatLngLiteral
-  dropOff?: google.maps.LatLngLiteral
+  destination?: google.maps.LatLngLiteral
 }
 
 const lightModeStyle = [
   {
     featureType: "all",
     elementType: "geometry",
-    stylers: [{ color: "#f5f5f5" }]
+    stylers: [{ color: "#f5f5f5" }],
   },
   {
     featureType: "all",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#616161" }]
+    stylers: [{ color: "#616161" }],
   },
   {
     featureType: "all",
     elementType: "labels.text.stroke",
-    stylers: [{ color: "#f5f5f5" }]
+    stylers: [{ color: "#f5f5f5" }],
   },
   {
     featureType: "poi",
     elementType: "geometry",
-    stylers: [{ color: "#eeeeee" }]
+    stylers: [{ color: "#eeeeee" }],
   },
   {
     featureType: "poi",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#757575" }]
+    stylers: [{ color: "#757575" }],
   },
   {
     featureType: "road",
     elementType: "geometry",
-    stylers: [{ color: "#ffffff" }]
+    stylers: [{ color: "#ffffff" }],
   },
   {
     featureType: "road.arterial",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#757575" }]
+    stylers: [{ color: "#757575" }],
   },
   {
     featureType: "road.highway",
     elementType: "geometry",
-    stylers: [{ color: "#dadada" }]
+    stylers: [{ color: "#dadada" }],
   },
   {
     featureType: "road.highway",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#616161" }]
+    stylers: [{ color: "#616161" }],
   },
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#c9c9c9" }]
+    stylers: [{ color: "#c9c9c9" }],
   },
   {
     featureType: "water",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#9e9e9e" }]
-  }
+    stylers: [{ color: "#9e9e9e" }],
+  },
 ]
 
 const darkModeStyle = [
   {
     featureType: "all",
     elementType: "geometry",
-    stylers: [{ color: "#242f3e" }]
+    stylers: [{ color: "#242f3e" }],
   },
   {
     featureType: "all",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#746855" }]
+    stylers: [{ color: "#746855" }],
   },
   {
     featureType: "all",
     elementType: "labels.text.stroke",
-    stylers: [{ color: "#242f3e" }]
+    stylers: [{ color: "#242f3e" }],
   },
   {
     featureType: "poi",
     elementType: "geometry",
-    stylers: [{ color: "#283d6a" }]
+    stylers: [{ color: "#283d6a" }],
   },
   {
     featureType: "poi",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#d59563" }]
+    stylers: [{ color: "#d59563" }],
   },
   {
     featureType: "road",
     elementType: "geometry",
-    stylers: [{ color: "#38414e" }]
+    stylers: [{ color: "#38414e" }],
   },
   {
     featureType: "road",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#212a37" }]
+    stylers: [{ color: "#212a37" }],
   },
   {
     featureType: "road",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#9ca5b3" }]
+    stylers: [{ color: "#9ca5b3" }],
   },
   {
     featureType: "road.highway",
     elementType: "geometry",
-    stylers: [{ color: "#746855" }]
+    stylers: [{ color: "#746855" }],
   },
   {
     featureType: "road.highway",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#1f2835" }]
+    stylers: [{ color: "#1f2835" }],
   },
   {
     featureType: "road.highway",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#f3d19c" }]
+    stylers: [{ color: "#f3d19c" }],
   },
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#17263c" }]
+    stylers: [{ color: "#17263c" }],
   },
   {
     featureType: "water",
     elementType: "labels.text.fill",
-    stylers: [{ color: "#515c6d" }]
+    stylers: [{ color: "#515c6d" }],
   },
   {
     featureType: "water",
     elementType: "labels.text.stroke",
-    stylers: [{ color: "#17263c" }]
-  }
+    stylers: [{ color: "#17263c" }],
+  },
 ]
 
-const Map: React.FC<MapProps> = ({ center, dropOff }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const { google, isGoogleMapsLoaded } = useGoogleMaps();
+const Map: React.FC<MapProps> = ({ center, destination }) => {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const { google, isGoogleMapsLoaded } = useGoogleMaps()
   const [map, setMap] = useState<google.maps.Map | null>(null)
   const [directionsService, setDirectionsService] = useState<google.maps.DirectionsService | null>(null)
   const [directionsRenderer, setDirectionsRenderer] = useState<google.maps.DirectionsRenderer | null>(null)
-  const { theme } = useTheme()
+  const { theme, systemTheme } = useTheme()
 
   useEffect(() => {
     const initMap = async () => {
       if (!isGoogleMapsLoaded || !google) {
-        return; // Don't proceed until Google Maps is loaded
+        return // Don't proceed until Google Maps is loaded
       }
+
+      const currentTheme = theme === "system" ? systemTheme : theme
 
       const newMap = new google.maps.Map(mapRef.current!, {
         center,
         zoom: 14,
-        styles: theme === 'light' ? lightModeStyle : darkModeStyle,
+        styles: currentTheme === "dark" ? darkModeStyle : lightModeStyle,
         zoomControl: true,
         mapTypeControl: false,
         scaleControl: true,
         streetViewControl: false,
         rotateControl: true,
         fullscreenControl: false,
-        gestureHandling: 'greedy'
+        gestureHandling: "greedy",
       })
 
       setMap(newMap)
       setDirectionsService(new google.maps.DirectionsService())
-      setDirectionsRenderer(new google.maps.DirectionsRenderer({
-        map: newMap,
-        suppressMarkers: true,
-        polylineOptions: {
-          strokeColor: theme === 'dark' ? '#4285F4' : '#4285F4',
-          strokeWeight: 5,
-        }
-      }))
+      setDirectionsRenderer(
+        new google.maps.DirectionsRenderer({
+          map: newMap,
+          suppressMarkers: true,
+          polylineOptions: {
+            strokeColor: currentTheme === "dark" ? "#4285F4" : "#4285F4",
+            strokeWeight: 5,
+          },
+        }),
+      )
     }
 
     initMap()
-  }, [center, theme])
+  }, [center, theme, systemTheme])
 
   useEffect(() => {
-    if (map && theme) {
-      map.setOptions({ styles: theme === 'dark' ? darkModeStyle : lightModeStyle })
+    if (map) {
+      const currentTheme = theme === "system" ? systemTheme : theme
+      map.setOptions({ styles: currentTheme === "dark" ? darkModeStyle : lightModeStyle })
     }
-  }, [map, theme])
+  }, [map, theme, systemTheme])
 
   useEffect(() => {
-    if (map && dropOff && directionsService && directionsRenderer) {
+    if (map && destination && directionsService && directionsRenderer) {
       directionsService.route(
         {
           origin: center,
-          destination: dropOff,
+          destination: destination,
           travelMode: google!.maps.TravelMode.DRIVING,
         },
         (result, status) => {
           if (status === google!.maps.DirectionsStatus.OK) {
             directionsRenderer.setDirections(result)
 
-            // Add custom markers for origin and dropOff
+            // Add custom markers for origin and destination
             const originMarker = new google!.maps.Marker({
               position: center,
               map: map,
@@ -214,8 +220,8 @@ const Map: React.FC<MapProps> = ({ center, dropOff }) => {
               },
             })
 
-            const dropOffMarker = new google!.maps.Marker({
-              position: dropOff,
+            const destinationMarker = new google!.maps.Marker({
+              position: destination,
               map: map,
               icon: {
                 path: google!.maps.SymbolPath.CIRCLE,
@@ -227,12 +233,13 @@ const Map: React.FC<MapProps> = ({ center, dropOff }) => {
               },
             })
           }
-        }
+        },
       )
     }
-  }, [map, center, dropOff, directionsService, directionsRenderer])
+  }, [map, center, destination, directionsService, directionsRenderer])
 
   return <div ref={mapRef} className="map-container" />
 }
 
 export default Map
+
