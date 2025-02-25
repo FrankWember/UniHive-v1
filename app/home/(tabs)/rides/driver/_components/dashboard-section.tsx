@@ -78,7 +78,7 @@ export const DashboardSection = () => {
                 <Avatar>
                     <AvatarFallback>P</AvatarFallback>
                 </Avatar>
-                <div className='flex flex-col gap-3'>
+                <div className='flex flex-col gap-3 w-full'>
                     <span className='text-3xl font-bold'>${ride.price}</span>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
@@ -97,7 +97,7 @@ export const DashboardSection = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='flex items-center gap-2 justify-end'>
+                    <div className='flex items-center gap-2 justify-end w-full'>
                         <Button onClick={()=>acceptRide(ride)} disabled={isLoading}>
                             {isLoading ? <BeatLoader /> : "Accept"}
                         </Button>

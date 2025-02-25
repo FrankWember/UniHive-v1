@@ -58,6 +58,7 @@ handler: async (ctx, args) => {
     dropoffLocation: { latitude: dropoffLat, longitude: dropoffLon, address: dropoffAddress },
     status: "PENDING",
     price,
+    estimatedPrice: price,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
     });
@@ -85,7 +86,10 @@ export const getRideRequestsSortedByDistance = query({
   handler: async (ctx, args) => {
     const { lat, lon } = args;
 
-    const rideRequests = await ctx.db.query("rideRequests").collect();
+    const rideRequests = await ctx.db.query("rideRequests")
+      .filter((rideRequest) => rideRequest.neq(rideRequest.field("status"), "COMPLETED"))
+      .filter((rideRequest) => rideRequest.neq(rideRequest.field("status"), "PAID"))
+      .collect();
 
     return rideRequests.sort((a, b) => {
       const distanceA = calculateDistance({
@@ -110,7 +114,7 @@ export const getRideRequestsSortedByDistance = query({
 export const updateRideStatus = mutation({
   args: { 
     rideId: v.id("rideRequests"),
-    status: v.union(v.literal("PICKED_UP"), v.literal("STOPPED"), v.literal("COMPLETED"))
+    status: v.union(v.literal("PICKED_UP"), v.literal("STOPPED"), v.literal("COMPLETED"), v.literal("PAID"))
   },
   handler: async (ctx, args) => {
     const { rideId, status } = args;

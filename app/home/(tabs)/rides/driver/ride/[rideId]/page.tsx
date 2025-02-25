@@ -7,10 +7,11 @@ import React, { useEffect } from 'react'
 import Map from '@/app/home/(tabs)/rides/_components/map'
 import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { getDistanceBetweenPoints } from '@/utils/helpers/distance'
+import { calculateDistance, getDistanceBetweenPoints } from '@/utils/helpers/distance'
 import { useGoogleMaps } from '@/contexts/google-maps-context'
 import { BASE_FARE, RATE_PER_KM, SURGE_MULTIPLIER } from "@/constants/pricing"
 import { calculateRidePrice } from '@/utils/helpers/distance'
+import { RideDrawer } from './_components/ride-drawer'
 
 const page = () => {
     const params = useParams<{ rideId: Id<"rideRequests"> }>()
@@ -18,6 +19,7 @@ const page = () => {
     const { google } = useGoogleMaps()
     const { activeRide, setActiveRideId, currentLocation } = useRide()
     const [ destination, setDestination ] = React.useState<google.maps.LatLngLiteral | null>(null)
+    
     const updateDriverCurrentLocation = useMutation(api.driver.updateDriverCurrentLocation)
     const updateRideStatus = useMutation(api.rides.updateRideStatus)
     const updateRidePrice = useMutation(api.rides.updateRidePrice)
@@ -31,15 +33,15 @@ const page = () => {
 
     // Set the destination based on the ride status
     useEffect(()=>{
-        if (activeRide?.status === "PICKED_UP") {
-            setDestination({
-                lat: activeRide?.dropoffLocation?.latitude!,
-                lng: activeRide?.dropoffLocation?.longitude!
-            })
-        } else {
+        if (activeRide?.status === "ACCEPTED") {
             setDestination({
                 lat: activeRide?.pickupLocation?.latitude!,
                 lng: activeRide?.pickupLocation?.longitude!
+            })
+        } else if (activeRide?.status === "PICKED_UP") {
+            setDestination({
+                lat: activeRide?.dropoffLocation?.latitude!,
+                lng: activeRide?.dropoffLocation?.longitude!
             })
         }
     }, [activeRide?.status])
@@ -48,7 +50,9 @@ const page = () => {
     useEffect(()=>{
         if (
             activeRide?.dropoffLocation.latitude === currentLocation?.lat && 
-            activeRide?.dropoffLocation.longitude === currentLocation?.lng
+            activeRide?.dropoffLocation.longitude === currentLocation?.lng &&
+            activeRide?.status !== "PAID" &&
+            activeRide?.status !== "COMPLETED"
         ) {
             updateRideStatus({
                 rideId: activeRide?._id!,
@@ -60,20 +64,20 @@ const page = () => {
     // Update the price when the ride is completed
     useEffect(()=>{
         if (activeRide?.status === "COMPLETED") {
-            getDistanceBetweenPoints({
-                origin: { lat: activeRide.pickupLocation.latitude, lng: activeRide.pickupLocation.longitude },
-                destination: { lat: currentLocation?.lat!, lng: currentLocation?.lng! },
-                google: google!
-            }).then((distance) => {
-                updateRidePrice({
-                    rideId: activeRide?._id!,
-                    price: calculateRidePrice({
-                        distanceKm: distance!,
-                        baseFare: BASE_FARE,
-                        ratePerKm: RATE_PER_KM,
-                        surgeMultiplier: SURGE_MULTIPLIER,
-                      }),
-                })
+            const distance = calculateDistance({
+                lat1: activeRide.pickupLocation.latitude,
+                lon1: activeRide.pickupLocation.longitude,
+                lat2: currentLocation?.lat!,
+                lon2: currentLocation?.lng!,
+            })
+            updateRidePrice({
+                rideId: activeRide?._id!,
+                price: calculateRidePrice({
+                    distanceKm: distance!,
+                    baseFare: BASE_FARE,
+                    ratePerKm: RATE_PER_KM,
+                    surgeMultiplier: SURGE_MULTIPLIER,
+                    }),
             })
         }
     }, [activeRide?.status, currentLocation])
@@ -92,12 +96,18 @@ const page = () => {
     <div className="flex flex-col h-full w-full">
         <div className="flex justify-between w-screen h-16 p-4 fixed top-0 left-0 z-20 border-b bg-transparent/60 backdrop-blur-sm">
             <h1 className="text-2xl font-bold">
-                {activeRide?.status === "PICKED_UP" ? "Drive to the Destination" : "Pickup Your Passenger"}
+                {activeRide?.status === "ACCEPTED" ? "Pickup your Passenger"
+                    : activeRide?.status === "PICKED_UP" ? "Drive to the Destination"
+                    : activeRide?.status === "COMPLETED" ? "Reached Destination"
+                    : activeRide?.status === "PAID" ? "You have been paid."
+                    : "Ride In Progress"
+                }
             </h1>
         </div>
         <div className='p-0 m-0 h-screen w-screen'>
             <Map center={currentLocation!} destination={destination!} />
         </div>
+        <RideDrawer />
     </div>
   )
 }

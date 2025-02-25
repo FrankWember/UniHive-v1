@@ -100,9 +100,11 @@ export const RideDrawer = () => {
                         <Button variant="outline" onClick={cancelRide} disabled={isLoading}>
                             {isLoading ? <BeatLoader /> : "Cancel"}
                         </Button>
-                        <Button onClick={agreeRide} disabled={isLoading}>
-                            {isLoading ? <BeatLoader /> : "Accept"}
-                        </Button>
+                        {activeRide?.status === "PENDING" && (
+                            <Button onClick={agreeRide} disabled={isLoading}>
+                                {isLoading ? <BeatLoader /> : "Accept"}
+                            </Button>
+                        )}
                     </div>
                 </div>
             </div>
