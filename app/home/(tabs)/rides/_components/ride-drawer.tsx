@@ -69,7 +69,7 @@ export const RideDrawer = () => {
     }
 
     return (
-        <div className={`${activeRide ? "" : "hidden"} flex flex-col gap-4 justify-between max-h-[55vh] w-full fixed bottom-0 bg-muted/60 backdrop-blur-sm p-4 pb-24 rounded-t-lg z-50`}>
+        <div className={`${activeRide ? "" : "hidden"} flex flex-col gap-4 justify-between max-h-[55vh] w-full fixed bottom-0 bg-transparent/65 backdrop-blur-sm p-4 pb-24 rounded-t-lg z-20`}>
             <div className='flex justify-center'>
                 <div className="h-3 w-[50vw] bg-muted rounded-full" />
             </div>
