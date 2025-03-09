@@ -34,6 +34,8 @@ export const AccountUpgrade = () => {
         setIsSubmitting(false)
     }
 
+    if (user?.role === "ADMIN" || user?.role === "SELLER") return null
+
   return (
     <Card className="w-full max-w-md mx-3">
         <CardHeader>
