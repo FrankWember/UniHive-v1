@@ -3,34 +3,32 @@
 import React from 'react'
 import { Button } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
-import { CalendarSearch, CarTaxiFrontIcon, CogIcon, GraduationCap, MessageCircle, StoreIcon } from 'lucide-react'
-import { CubeIcon } from '@radix-ui/react-icons'
-import { link } from 'fs'
+import { CircleUserIcon, HeartIcon, SendIcon, HomeIcon } from 'lucide-react'
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 
 
 export const Navbar = () => {
     const router = useRouter()
     const pathname = usePathname()
     const tabs = [
-        {name: "Services", link: "/home/services", children: <StoreIcon className="w-6 h-6" />},
-        {name: "Products", link: "/home/products", children: <CubeIcon className="w-6 h-6" />},
-        {name: "Rides", link: "/home/rides", children: <CarTaxiFrontIcon className="w-6 h-6"  />},
-        {name: "Events", link: "/home/events", children: <CalendarSearch className="w-6 h-6" />},
-        {name: "Inbox", link: "/home/inbox", children: <MessageCircle className="w-6 h-6" />},
-        {name: "Settings", link: "/home/settings", children: <CogIcon className="w-6 h-6" />},
+        {name: "Explore", link: "/home/services", icon: <MagnifyingGlassIcon className="w-6 h-6" />},
+        {name: "Favorites", link: "/home/services?favourites=true", icon: <HeartIcon className="w-6 h-6" />},
+        {name: "Bookings", link: "home/services/bookings", icon: <HomeIcon className="w-6 h-6" />},
+        {name: "Messages", link: "/home/messages", icon: <SendIcon className="w-6 h-6" />},
+        {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
     ]
   return (
-    <nav className="flex w-full justify-center ">
-        <div className="fixed bottom-5 flex z-50 border rounded-full mx-3 w-fit h-14 bg-muted/20 items-center justify-center backdrop-blur-sm">
+    <nav className="flex w-full justify-center md:hidden">
+        <div className="fixed bottom-0 flex z-50 border-t w-full h-20 bg-muted/20 items-center justify-center backdrop-blur-sm px-4 py-2">
             {tabs.map(tab=>(
-                <Button
-                    variant={pathname.includes(tab.link)?"default":"ghost"}
+                <div
                     key={tab.name}
                     onClick={()=>router.push(tab.link)}
-                    className="rounded-full w-full h-full"
+                    className={`w-full h-full flex flex-col gap-1 items-center justify-center text-xs ${pathname.includes(tab.link) ? "text-red-500" : "hover:text-red-800"}`}
                 >
-                    {tab.children}
-                </Button>
+                    {tab.icon}
+                    {tab.name}
+                </div>
             ))}
         </div>
         <div className="flex w-full h-14"></div>

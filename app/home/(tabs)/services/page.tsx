@@ -60,28 +60,31 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
       <div className='p-2 max-w-screen'>
         <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 rounded-lg bg-muted/85 dark:bg-muted/30">
-          <div className='flex items-center w-max gap-8 md:gap-12 p-4 '>
-            <div className="flex flex-col items-center justify-center gap-2">
+          <div className='flex items-center w-max gap-8 md:gap-12 p-4'>
+            <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services`}>
-              <div className="flex justify-center items-center rounded-full bg-transparent">
-                <ArrowDownAZ className='h-8 w-8 md:h-12 md:w-12' />
-              </div>
+                <div className="flex justify-center items-center rounded-full bg-transparent">
+                  <ArrowDownAZ className='h-4 w-4 md:h-8 md:w-8' />
+                </div>
               </Link>
               <h2 className='text-xs md:text-sm font-semibold text-center'>All</h2>
+              <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
             </div>
-            <div className="flex flex-col items-center justify-center gap-2">
+            <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services?favourites=true`}>
                 <div className="flex justify-center items-center rounded-full bg-transparent">
-                  <Heart className='h-8 w-8 md:h-12 md:w-12' />
+                  <Heart className='h-4 w-4 md:h-8 md:w-8' />
                 </div>
               </Link>
               <h2 className='text-xs md:text-sm font-semibold text-center'>Favourites</h2>
+              <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
             </div>
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
-                <div className='flex flex-col items-center justify-center gap-2'>
-                  <category.icon className='h-8 w-8 md:h-12 md:w-12' />
+                <div className='group flex flex-col items-center justify-center gap-2'>
+                  <category.icon className='h-4 w-4 md:h-8 md:w-8' />
                   <h2 className='text-xs md:text-sm font-semibold text-center'>{category.name}</h2>
+                  <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
                 </div>
               </Link>
             ))}

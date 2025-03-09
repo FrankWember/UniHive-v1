@@ -9,7 +9,7 @@ interface MatchedServicesProps {
 }
 
 const ServicesSkeleton = () => (
-  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-5 px-3 py-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-5 px-3 py-6">
     {[...Array(15)].map((_, i) => (
       <div key={i} className="flex flex-col gap-2">
         <Skeleton className="h-56 w-full rounded-lg" />
