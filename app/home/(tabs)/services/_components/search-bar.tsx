@@ -73,19 +73,11 @@ export function SearchBar() {
       <Button
         variant="outline"
         onClick={() => setOpen(true)}
-        className="hidden sm:flex text-muted-foreground font-normal justify-between space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700"
+        className="flex text-muted-foreground font-normal justify-between space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700"
       >
         <MagnifyingGlassIcon className="mr-2" />
         Search services...
         <code className="text-muted-foreground rounded p-1 bg-background font-mono text-xs">⌘K</code>
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setOpen(true)}
-        className="sm:hidden text-muted-foreground font-normal bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700"
-      >
-        <MagnifyingGlassIcon height={25} />
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput

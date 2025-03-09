@@ -5,15 +5,18 @@ import { Button } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
 import { CircleUserIcon, HeartIcon, SendIcon, HomeIcon } from 'lucide-react'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 
 export const Navbar = () => {
     const router = useRouter()
     const pathname = usePathname()
+    const user = useCurrentUser()
+    const bookingsUrl = user?.role === "SELLER" || user?.role === "ADMIN" ? `/home/services/provider/${user?.id}/bookings` : `/home/services/my-bookings`
     const tabs = [
         {name: "Explore", link: "/home/services", icon: <MagnifyingGlassIcon className="w-6 h-6" />},
         {name: "Favorites", link: "/home/services?favourites=true", icon: <HeartIcon className="w-6 h-6" />},
-        {name: "Bookings", link: "home/services/bookings", icon: <HomeIcon className="w-6 h-6" />},
+        {name: "Bookings", link: bookingsUrl, icon: <HomeIcon className="w-6 h-6" />},
         {name: "Messages", link: "/home/messages", icon: <SendIcon className="w-6 h-6" />},
         {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
     ]

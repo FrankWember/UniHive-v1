@@ -12,58 +12,109 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ShoppingBag, UserCircle, PlusCircle, Package, BarChart3, ClipboardList, PanelRight, MessageCircle, CreditCard } from 'lucide-react'
+import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarIcon, LogOut, Menu } from 'lucide-react'
+import { useCurrentUser } from '@/hooks/use-current-user'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
+  const user = useCurrentUser()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
-          <PanelRight className="h-4 w-4" />
+        <Button size="lg" variant="outline" className="flex items-center gap-1 rounded-full p-0">
+          <Avatar>
+            <AvatarImage src={user?.image || ""} alt="Profile" className='object-cover' />
+            <AvatarFallback>U</AvatarFallback>
+          </Avatar>
+          <div className='p-2'>
+            <Menu className="h-4 w-4 mr-2" />
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[20rem]">
         <DropdownMenuLabel>Campus Marketplace</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Seller</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push('/home/services/add')}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            <span>Add Service</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/home/services?mine=true")}>
-            <Package className="mr-2 h-4 w-4" />
-            <span>My services</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push(`/home/inbox`)}>
-            <MessageCircle className="mr-2 h-4 w-4" />
-            <span>Inbox</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push(`/home/services/billing`)}>
-            <CreditCard className="mr-2 h-4 w-4" />
-            <span>Billing</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/home/services/analytics")}>
-            <BarChart3 className="mr-2 h-4 w-4" />
-            <span>Analytics</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Customer</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => router.push("/home/services/my-bookings")}>
-            <ClipboardList className="mr-2 h-4 w-4" />
-            <span>My Bookings</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push(`/home/inbox`)}>
-            <MessageCircle className="mr-2 h-4 w-4" />
-            <span>Inbox</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+        {user && user.role === "SELLER" || user?.role === "ADMIN" ? (
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-muted-foreground">Seller</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')} className='flex items-center gap-2'>
+              <Heart className='mr-2 h-4 w-4' />
+              <span>Favorites</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/inbox')}>
+              <MessageCircle className='mr-2 h-4 w-4' />
+              <span>Messages</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}/bookings`)}>
+              <CalendarIcon className='mr-2 h-4 w-4' />
+              <span>Bookings</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}`)}>
+              <Store className='mr-2 h-4 w-4' />
+              <span>Manage Services</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/settings')}>
+              <UserRound className='mr-2 h-4 w-4' />
+              <span>Account</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/auth/sign-out')}>
+              <LogOut className='mr-2 h-4 w-4' />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        ) : user ? (
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-muted-foreground">User</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')}>
+              <Heart className='mr-2 h-4 w-4' />
+              <span>Favorites</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/inbox')}>
+              <MessageCircle className='mr-2 h-4 w-4' />
+              <span>Messages</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/services/my-bookings')}>
+              <CalendarIcon className='mr-2 h-4 w-4' />
+              <span>Bookings</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/settings')}>
+              <Store className='mr-2 h-4 w-4' />
+              <span>Become a seller</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/settings')}>
+              <UserRound className='mr-2 h-4 w-4' />
+              <span>Account</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/auth/sign-out')}>
+              <LogOut className='mr-2 h-4 w-4' />
+              <span>Logout</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        ) : (
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-muted-foreground">Visitor</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/auth/sign-in')}>
+              <CircleUser className='mr-2 h-4 w-4' />
+              <span>Sign In</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/auth/sign-up')}>
+              <UserPlus className='mr-2 h-4 w-4' />
+              <span>Sign Up</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/settings')}>
+              <Store className='mr-2 h-4 w-4' />
+              <span>Become a seller</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')}>
+              <Heart className='mr-2 h-4 w-4' />
+              <span>Favorites</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { ArrowDownAZ, Heart, Pencil, ShoppingCart } from 'lucide-react'
 import { currentUser } from '@/lib/auth'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import Image from 'next/image'
 import { Separator } from '@/components/ui/separator'
 import { Scissors, Brush, Laptop, Home, BookOpen, Car, Camera, PencilRuler, ChefHat, Hand, WashingMachine, Palette, Music } from 'lucide-react';
+import { ServicesHeader } from './_components/services-header'
 
 const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const user = await currentUser()
@@ -37,30 +37,13 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
   return (
     <div className="flex flex-col min-h-screen max-w-screen overscroll-x-none w-full">
       {/* Header  */}
-      <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
-        <div className="flex justify-start items-center gap-3">
-            <Link href="/home/services">
-              <Image src="/Unihive.svg" alt="logo" width={50} height={50} className="rounded-md border" />
-            </Link>
-        </div>
-        <div className="flex items-center space-x-3">
-          <SearchBar />
-          {user && (
-            <Link href={`/auth/sign-up`}>
-              <Button>
-                Join
-              </Button>
-            </Link>
-          )}
-          <SideMenu />
-        </div>
-      </div>
+      <ServicesHeader />
 
       <Separator />
 
       <div className='p-2 max-w-screen'>
         <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 rounded-lg bg-muted/85 dark:bg-muted/30">
-          <div className='flex items-center w-max gap-8 md:gap-12 p-4'>
+          <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-16 md:h-20'>
             <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services`}>
                 <div className="flex justify-center items-center rounded-full bg-transparent">

@@ -125,7 +125,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
 
   return (
     <div
-      className="flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden"
+      className="relative flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden"
       onClick={(e) => {
         const target = e.target as HTMLElement
         // Don't navigate if the click is on or inside a carousel button or the like button
@@ -154,18 +154,18 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
           <CarouselNext className="absolute top-1/2 right-6 z-20 border" data-carousel-button />
         </Carousel>
       </div>
-      <div className="absolute w-full top-6 flex justify-between">
+      <div className="absolute w-full top-3 left-0 right-0 flex justify-between items-center gap-2 px-3 z-20">
         {service.isMobileService ? (
             <Badge className="absolute top-2 right-2 text-xs h-4" variant="success">
               Mobile
             </Badge>
           ):(
-            <></>
+            <div></div>
           )}
         <Button
           variant="outline"
           size="icon"
-          className="absolute top-16 right-16 z-20"
+          className="bg-transparent/30"
           onClick={(e) => {
             e.stopPropagation()
             handleLike()
