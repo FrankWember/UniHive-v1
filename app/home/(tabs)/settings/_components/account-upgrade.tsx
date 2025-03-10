@@ -8,25 +8,16 @@ import { BeatLoader } from 'react-spinners'
 import { sendEmail } from '@/lib/mail'
 import { useToast } from '@/hooks/use-toast'
 import { APP_URL } from "@/constants/paths"
+import { sendAccountUpgradeEmail } from '@/actions/user'
 
 export const AccountUpgrade = () => {
     const user = useCurrentUser()
     const { toast } = useToast()
     const [isSubmitting, setIsSubmitting] = React.useState(false)
 
-    function handleRequestUpgrade() {
+    async function handleRequestUpgrade() {
         setIsSubmitting(true)
-        sendEmail({
-            to: 'unihive2025@gmail.com',
-            subject: 'Unihive Account Upgrade',
-            text: `The User with email ${user?.email} has requested an upgrade to premium account.`,
-            html: `
-                <h1>The Following User has requested an upgrade to premium account:</h1>
-                <p>Name: ${user?.name}</p>
-                <p>Email: ${user?.email}</p>
-                <p>Head out to the <a href="${APP_URL}/admin">Admin Page</a> to upgrade this account.</p>
-            `
-        })
+        await sendAccountUpgradeEmail()
         toast({
             title: 'Request Sent',
             description: 'We have sent an email to the admin to upgrade your account.',

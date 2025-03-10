@@ -5,6 +5,8 @@ import { auth } from "@/auth"
 import { revalidatePath } from "next/cache"
 import { currentUser } from "@/lib/auth"
 import { UserRole } from "@prisma/client"
+import { sendEmail } from "@/lib/mail"
+import { APP_URL } from "@/constants/paths"
 
 export async function updateUserSettings(data: {
   name?: string
@@ -77,4 +79,20 @@ export async function changeUserRole(userId: string, role: UserRole) {
     }
   })
   return user
+}
+
+export async function sendAccountUpgradeEmail() {
+  const user = await currentUser()
+
+  await sendEmail({
+      to: 'unihive2025@gmail.com',
+      subject: 'Unihive Account Upgrade',
+      text: `The User with email ${user?.email} has requested an upgrade to premium account.`,
+      html: `
+          <h1>The Following User has requested an upgrade to premium account:</h1>
+          <p>Name: ${user?.name}</p>
+          <p>Email: ${user?.email}</p>
+          <p>Head out to the <a href="${APP_URL}/admin">Admin Page</a> to upgrade this account.</p>
+      `
+  })
 }
