@@ -49,11 +49,11 @@ export function SideMenu({ className }: SidebarProps) {
               <MessageCircle className='mr-2 h-4 w-4' />
               <span>Messages</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}/bookings`)}>
+            <DropdownMenuItem onClick={() => router.push(`/home/services/provider/${user?.id}/appointments`)}>
               <CalendarIcon className='mr-2 h-4 w-4' />
-              <span>Bookings</span>
+              <span>Appointments</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}`)}>
+            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}/my-services`)}>
               <Store className='mr-2 h-4 w-4' />
               <span>Manage Services</span>
             </DropdownMenuItem>

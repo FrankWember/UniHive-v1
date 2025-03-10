@@ -14,7 +14,7 @@ export const Navbar = () => {
     const { mode } = useMode()
     const tabs = mode === "PROVIDER" ? [
             {name: "Appointments", link: `/home/services/provider/${user?.id}/appointments`, icon: <BookCheck className="w-6 h-6" />},
-            {name: "Calendar", link: `home/srvices/provider/${user?.id}/calendar`, icon: <Calendar className="w-6 h-6" />},
+            {name: "Calendar", link: `/home/services/provider/${user?.id}/calendar`, icon: <Calendar className="w-6 h-6" />},
             {name: "Services", link: `/home/services/provider/${user?.id}/my-services`, icon: <HomeIcon className="w-6 h-6" />},
             {name: "Messages", link: "/home/inbox", icon: <SendIcon className="w-6 h-6" />},
             {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}

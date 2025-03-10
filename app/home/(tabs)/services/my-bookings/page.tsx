@@ -1,28 +1,43 @@
 
-import { redirect } from "next/navigation"
-import { getBookingsByUserId } from "@/utils/data/services"
-import { DataTable } from "./_components/data-table"
-import { columns } from "./_components/columns"
-import { currentUser } from "@/lib/auth"
-import { BackButton } from "@/components/back-button"
+import { getAllProviderAppointments } from "@/utils/data/services"
+import { BookingCard } from "@/components/booking-card"
+import { parseBookingTime } from "@/utils/helpers/availability"
+import { RoleGate } from "@/components/role-gate"
+import { UserRole } from "@prisma/client"
+import { ProviderNav } from "../provider/[providerId]/_components/provider-nav"
+import { ProviderHeader } from "../provider/[providerId]/_components/provider-header"
 
 export default async function MyBookingsPage() {
-  const user = await currentUser()
 
-  const bookings = await getBookingsByUserId(user!.id!)
+  const bookings = await getAllProviderAppointments()
 
   return (
-    <div className="flex flex-col min-h-screen w-screen">
-      {/* Header */}
-      <div className="flex items-center justify-start gap-3 h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
-        <BackButton />
-        <h1 className="text-2xl font-bold">My Bookings</h1>
-      </div>
+    <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
+      <div className="flex flex-col min-h-screen w-screen">
+        {/* Header */}
+        <ProviderHeader text={"My Appointments"} />
 
-      {/* Content */}
-      <div className="container mx-auto px-4 mt-24 pb-24">
-        <DataTable columns={columns} data={bookings} />
+        <div className='w-full'>
+            <ProviderNav />
+        </div>
+
+        {/* Content */}
+        <div className="container mx-auto px-4 mt-24 pb-24 flex flex-col gap-4">
+          {bookings.map((booking, idx)=>(
+            <BookingCard 
+              key={idx} 
+              title={booking.offer.title} 
+              dayOfTheWeek={booking.date.toLocaleDateString('default', { weekday: 'short' })} 
+              dayOfTheMonth={booking.date.toLocaleDateString('default', { day: 'numeric' })} 
+              startTime={parseBookingTime(booking.time)?.startTime ?? ''}
+              endTime={parseBookingTime(booking.time)?.endTime ?? ''}
+              location={booking.location ?? ''}
+              price={booking.offer.price}
+              status={booking.status}
+              />
+          ))}
+        </div>
       </div>
-    </div>
+    </RoleGate>
   )
 }

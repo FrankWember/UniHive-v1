@@ -2,7 +2,7 @@
 
 import { useMode } from '@/contexts/mode-context'
 import React from 'react'
-import { Button } from 'react-day-picker'
+import { Button } from '@/components/ui/button'
 
 export const ModeSwitcher = () => {
     const { mode, setMode } = useMode()

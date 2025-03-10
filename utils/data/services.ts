@@ -281,3 +281,50 @@ export async function getUserSubscription (userId: string) {
         }
     })
 }
+
+export async function getAllProviderAppointments () {
+  const user = await currentUser()
+  return await prisma.serviceBooking.findMany({
+    where: {
+      offer: {
+        service: {
+          providerId: user?.id
+        }
+      }
+    },
+    include: {
+      offer: {
+        include: {
+          service: true
+        }
+      },
+      customer: true
+    }
+  })
+}
+
+export async function getAllProviderServices () {
+  const user = await currentUser()
+  return await prisma.service.findMany({
+    where: {
+      providerId: user?.id
+    },
+    include: {
+      offers: {
+        select: {
+          bookings: {
+            select: {
+              customer: {
+                select: {
+                  image: true
+                }
+              }
+            }
+          }
+        }
+      },
+      provider: true,
+      reviews: true
+    }
+  })
+}

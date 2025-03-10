@@ -10,6 +10,7 @@ import { api } from '@/convex/_generated/api'
 import axios, { all } from 'axios'
 import { ChatList } from './_components/chat-list'
 import { ChatInterface } from './_components/chat-interface'
+import { SideMenu } from '../services/_components/side-menu'
 
 interface ChatPlusUserId {
     _id: Id<"chats">
@@ -137,13 +138,16 @@ const InboxPage = () => {
                         {currentChatId ? chats.find((chat) => chat._id === currentChatId)?.customer?.name : "Inbox"}
                     </h1>
                 </div>
-                <ChatList 
-                    currentChatId={currentChatId} 
-                    setCurrentChatId={setCurrentChatId} 
-                    chats={chats}
-                    userId={user.id}
-                    loading={loading}
-                />
+                <div className='flex justify-end gap-3'>
+                    <SideMenu />
+                    <ChatList 
+                        currentChatId={currentChatId} 
+                        setCurrentChatId={setCurrentChatId} 
+                        chats={chats}
+                        userId={user.id}
+                        loading={loading}
+                    />
+                </div>
             </div>
 
             {/* Content */}

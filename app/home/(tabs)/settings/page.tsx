@@ -11,6 +11,7 @@ import { VerifiedIcon } from '@/components/icons/verified-icon'
 import { BackButton } from '@/components/back-button'
 import { BadgeDollarSign, CircleFadingArrowUp, CirclePlus, CircleUser, Lightbulb, Lock } from 'lucide-react'
 import { ModeSwitcher } from './_components/mode-switcher'
+import { ProviderNav } from '../services/provider/[providerId]/_components/provider-nav'
 
 export default async function SettingsPage() {
   const user = await currentUser()
@@ -23,16 +24,20 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-screen">
+    <div className="flex flex-col items-center min-h-screen w-screen">
       {/* Header */}
       <div className="flex items-center justify-start gap-3 h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <BackButton />
         <h1 className="text-2xl font-bold">Account</h1>
       </div>
 
+      <div className='w-full'>
+        <ProviderNav />
+      </div>
+
       {/* Content */}
-      <div className="flex flex-col items-center w-full max-w-4xl space-y-8 py-24 px-4">
-        <Card className="w-full max-w-md flex gap-2 items-center p-4">
+      <div className="flex flex-col justify-center items-center w-full max-w-xl space-y-8 py-24 px-4">
+        <Card className="w-full flex gap-2 items-center p-4">
           <Avatar className='w-16 h-16 md:h-20 md:w-20'>
             <AvatarImage src={userData?.image || ""} alt="Profile" className='object-cover' />
             <AvatarFallback>{userData?.name?.[0]}</AvatarFallback>
@@ -43,9 +48,12 @@ export default async function SettingsPage() {
           </CardHeader>
         </Card>
 
-        <ModeSwitcher />
+        <div className='flex justify-end w-full'>
+          <ModeSwitcher />
+        </div>
+        
 
-        <div className="w-full max-w-md flex flex-col gap-3">
+        <div className="w-full flex flex-col gap-3">
           <h2 className="text-xl font-bold">DormBiz Skills</h2>
           {user.role === "SELLER" || user.role === "ADMIN" ? (
             <>
@@ -66,7 +74,7 @@ export default async function SettingsPage() {
           )}
         </div>
 
-        <div className="w-full max-w-md flex flex-col gap-3">
+        <div className="w-full flex flex-col gap-3">
           <h2 className="text-xl font-bold">Settings</h2>
           <Link href="/home/settings/profile">
             <Button variant="ghost"><CircleUser className='h-4 w-4 mr-2' /> Profile Information</Button>
@@ -76,7 +84,7 @@ export default async function SettingsPage() {
           </Link>
         </div>
 
-        <Card className="w-full max-w-md mx-3">
+        <Card className="w-full mx-3">
           <CardHeader>
             <CardTitle>Theme</CardTitle>
             <CardDescription>Change the theme of the app.</CardDescription>

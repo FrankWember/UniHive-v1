@@ -23,6 +23,7 @@ import { MultiImageUpload } from '@/components/multi-image-upload'
 import { LocationInput } from '@/components/location-input'
 import { AvailabilityInput } from '@/components/availability-input'
 import { SERVICE_CATEGORIES } from '@/constants/categories'
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 
 export const AddServiceForm = () => {
@@ -30,6 +31,7 @@ export const AddServiceForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const router = useRouter()
+  const user = useCurrentUser()
 
   const form = useForm<z.infer<typeof ServiceSchema>>({
     resolver: zodResolver(ServiceSchema),
@@ -51,7 +53,7 @@ export const AddServiceForm = () => {
     try {
       await createService(values)
       setSuccess("Your service is now live!")
-      router.push('/home/services')
+      router.push(`/home/services/provider/${user?.id}/my-services`)
       router.refresh()
     } catch (error) {
       setError("We couldn't create your service. Please try again!")
