@@ -1,7 +1,6 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { getAllServices } from '@/utils/data/services'
 import { User, Service as GeneralService, ServiceReview } from '@prisma/client'
 
 type Service = GeneralService & {

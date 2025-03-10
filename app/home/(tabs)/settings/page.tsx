@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { VerifiedIcon } from '@/components/icons/verified-icon'
 import { BackButton } from '@/components/back-button'
 import { BadgeDollarSign, CircleFadingArrowUp, CirclePlus, CircleUser, Lightbulb, Lock } from 'lucide-react'
+import { ModeSwitcher } from './_components/mode-switcher'
 
 export default async function SettingsPage() {
   const user = await currentUser()
@@ -41,6 +42,8 @@ export default async function SettingsPage() {
             <CardDescription>{userData?.phone}</CardDescription>
           </CardHeader>
         </Card>
+
+        <ModeSwitcher />
 
         <div className="w-full max-w-md flex flex-col gap-3">
           <h2 className="text-xl font-bold">DormBiz Skills</h2>

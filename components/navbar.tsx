@@ -1,25 +1,30 @@
 "use client"
 
 import React from 'react'
-import { Button } from './ui/button'
 import { usePathname, useRouter } from 'next/navigation'
-import { CircleUserIcon, HeartIcon, SendIcon, HomeIcon } from 'lucide-react'
+import { CircleUserIcon, HeartIcon, SendIcon, HomeIcon, Calendar, BookCheck } from 'lucide-react'
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons'
 import { useCurrentUser } from '@/hooks/use-current-user'
-
+import { useMode } from '@/contexts/mode-context'
 
 export const Navbar = () => {
     const router = useRouter()
     const pathname = usePathname()
     const user = useCurrentUser()
-    const bookingsUrl = user?.role === "SELLER" || user?.role === "ADMIN" ? `/home/services/provider/${user?.id}/bookings` : `/home/services/my-bookings`
-    const tabs = [
-        {name: "Explore", link: "/home/services", icon: <MagnifyingGlassIcon className="w-6 h-6" />},
-        {name: "Favorites", link: "/home/services?favourites=true", icon: <HeartIcon className="w-6 h-6" />},
-        {name: "Bookings", link: bookingsUrl, icon: <HomeIcon className="w-6 h-6" />},
-        {name: "Messages", link: "/home/inbox", icon: <SendIcon className="w-6 h-6" />},
-        {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
-    ]
+    const { mode } = useMode()
+    const tabs = mode === "PROVIDER" ? [
+            {name: "Appointments", link: `/home/services/provider/${user?.id}/appointments`, icon: <BookCheck className="w-6 h-6" />},
+            {name: "Calendar", link: `home/srvices/provider/${user?.id}/calendar`, icon: <Calendar className="w-6 h-6" />},
+            {name: "Services", link: `/home/services/provider/${user?.id}/my-services`, icon: <HomeIcon className="w-6 h-6" />},
+            {name: "Messages", link: "/home/inbox", icon: <SendIcon className="w-6 h-6" />},
+            {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
+        ] : [
+            {name: "Explore", link: "/home/services", icon: <MagnifyingGlassIcon className="w-6 h-6" />},
+            {name: "Favorites", link: "/home/services?favourites=true", icon: <HeartIcon className="w-6 h-6" />},
+            {name: "Bookings", link: `/home/services/my-bookings`, icon: <HomeIcon className="w-6 h-6" />},
+            {name: "Messages", link: "/home/inbox", icon: <SendIcon className="w-6 h-6" />},
+            {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
+        ]
   return (
     <nav className="flex w-full justify-center md:hidden">
         <div className="fixed bottom-0 flex z-50 border-t w-full h-20 bg-muted/20 items-center justify-center backdrop-blur-sm px-4 py-2">
