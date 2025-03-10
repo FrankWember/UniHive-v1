@@ -24,16 +24,19 @@ import {
 import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 
 import { newPassword } from "@/actions/new-password";
 
 export const NewPasswordForm = () => {
+  const router = useRouter()
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/home/settings"
   const token = searchParams.get("token");
 
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
@@ -51,9 +54,9 @@ export const NewPasswordForm = () => {
       newPassword(values, token).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
+        router.push(callbackUrl)
       });
     });
-    console.log(values);
   };
 
   return (
