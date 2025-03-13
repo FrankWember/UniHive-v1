@@ -42,7 +42,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       <Separator />
 
       <div className='p-2 max-w-screen'>
-        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 rounded-lg bg-muted/85 dark:bg-muted/30">
+        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 border-b shadow-sm">
           <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-16 md:h-20'>
             <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services`}>

@@ -328,3 +328,22 @@ export async function getAllProviderServices () {
     }
   })
 }
+
+export async function getProviderInsights () {
+  const user = await currentUser()
+
+  return await prisma.user.findUnique({
+    where: {
+      id: user?.id
+    },
+    select: {
+      id: true,
+      services: {
+        select: {
+          id: true,
+          reviews: true
+        }
+      }
+    }
+  })
+}
