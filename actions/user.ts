@@ -86,7 +86,7 @@ export async function sendAccountUpgradeEmail() {
 
   await sendEmail({
       to: 'unihive2025@gmail.com',
-      subject: 'Unihive Account Upgrade',
+      subject: 'DormBiz Account Upgrade',
       text: `The User with email ${user?.email} has requested an upgrade to premium account.`,
       html: `
           <h1>The Following User has requested an upgrade to premium account:</h1>

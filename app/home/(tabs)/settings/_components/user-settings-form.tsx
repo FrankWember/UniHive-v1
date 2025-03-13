@@ -65,7 +65,7 @@ export function UserSettingsForm({ userData }: { userData: User }) {
   }
 
   return (
-    <Card>
+    <Card className='bg-muted/40'>
       <CardHeader>
         <CardTitle>Personal Information</CardTitle>
       </CardHeader>

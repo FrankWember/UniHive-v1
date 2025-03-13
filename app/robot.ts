@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://unihive-v1.vercel.app/sitemap.xml',
+    sitemap: 'https://DormBiz-v1.vercel.app/sitemap.xml',
   }
 }

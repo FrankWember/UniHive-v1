@@ -29,7 +29,7 @@ export default function AppleIcon() {
                         width: '100%',
                         height: '100%',
                     }}
-                    alt="Unihive"
+                    alt="DormBiz"
                 />
             </div>
         ),

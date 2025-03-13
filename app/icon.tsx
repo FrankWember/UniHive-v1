@@ -28,7 +28,7 @@ export default function Icon() {
                         width: '100%',
                         height: '100%',
                     }}
-                    alt="Unihive"
+                    alt="DormBiz"
                 />
             </div>
         ),

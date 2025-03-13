@@ -19,29 +19,29 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "Unihive",
-    template: "%s | unihive"
+    default: "DormBiz",
+    template: "%s | DormBiz"
   },
   metadataBase: new URL(APP_URL),
   keywords: [
-    "Unihive Marketplace", "Marketplace for University Students", "Student Marketplace", "Buy and Sell University Products", "Unihive", "University Services", "Student Services", "Campus Marketplace", "Unihive Platform", "Digital Marketplace for Students"
+    "DormBiz Marketplace", "Marketplace for University Students", "Student Marketplace", "Buy and Sell University Products", "DormBiz", "University Services", "Student Services", "Campus Marketplace", "DormBiz Platform", "Digital Marketplace for Students"
   ],
   openGraph: {
-    title: "Unihive Marketplace",
+    title: "DormBiz Marketplace",
     description: "A Platform for University Students to share their products and servcies",
-    creators: ["@Unihive"],
-    images: [`${APP_URL}/Unihive.png`],
+    creators: ["@DormBiz"],
+    images: [`${APP_URL}/DormBiz.png`],
     url: APP_URL,
-    siteName: "Unihive",
+    siteName: "DormBiz",
     
   },
   twitter: {
     card: "summary_large_image",
-    creator: "@Unihive",
-    title: "Unihive Marketplace",
+    creator: "@DormBiz",
+    title: "DormBiz Marketplace",
     site: APP_URL,
     description: "A Platform for University Students to share their products and servcies",
-    images: [`${APP_URL}/Unihive.png`],
+    images: [`${APP_URL}/DormBiz.png`],
   },
 };
 

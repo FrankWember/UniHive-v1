@@ -341,6 +341,7 @@ export async function getProviderInsights () {
       services: {
         select: {
           id: true,
+          name: true,
           reviews: true
         }
       }

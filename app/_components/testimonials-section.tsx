@@ -9,7 +9,7 @@ export function TestimonialsSection() {
           <TestimonialCard
             name="Alex Johnson"
             course="Computer Science"
-            quote="Unihive has made campus life so much easier. I found a great tutor and even started my own study group!"
+            quote="DormBiz has made campus life so much easier. I found a great tutor and even started my own study group!"
           />
           <TestimonialCard
             name="Samantha Lee"

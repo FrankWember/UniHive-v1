@@ -161,7 +161,7 @@ export async function sendEmail({ to, subject, text, html }: EmailOptions) {
         ${html || `<p>${text}</p>`}
       </div>
       <div class="footer">
-        <p>© ${new Date().getFullYear()} Unihive. All rights reserved.</p>
+        <p>© ${new Date().getFullYear()} DormBiz. All rights reserved.</p>
       </div>
     </body>
     </html>

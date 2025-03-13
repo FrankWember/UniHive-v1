@@ -38,7 +38,7 @@ export const SubscriptionContent = ({subscription}: {subscription: Subscription 
               {!subscription && (
                 <div className="flex flex-col">
                   <h2 className="text-xl font-bold">You don't have any subscriptions yet</h2>
-                  <p className="text-muted-foreground">You can use our secured payment providers to suscribe to unihive service providers</p>
+                  <p className="text-muted-foreground">You can use our secured payment providers to suscribe to DormBiz service providers</p>
                 </div>
               )}
         </CardContent>

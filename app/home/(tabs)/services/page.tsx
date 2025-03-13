@@ -4,7 +4,7 @@ import { SideMenu } from './_components/side-menu'
 import { MatchedServices } from './_components/matched-services'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowDownAZ, Heart, Pencil, ShoppingCart } from 'lucide-react'
+import { ArrowDownAZ, Heart, Pencil } from 'lucide-react'
 import { currentUser } from '@/lib/auth'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import Image from 'next/image'
@@ -39,10 +39,8 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       {/* Header  */}
       <ServicesHeader />
 
-      <Separator />
-
       <div className='p-2 max-w-screen'>
-        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 border-b shadow-sm">
+        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 bg-muted/5 shadow-sm">
           <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-16 md:h-20'>
             <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services`}>
@@ -75,8 +73,6 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
           <ScrollBar orientation="horizontal" className='hidden' />
         </ScrollArea>
       </div>
-
-      <Separator />
 
       {/* Content */}
       <div className="w-full pb-24">

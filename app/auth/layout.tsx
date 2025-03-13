@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 
 export const metadata: Metadata = {
-  title: "Unihive | Authentication",
+  title: "DormBiz | Authentication",
   description: "Digitally empowered campus life. Enjoy your university experience!",
 };
 

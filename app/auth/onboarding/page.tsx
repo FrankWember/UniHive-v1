@@ -12,7 +12,7 @@ export default function OnboardingPage() {
           Complete Your Profile
         </CardTitle>
         <CardDescription className='max-w-sm px-2 text-center'>
-          Let's personalize your experience and get you started on UniHive.
+          Let's personalize your experience and get you started on DormBiz.
         </CardDescription>
       </CardHeader>
       <CardContent>

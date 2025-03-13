@@ -11,6 +11,7 @@ const page = async () => {
     const reviewMetrics = calculateServiceReviewMetrics(service.reviews)
     return {
       serviceId: service.id,
+      serviceName: service.name,
       numberOfReviews: service.reviews.length,
       overall: reviewMetrics?.overall ?? 0,
       cleanliness: reviewMetrics?.cleanliness ?? 0,

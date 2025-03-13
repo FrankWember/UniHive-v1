@@ -42,7 +42,7 @@ const router = useRouter()
         <div className="px-2 py-2">
           <h2 className="text-2xl font-bold mb-1">Campus Rides</h2>
           <p className="text-sm text-muted-foreground mb-4">
-            Get Driven by a Verified User just like you. Only on Unihive!
+            Get Driven by a Verified User just like you. Only on DormBiz!
           </p>
         </div>
         

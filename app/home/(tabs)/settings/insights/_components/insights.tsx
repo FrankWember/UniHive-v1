@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 // Define the interface for the ratings data
 interface CombinedServiceRating {
   serviceId: string
+  serviceName: string
   numberOfReviews: number
   overall: number
   cleanliness: number
@@ -55,7 +56,7 @@ export default function Insights({ ratingsList }: InsightsProps) {
         <TabsList className="mb-4 w-full justify-start overflow-x-auto">
           {ratingsList.map((rating) => (
             <TabsTrigger key={rating.serviceId} value={rating.serviceId}>
-              Service {rating.serviceId}
+              {rating.serviceName}
             </TabsTrigger>
           ))}
         </TabsList>

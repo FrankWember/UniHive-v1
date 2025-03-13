@@ -24,7 +24,7 @@ export const ServicesHeader = () => {
     <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <div className="flex justify-start items-center gap-3">
             <Link href="/home/services">
-              <Image src="/Unihive.svg" alt="logo" width={50} height={50} className="rounded-md border" />
+              <Image src="/DormBiz.png" alt="logo" width={50} height={50} className="rounded-md border" />
             </Link>
         </div>
         <div className="flex items-center space-x-3">

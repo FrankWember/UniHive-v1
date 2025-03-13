@@ -14,7 +14,7 @@ export function HeroSection() {
               Your Campus Life, Simplified
             </h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-              Unihive connects students with services, rides, study groups, and more. Your one-stop platform for
+              DormBiz connects students with services, rides, study groups, and more. Your one-stop platform for
               all things campus life.
             </p>
           </div>

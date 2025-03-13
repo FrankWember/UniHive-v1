@@ -27,8 +27,8 @@ export default function Loading() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
       <div className="relative w-32 h-32 mb-8">
         <Image
-          src="/Unihive.svg"
-          alt="Unihive Logo"
+          src="/DormBiz.png"
+          alt="DormBiz Logo"
           width={128}
           height={128}
           className="z-10 rounded-full"

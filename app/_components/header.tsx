@@ -55,14 +55,14 @@ export function Header() {
       <Link className="flex items-center justify-center" href="/">
         <Suspense fallback={<Skeleton className="w-40 h-40" />}>
           <Image
-            src="/Unihive.svg"
+            src="/DormBiz.png"
             width={40}
             height={40}
-            alt="Unihive logo"
+            alt="DormBiz logo"
             className="rounded-lg"
           />
         </Suspense>
-        <span className="ml-2 text-2xl font-bold">Unihive</span>
+        <span className="ml-2 text-2xl font-bold">DormBiz</span>
       </Link>
       <div className="flex items-center space-x-4">
         <nav className="hidden md:flex space-x-4">

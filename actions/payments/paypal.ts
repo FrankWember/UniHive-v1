@@ -111,7 +111,7 @@ export async function makePaypalPayment({
             cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/home/products/payment/cancel`,
         },
         application_context: {
-            brand_name: 'Unihive Store',
+            brand_name: 'DormBiz Store',
             locale: 'en-US',
             shipping_preference: shippingPreference,
             user_action: 'PAY_NOW',

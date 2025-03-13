@@ -27,7 +27,7 @@ const OffersPage = async ({params}: {params: {serviceId: string}}) => {
           <div className="flex justify-start items-center gap-3">
             <BackButton />
             <Link href="/home/services">
-              <Image src="/Unihive.svg" alt="logo" width={50} height={50} className="rounded-md border" />
+              <Image src="/DormBiz.png" alt="logo" width={50} height={50} className="rounded-md border" />
             </Link>
           </div>
           <div className="flex items-center space-x-3">

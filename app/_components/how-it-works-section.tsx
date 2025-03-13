@@ -7,7 +7,7 @@ export function HowItWorksSection() {
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">1</div>
               <h3 className="text-xl font-bold mb-2">Sign Up</h3>
-              <p className="text-muted-foreground">Create your Unihive account with your student email.</p>
+              <p className="text-muted-foreground">Create your DormBiz account with your student email.</p>
             </div>
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-4">2</div>

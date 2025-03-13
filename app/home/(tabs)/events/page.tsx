@@ -7,15 +7,15 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "Events on Unihive",
+  description: "Events on DormBiz",
   openGraph: {
     title: "Events",
-    description: "Events on Unihive",
+    description: "Events on DormBiz",
     images: ["https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfMUoWNQlvYm2rFdR45xgNI7D1thwaiZzufosb"]
   },
   twitter: {
     title: "Events",
-    description: "Events on Unihive",
+    description: "Events on DormBiz",
     card: "summary_large_image",
     images: ["https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfMUoWNQlvYm2rFdR45xgNI7D1thwaiZzufosb"]
   }
