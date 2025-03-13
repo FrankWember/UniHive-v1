@@ -10,7 +10,20 @@ type Service = GeneralService & {
 
 type ServicesContextType = {
   services: Service[]
-  isLoading: boolean
+  isLoading: boolean,
+  providerFilter: string,
+  sortOption: string,
+  setProviderFilter: React.Dispatch<React.SetStateAction<string>>,
+  setSortOption: React.Dispatch<React.SetStateAction<string>>,
+  isMobileFilter: boolean,
+  setIsMobileFilter: React.Dispatch<React.SetStateAction<boolean>>,
+  locationFilter: string,
+  setLocationFilter: React.Dispatch<React.SetStateAction<string>>,
+  priceRangeFilter: { min: number, max: number },
+  setPriceRangeFilter: React.Dispatch<React.SetStateAction<{
+    min: number;
+    max: number;
+  }>>
 }
 
 const ServicesContext = createContext<ServicesContextType | undefined>(undefined)
@@ -18,6 +31,11 @@ const ServicesContext = createContext<ServicesContextType | undefined>(undefined
 export const ServicesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [services, setServices] = useState<Service[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [providerFilter, setProviderFilter] = useState('')
+  const [sortOption, setSortOption] = useState('newest')
+  const [isMobileFilter, setIsMobileFilter] = useState(false)
+  const [locationFilter, setLocationFilter] = useState('')
+  const [priceRangeFilter, setPriceRangeFilter] = useState({ min: 0, max: Infinity })
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -31,7 +49,20 @@ export const ServicesProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [])
 
   return (
-    <ServicesContext.Provider value={{ services, isLoading }}>
+    <ServicesContext.Provider value={{ 
+      services, 
+      isLoading, 
+      providerFilter, 
+      sortOption, 
+      setProviderFilter, 
+      setSortOption,
+      isMobileFilter, 
+      setIsMobileFilter, 
+      locationFilter, 
+      setLocationFilter, 
+      priceRangeFilter, 
+      setPriceRangeFilter
+      }}>
       {children}
     </ServicesContext.Provider>
   )

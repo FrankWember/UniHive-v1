@@ -7,6 +7,7 @@ import { SideMenu } from './side-menu'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import Image from 'next/image'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { FiltersSection } from './filters-section'
 
 export const ServicesHeader = () => {
   const user = useCurrentUser()
@@ -29,14 +30,12 @@ export const ServicesHeader = () => {
         </div>
         <div className="flex items-center space-x-3">
           <SearchBar />
-          {user && (
-            <Link href={`/auth/sign-up`}>
-              <Button>
-                Join
-              </Button>
-            </Link>
+          {user ? (
+            <SideMenu />
+          ):(
+            <FiltersSection />
           )}
-          <SideMenu />
+          
         </div>
       </div>
   )
