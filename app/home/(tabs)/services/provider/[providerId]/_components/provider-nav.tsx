@@ -8,13 +8,15 @@ import { Button } from '@/components/ui/button'
 import { BookCheck, Calendar, HomeIcon, SendIcon, CircleUserIcon } from 'lucide-react'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { usePathname } from 'next/navigation'
+import { useMode } from '@/contexts/mode-context'
 
 export const ProviderNav = () => {
     const isMobile = useIsMobile()
+    const { mode } = useMode()
     const user = useCurrentUser()
     const pathname = usePathname()
 
-    if (isMobile) return (
+    if (isMobile || mode === "USER") return (
         <div className='flex justify-center items-center w-full'></div>
     )
 

@@ -1,7 +1,22 @@
 "use client"
 
+import { parseBookingTime } from "@/utils/helpers/availability"
+import {
+  Calendar,
+  CalendarCurrentDate,
+  CalendarDayView,
+  CalendarMonthView,
+  CalendarNextTrigger,
+  CalendarPrevTrigger,
+  CalendarTodayTrigger,
+  CalendarViewTrigger,
+  CalendarWeekView,
+  CalendarYearView,
+  monthEventVariants
+} from '@/components/ui/full-calendar';
+import { VariantProps } from "class-variance-authority";
 import { useState, useEffect } from "react"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar as MobileCalendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
@@ -12,6 +27,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { BookingStatus, Service, ServiceBooking, ServiceOffer, User } from "@prisma/client"
 import { getTimeRange } from "@/utils/helpers/time"
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Define the booking type based on your Prisma model
 type Booking = ServiceBooking & {
@@ -47,7 +63,9 @@ const calendarStyles = {
   dayWrapper: "w-full aspect-square flex items-center justify-center relative",
 }
 
+
 export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) {
+  const isMobile = useIsMobile()
   const [date, setDate] = useState<Date>(new Date())
   const [view, setView] = useState<"month" | "day">("month")
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
@@ -99,7 +117,22 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
     )
   }
 
-  return (
+  const events = bookings.map(booking => {
+    const { startTime, endTime } = parseBookingTime(booking.time) ?? {}
+    const color = booking.status==="ACCEPTED"?"green":
+      booking.status==="PENDING"?"yellow"
+      :"purple" 
+    return {
+        id: booking.id,
+        date: booking.date,
+        startTime: startTime!,
+        stopTime: endTime!,
+        title: booking.offer.title,
+        color: color as VariantProps<typeof monthEventVariants>['variant']
+    }
+  })
+
+  if (isMobile) return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -170,7 +203,7 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
             </div>
           </CardHeader>
           <CardContent className="p-0 pt-4 h-full">
-            <Calendar
+            <MobileCalendar
               mode="single"
               selected={selectedDate}
               onSelect={(day) => {
@@ -296,6 +329,64 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
         </Card>
       </div>
     </div>
+  )
+
+    return (
+      <Calendar 
+        events={events}
+      >
+        <div className="h-dvh p-14 flex flex-col">
+          <div className="flex px-6 items-center gap-2 mb-6">
+            <CalendarViewTrigger
+              className="aria-[current=true]:bg-accent"
+              view="day"
+            >
+              Day
+            </CalendarViewTrigger>
+            <CalendarViewTrigger
+              view="week"
+              className="aria-[current=true]:bg-accent"
+            >
+              Week
+            </CalendarViewTrigger>
+            <CalendarViewTrigger
+              view="month"
+              className="aria-[current=true]:bg-accent"
+            >
+              Month
+            </CalendarViewTrigger>
+            <CalendarViewTrigger
+              view="year"
+              className="aria-[current=true]:bg-accent"
+            >
+              Year
+            </CalendarViewTrigger>
+
+            <span className="flex-1" />
+
+            <CalendarCurrentDate />
+
+            <CalendarPrevTrigger>
+              <ChevronLeft size={20} />
+              <span className="sr-only">Previous</span>
+            </CalendarPrevTrigger>
+
+            <CalendarTodayTrigger>Today</CalendarTodayTrigger>
+
+            <CalendarNextTrigger>
+              <ChevronRight size={20} />
+              <span className="sr-only">Next</span>
+            </CalendarNextTrigger>
+          </div>
+
+          <div className="flex-1 px-6 overflow-hidden">
+            <CalendarDayView />
+            <CalendarWeekView />
+            <CalendarMonthView />
+            <CalendarYearView />
+          </div>
+        </div>
+      </Calendar>
   )
 }
 

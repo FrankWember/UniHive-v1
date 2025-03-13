@@ -17,12 +17,12 @@ export default async function MyCalendarPage() {
             {/* Header */}
             <ProviderHeader text={"My Calendar"} />
 
-            <div className='w-full pt-28'>
+            <div className='w-full pt-[15rem]'>
                 <ProviderNav />
             </div>
 
             {/* Content */}
-            <div className="container mx-auto px-4 mt-[35rem] sm:mt-0 pb-24">
+            <div className="container mx-auto px-4 mt-10 sm:mt-0 pb-24">
                 <BookingsCalendar bookings={bookings} />
             </div>
         </div>

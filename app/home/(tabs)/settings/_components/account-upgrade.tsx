@@ -5,9 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { BeatLoader } from 'react-spinners'
-import { sendEmail } from '@/lib/mail'
 import { useToast } from '@/hooks/use-toast'
-import { APP_URL } from "@/constants/paths"
 import { sendAccountUpgradeEmail } from '@/actions/user'
 
 export const AccountUpgrade = () => {

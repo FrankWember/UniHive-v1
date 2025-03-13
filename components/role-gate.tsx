@@ -28,7 +28,7 @@ export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
               <Button variant="outline" onClick={() => router.push("/home/services")}>
                 Home Page
               </Button>
-              <Button onClick={() => router.push("/settings")}>
+              <Button onClick={() => router.push("/home/settings")}>
                 Settings
               </Button>
             </CardFooter>
