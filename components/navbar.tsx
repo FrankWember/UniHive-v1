@@ -20,7 +20,7 @@ export const Navbar = () => {
             {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}
         ] : [
             {name: "Explore", link: "/home/services", icon: <MagnifyingGlassIcon className="w-6 h-6" />},
-            {name: "Favorites", link: "/home/services?favourites=true", icon: <HeartIcon className="w-6 h-6" />},
+            {name: "Favorites", link: "/home/services/favourites", icon: <HeartIcon className="w-6 h-6" />},
             {name: "Bookings", link: `/home/services/my-bookings`, icon: <HomeIcon className="w-6 h-6" />},
             {name: "Messages", link: "/home/inbox", icon: <SendIcon className="w-6 h-6" />},
             {name: "Settings", link: "/home/settings", icon: <CircleUserIcon className="w-6 h-6" />}

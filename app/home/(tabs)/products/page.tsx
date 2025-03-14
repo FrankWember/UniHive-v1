@@ -78,7 +78,7 @@ const ProductsPage = async() => {
               <h2 className='text-sm md:text-base font-semibold text-center'>All</h2>
             </div>
             <div className="flex flex-col gap-2">
-              <Link href={`/home/products?favourites=true`}>
+              <Link href={`/home/products/favourites`}>
                 <div className="flex justify-center items-center rounded-full h-20 w-20 md:h-24 md:w-24 bg-muted">
                   <Heart className='h-12 w-12' />
                 </div>

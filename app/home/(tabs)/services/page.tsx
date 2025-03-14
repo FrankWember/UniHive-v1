@@ -52,7 +52,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
               <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
             </div>
             <div className="group flex flex-col items-center justify-center gap-2">
-              <Link href={`/home/services?favourites=true`}>
+              <Link href={`/home/services/favourites`}>
                 <div className="flex justify-center items-center rounded-full bg-transparent">
                   <Heart className='h-4 w-4 md:h-8 md:w-8' />
                 </div>

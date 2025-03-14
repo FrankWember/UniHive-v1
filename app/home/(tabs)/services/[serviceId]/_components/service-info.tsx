@@ -164,7 +164,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
             } else {
                 chatId = await newChat({ sellerId: service.provider.id, customerId: user!.id!, type: 'services' })
             }
-            router.push(`/home/inbox?chatId=${chatId}`)
+            router.push(`/home/inbox/${chatId}`)
         } catch {
             toast({
                 title: 'Failed to create chat',

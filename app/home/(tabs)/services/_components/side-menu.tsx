@@ -45,7 +45,7 @@ export function SideMenu({ className }: SidebarProps) {
         {user && user.role === "SELLER" || user?.role === "ADMIN" ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">Seller</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')} className='flex items-center gap-2'>
+            <DropdownMenuItem onClick={() => router.push('/home/services/favourites')} className='flex items-center gap-2'>
               <Heart className='mr-2 h-4 w-4' />
               <span>Favorites</span>
             </DropdownMenuItem>
@@ -73,7 +73,7 @@ export function SideMenu({ className }: SidebarProps) {
         ) : user ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">User</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')}>
+            <DropdownMenuItem onClick={() => router.push('/home/services/favourites')}>
               <Heart className='mr-2 h-4 w-4' />
               <span>Favorites</span>
             </DropdownMenuItem>
@@ -113,7 +113,7 @@ export function SideMenu({ className }: SidebarProps) {
               <Store className='mr-2 h-4 w-4' />
               <span>Become a seller</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push('/home/services?favourites=true')}>
+            <DropdownMenuItem onClick={() => router.push('/home/services/favourites')}>
               <Heart className='mr-2 h-4 w-4' />
               <span>Favorites</span>
             </DropdownMenuItem>
