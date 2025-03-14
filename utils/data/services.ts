@@ -258,10 +258,14 @@ export async function getBookingsByServiceId (serviceId: string) {
     })
 }
 
-export async function getBookingsByUserId (userId: string) {
+export async function getBookingsByUserId () {
+
+    const user = await currentUser()
+    if (!user) return []
+
     return await prisma.serviceBooking.findMany({
         where: {
-          customerId: userId
+          customerId: user.id
         },
         include: {
             offer: {

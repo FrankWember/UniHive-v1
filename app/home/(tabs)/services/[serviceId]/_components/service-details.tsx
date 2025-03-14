@@ -20,6 +20,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { OffersSection } from './offers-section'
 import { RelatedServicesSection } from './related-services-section'
 import { PortfolioSection } from './portfolio-section'
+import { ProviderSection } from './provider-section'
 import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 
 interface ServiceDetailsProps {
@@ -106,6 +107,17 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
 
           <Separator className="my-4" />
 
+          {/* Offers section */}
+          <div className="mx-8">
+            <ProviderSection 
+              service={service}
+              averageRating={averageRating}
+              reviews={reviews}
+            />
+          </div>
+
+          <Separator className="my-4" />
+
           {/* Portfolio section */}
           <div className="mx-8">
             <PortfolioSection images={service.portfolio} providerId={service.providerId} />
@@ -163,6 +175,11 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
               averageRating={averageRating}
               reviews={reviews}
             /> 
+            <ProviderSection 
+              service={service}
+              averageRating={averageRating}
+              reviews={reviews}
+            />
           </div>
 
           {/* Offers section */}

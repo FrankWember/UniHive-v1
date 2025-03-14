@@ -49,7 +49,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 </div>
               </Link>
               <h2 className='text-xs md:text-sm font-semibold text-center'>All</h2>
-              <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
+              <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
             </div>
             <div className="group flex flex-col items-center justify-center gap-2">
               <Link href={`/home/services?favourites=true`}>
@@ -58,14 +58,14 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
                 </div>
               </Link>
               <h2 className='text-xs md:text-sm font-semibold text-center'>Favourites</h2>
-              <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
+              <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
             </div>
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                 <div className='group flex flex-col items-center justify-center gap-2'>
                   <category.icon className='h-4 w-4 md:h-8 md:w-8' />
                   <h2 className='text-xs md:text-sm font-semibold text-center'>{category.name}</h2>
-                  <div className='w-full h-1 bg-foreground rounded-lg hidden group-hover:block'></div>
+                  <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
                 </div>
               </Link>
             ))}

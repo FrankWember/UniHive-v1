@@ -15,12 +15,16 @@ import {
 import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarIcon, LogOut, Menu } from 'lucide-react'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
   const user = useCurrentUser()
+  const isMobile = useIsMobile()
+
+  if (isMobile) return null
 
   return (
     <DropdownMenu>

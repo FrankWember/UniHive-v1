@@ -38,8 +38,8 @@ export const ImagesSection = ({
       }, [api])
 
     if (isMobile) return (
-        <div className="flex flex-col gap-2">
-            <Carousel setApi={setApi} className="w-full">
+        <div className="relative flex flex-col gap-2">
+            <Carousel setApi={setApi} className="relative w-full">
                 <CarouselContent>
                     {service.images.map((image, index) => (
                     <CarouselItem key={index}>
@@ -54,14 +54,9 @@ export const ImagesSection = ({
                     </CarouselItem>
                     ))}
                 </CarouselContent>
-                <div className="absolute bottom-8 right-14 flex items-center gap-2">
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </div>
+                    <CarouselPrevious className='absolute top-1/2 left-6 z-20 border' data-carousel-button />
+                    <CarouselNext className='absolute top-1/2 right-6 z-20 border' data-carousel-button />
             </Carousel>
-            <div className="py-1 text-center text-sm text-muted-foreground">
-                Image {current} of {count}
-            </div>
         </div>
     )
 

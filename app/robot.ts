@@ -1,3 +1,4 @@
+import { APP_URL } from '@/constants/paths'
 import type { MetadataRoute } from 'next'
  
 export default function robots(): MetadataRoute.Robots {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://DormBiz-v1.vercel.app/sitemap.xml',
+    sitemap: `${APP_URL}/sitemap.xml`,
   }
 }

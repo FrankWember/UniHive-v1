@@ -73,7 +73,7 @@ export function SearchBar() {
       <Button
         variant="outline"
         onClick={() => setOpen(true)}
-        className="flex text-muted-foreground font-normal justify-between space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700"
+        className="flex text-muted-foreground font-normal justify-between space-x-4 bg-neutral-100 dark:bg-neutral-900 hover:border-stone-700 w-full sm:w-fit"
       >
         <MagnifyingGlassIcon className="mr-2" />
         Search services...

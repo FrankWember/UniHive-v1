@@ -1,5 +1,5 @@
 
-import { getBookingsByUserId } from "@/utils/data/services"
+import { getAllProviderAppointments } from "@/utils/data/services"
 import { currentUser } from "@/lib/auth"
 import { BookingCard } from "@/components/booking-card"
 import { parseBookingTime } from "@/utils/helpers/availability"
@@ -11,7 +11,7 @@ import { ProviderHeader } from "../_components/provider-header"
 export default async function MyBookingsPage() {
   const user = await currentUser()
 
-  const bookings = await getBookingsByUserId(user!.id!)
+  const bookings = await getAllProviderAppointments()
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>

@@ -24,7 +24,7 @@ export default function AppleIcon() {
                 }}
             >
                 <img
-                    src='https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfLUq7zIw8zceWTbxh3CXyFj0r4QBSvZI9KUfA'
+                    src='https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfDAVOgk9bI71OjXGr8lwPm3pQ5d2n6FRshMeg'
                     style={{
                         width: '100%',
                         height: '100%',

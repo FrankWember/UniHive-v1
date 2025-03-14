@@ -47,7 +47,7 @@ export default async function MyBookingsPage() {
                 )}>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5 px-3 py-6">
                         {myServices.map((service, idx)=>(
-                            <ServiceCard service={service} key={idx} />
+                            <ServiceCard service={service} key={idx} url={`/home/services/provider/${service.providerId}/my-services/${service.id}`} />
                         ))}
                     </div>
                 </Suspense>

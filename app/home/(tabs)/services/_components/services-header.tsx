@@ -15,9 +15,8 @@ export const ServicesHeader = () => {
 
   if (isMobile) {
     return (
-      <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
+      <div className="flex items-center justify-between h-16 w-full py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
         <SearchBar />
-        <SideMenu />
       </div>
     )
   }

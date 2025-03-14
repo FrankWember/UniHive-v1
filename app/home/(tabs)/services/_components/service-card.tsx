@@ -15,7 +15,7 @@ import { likeService } from "@/actions/services"
 import { Spinner } from "@/components/icons/spinner"
 import { useRouter } from "next/navigation"
 import { APP_URL } from "@/constants/paths"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, CarouselApi } from "@/components/ui/carousel"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 type ServiceProps = {
@@ -29,10 +29,11 @@ type ServiceProps = {
         }
       }[]
     }[]
-  }
+  },
+  url?: string | undefined
 }
 
-export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
+export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
   const { toast } = useToast()
   const router = useRouter()
   const user = useCurrentUser()
@@ -41,8 +42,25 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
   const [isSharing, setIsSharing] = React.useState(false)
   const averageRating = calculateServiceReviewMetrics(service.reviews)?.overall!
   const availability = parseAvailability(service.availability)
-
   const closestDay = getClosestDayOfTheWeekAvailable(availability!)
+
+  // Carousel stuff
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+ 
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+ 
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
 
   React.useEffect(() => {
     const fetchLikeStatus = async () => {
@@ -130,12 +148,13 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
         const target = e.target as HTMLElement
         // Don't navigate if the click is on or inside a carousel button or the like button
         if (!target.closest("[data-carousel-button]") && !target.closest("button")) {
-          router.push(`/home/services/${service.id}`)
+          if (url) router.push(url)
+          else router.push(`/home/services/${service.id}`)
         }
       }}
     >    
       <div className="relative w-full">
-        <Carousel>
+        <Carousel setApi={setApi}>
           <CarouselContent>
             {service.images.map((image, index) => (
               <CarouselItem key={index}>
@@ -150,29 +169,38 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service }) => {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="absolute top-1/2 left-6 z-20 border" data-carousel-button />
-          <CarouselNext className="absolute top-1/2 right-6 z-20 border" data-carousel-button />
+          {/* <CarouselPrevious className="absolute hidden sm:block top-1/2 left-6 z-20 border" data-carousel-button />
+          <CarouselNext className="absolute hidden sm:block top-1/2 right-6 z-20 border" data-carousel-button /> */}
+          <div className="absolute bottom-6 left-0 right-0 flex w-full items-center justify-center gap-1">
+            {service.images.map((image, idx)=>(
+              <div 
+                key={idx} 
+                className={`w-2 h-2 rounded-full bg-white/70 border-gray-800 cursor-pointer ${idx === current ? "bg-white h-3 w-3" : ""}`} 
+                onClick={() => setCurrent(idx)}
+                data-carousel-button
+                />
+            ))}
+          </div>
         </Carousel>
       </div>
-      <div className="absolute w-full top-3 left-0 right-0 flex justify-between items-center gap-2 px-3 z-20">
+      <div className="absolute w-full top-3 left-0 right-0 flex justify-between items-center gap-2 px-6 z-20">
         {service.isMobileService ? (
-            <Badge className="absolute top-2 right-2 text-xs h-4" variant="success">
+            <Badge className="bg-white text-black dark:bg-black dark:text-white">
               Mobile
             </Badge>
           ):(
             <div></div>
           )}
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="bg-transparent/30"
           onClick={(e) => {
             e.stopPropagation()
             handleLike()
           }}
           disabled={isLiking}
         >
-          {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? "fill-red-500 text-red-500" : ""}`} />}
+          {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 md:h-6 md:w-6 ${isLiked ? "fill-red-500 text-red-500" : "text-white"}`} />}
         </Button>
       </div>
       <div className="flex justify-between px-1">
