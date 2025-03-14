@@ -12,8 +12,10 @@ import {
 } from "@/components/ui/select"
 import { TimePickerDemo } from "./ui/time-picker-12h-demo"
 import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
+import { ClockIcon, X } from "lucide-react"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "./ui/dialog"
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog"
 
 const DAYS_OF_WEEK = [
   "monday",
@@ -42,6 +44,8 @@ export function AvailabilityInput({
   className,
 }: AvailabilityInputProps) {
   const [selectedDay, setSelectedDay] = useState<string>(DAYS_OF_WEEK[0])
+  const [open1, setOpen1] = useState(false)
+  const [open2, setOpen2] = useState(false)
 
   const handleAddTimeSlot = () => {
     const newValue = { ...value }
@@ -97,6 +101,14 @@ export function AvailabilityInput({
     onChange(newValue)
   }
 
+  function formatTimeToLocaleString(date: Date): string {
+    return date.toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
+  }
+
   return (
     <div className={cn("space-y-4", className)}>
       <div className="flex space-x-2">
@@ -125,26 +137,69 @@ export function AvailabilityInput({
             <div key={day} className="space-y-2 items-center">
               <Label className="capitalize">{day}</Label>
               {value[day].map((slot, index) => (
-                <div key={index} className="flex flex-col md:flex-row items-center space-y-2 md:space-x-2">
-                  <TimePickerDemo
-                    date={parseTimeString(slot[0])}
-                    setDate={(newDate) => {
-                      if (newDate) {
-                        handleTimeChange(day, index, "start", newDate)
-                      }
-                    }}
-                  />
+                <div key={index} className="flex md:items-center gap-2">
+                  <Dialog open={open1} onOpenChange={setOpen1}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        {formatTimeToLocaleString(parseTimeString(slot[0]))}
+                        <ClockIcon className="h-4 w-4 ml-2" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="space-y-4">
+                      <DialogHeader>
+                        <DialogTitle>Set the Start Time</DialogTitle>
+                        <DialogDescription>Give the start time for this shift (time slot) for your service.</DialogDescription>
+                      </DialogHeader>
+                      <div className="flex w-full justify-center">
+                        <TimePickerDemo
+                          date={parseTimeString(slot[0])}
+                          setDate={(newDate) => {
+                            if (newDate) {
+                              handleTimeChange(day, index, "start", newDate)
+                            }
+                          }}
+                        />
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  
                   <span className="flex mx-3 md:my-3 md:mx-0 items-center">
-                    <ArrowRightIcon className="rotate-90 md:rotate-0" />
+                    <ArrowRightIcon />
                   </span>
-                  <TimePickerDemo
-                    date={parseTimeString(slot[1])}
-                    setDate={(newDate) => {
-                      if (newDate) {
-                        handleTimeChange(day, index, "end", newDate)
-                      }
-                    }}
-                  />
+                  <Dialog open={open2} onOpenChange={setOpen2}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        {formatTimeToLocaleString(parseTimeString(slot[1]))}
+                        <ClockIcon className="h-4 w-4 ml-2" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="space-y-4">
+                      <DialogHeader>
+                        <DialogTitle>Set the Stop Time</DialogTitle>
+                        <DialogDescription>Give the Stop time for this shift (time slot) for your service.</DialogDescription>
+                      </DialogHeader>
+                      <div className="flex w-full justify-center">
+                        <TimePickerDemo
+                          date={parseTimeString(slot[1])}
+                          setDate={(newDate) => {
+                            if (newDate) {
+                              handleTimeChange(day, index, "end", newDate)
+                            }
+                          }}
+                        />
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Close</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                   <Button
                     type="button"
                     variant="ghost"

@@ -57,7 +57,7 @@ export function SideMenu({ className }: SidebarProps) {
               <CalendarIcon className='mr-2 h-4 w-4' />
               <span>Appointments</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => router.push(`/home/sservices/provider/${user?.id}/my-services`)}>
+            <DropdownMenuItem onClick={() => router.push(`/home/services/provider/${user?.id}/my-services`)}>
               <Store className='mr-2 h-4 w-4' />
               <span>Manage Services</span>
             </DropdownMenuItem>

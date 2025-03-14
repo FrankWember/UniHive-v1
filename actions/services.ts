@@ -5,7 +5,6 @@ import { prisma } from "@/prisma/connection"
 import { auth } from "@/auth"
 import { uploadToUploadThing, deleteFromUploadThing } from '@/lib/cloud-storage';
 import { currentUser } from "@/lib/auth";
-import { revalidatePath } from 'next/cache'
 import { ServiceSchema } from "@/constants/zod";
 import * as z from 'zod'
 import { splitTimeSlots } from "@/utils/helpers/availability";
@@ -27,6 +26,7 @@ export async function createService(values: z.infer<typeof ServiceSchema>) {
       defaultLocation: values.defaultLocation,
       availability: splitTimeSlots(values.availability),
       isMobileService: values.isMobile,
+      portfolio: values.portfolio,
     },
   })
   return service

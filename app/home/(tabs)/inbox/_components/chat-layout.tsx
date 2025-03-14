@@ -86,12 +86,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
                     userIds: allUserIds
                 }
             });  
-            console.log("ALL_CHATS: ", allChats)
             const resolvedChats = allChats.map((chat) => {
                 const user = users.find((user: Customer) => {
                     return allUserIds.find((id) => id.userId === user.id)?._id === chat._id
                 })
-                console.log('USER:', user)
                 return {
                     ...chat,
                     customer: user
@@ -99,12 +97,9 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
             });
 
             setChats(resolvedChats);
-            console.log('RESOLVED CHATS:', resolvedChats);
             if (!currentChatId && resolvedChats[0]) {
                 setCurrentChatId(resolvedChats[0]._id);
             }
-        } catch (error) {
-            console.error('Failed to fetch chats', error);
         } finally {
             setLoading(false)
         }

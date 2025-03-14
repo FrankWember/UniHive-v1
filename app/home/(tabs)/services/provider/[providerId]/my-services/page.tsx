@@ -21,12 +21,12 @@ export default async function MyBookingsPage() {
             {/* Header */}
             <ProviderHeader text={"My Services"} />
 
-            <div className='w-full mt-[2rem]'>
+            <div className='w-full mt-[30rem] md:mt-[20rem]'>
                 <ProviderNav />
             </div>
 
             {/* Content */}
-            <div className="max-w-5xl mx-auto px-4 pt-[54rem] sm:mt-[4rem] sm:pt-0 pb-24 flex flex-col gap-4">
+            <div className="max-w-5xl mx-auto px-4 mt-[54rem] md:mt-[4rem] md:pt-0 pb-24 flex flex-col gap-4">
                 
                 <div className="flex justify-end">
                     <Link href="/home/services/add">

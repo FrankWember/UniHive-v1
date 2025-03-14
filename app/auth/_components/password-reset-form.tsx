@@ -46,7 +46,6 @@ export const PasswordResetForm = () => {
         setSuccess(data?.success);
       });
     });
-    console.log(values);
   };
 
   return (

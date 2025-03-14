@@ -175,7 +175,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
             {service.images.map((image, idx)=>(
               <div 
                 key={idx} 
-                className={`w-2 h-2 rounded-full bg-white/70 border-gray-800 cursor-pointer ${idx === current ? "bg-white h-3 w-3" : ""}`} 
+                className={`w-2 h-2 rounded-full bg-white/70 border-gray-800 cursor-pointer ${idx === current-1 ? "bg-white h-3 w-3" : ""}`} 
                 onClick={() => setCurrent(idx)}
                 data-carousel-button
                 />

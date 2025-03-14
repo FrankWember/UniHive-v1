@@ -25,7 +25,7 @@ const AddServicePage = async () => {
         </div>
 
         {/* Content */}
-        <div className="flex w-screen justify-center mt-5">
+        <div className="flex w-screen justify-center mt-[15rem]">
           <Card className='max-w-[40rem] h-fit my-20 mx-2'>
             <CardHeader>
               <CardTitle>Create Service</CardTitle>

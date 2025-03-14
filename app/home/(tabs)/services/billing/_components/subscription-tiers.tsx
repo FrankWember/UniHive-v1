@@ -25,7 +25,6 @@ export const SubscriptionTiers = () => {
 
     const handleSubscribe = () => {
         // Implement subscription logic here
-        console.log(`Subscribing with ${selectedMethod}`)
     }
 
     return (
