@@ -19,7 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { HomeIcon } from 'lucide-react'
+import { ChevronLeft, HomeIcon } from 'lucide-react'
 import axios from 'axios'
 
 interface ChatPlusUserId {
@@ -159,10 +159,12 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="border-b p-4 flex gap-4">
+          <div className='flex items-center gap-2'>
             <Button variant="outline" size="icon" onClick={()=>router.push('/home/services')}>
-                <HomeIcon className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" />
             </Button>
             <h2 className="text-lg font-semibold">Inbox</h2>
+          </div>
         </SidebarHeader>
         <SidebarContent>
           <ChatList 

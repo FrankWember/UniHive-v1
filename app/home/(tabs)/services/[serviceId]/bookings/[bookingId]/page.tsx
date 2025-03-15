@@ -4,6 +4,7 @@ import { currentUser } from '@/lib/auth'
 import { BackButton } from '@/components/back-button'
 import { BookingDetails } from './_components/booking-details'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { SideMenu } from '../../../_components/side-menu'
 
 export default async function BookingDetailsPage({ params }: { params: { serviceId: string, bookingId: string } }) {
   const user = await currentUser()
@@ -15,9 +16,12 @@ export default async function BookingDetailsPage({ params }: { params: { service
   return (
     <div className="flex flex-col min-h-screen w-screen">
       {/* Header */}
-      <div className="flex items-center justify-start gap-3 h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
-        <BackButton />
-        <h1 className="text-2xl font-bold">Booking Details</h1>
+      <div className="flex items-center justify-between gap-3 h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
+        <div className="flex justify-start items-center gap-3">
+          <BackButton />
+          <h1 className="text-2xl font-bold">Booking Details</h1>
+        </div>
+        <SideMenu />
       </div>
 
       {/* Content */}

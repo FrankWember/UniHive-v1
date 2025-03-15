@@ -7,39 +7,84 @@ import { RoleGate } from "@/components/role-gate"
 import { UserRole } from "@prisma/client"
 import { ProviderNav } from "../_components/provider-nav"
 import { ProviderHeader } from "../_components/provider-header"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { redirect } from "next/navigation"
 
 export default async function MyBookingsPage() {
-  const user = await currentUser()
-
   const bookings = await getAllProviderAppointments()
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-        <div className="flex flex-col min-h-screen w-screen">
+      <div className="h-full w-screen flex flex-col gap-4 justify-start fixed top-0 left-0 pb-[20rem] mb-[20rem]">
         {/* Header */}
-        <ProviderHeader text={"My Appointments"} />
+        <ProviderHeader text={"My Appointments"} fixed={false} />
 
         <div className='w-full'>
-            <ProviderNav />
+              <ProviderNav />
         </div>
 
         {/* Content */}
-        <div className="container mx-auto max-w-xl px-4 mt-24 pb-24 flex flex-col gap-4">
-            {bookings.map((booking, idx)=>(
-            <BookingCard 
-                key={idx} 
-                title={booking.offer.title} 
-                dayOfTheWeek={booking.date.toLocaleDateString('default', { weekday: 'short' })} 
-                dayOfTheMonth={booking.date.toLocaleDateString('default', { day: 'numeric' })} 
-                startTime={parseBookingTime(booking.time)?.startTime ?? ''}
-                endTime={parseBookingTime(booking.time)?.endTime ?? ''}
-                location={booking.location ?? ''}
-                price={booking.offer.price}
-                status={booking.status}
-                />
-            ))}
+        <div className="h-max mx-auto max-w-xl px-4 mb-[30rem]">
+          
+          <Tabs defaultValue="all">
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="accepted">Accepted</TabsTrigger>
+              <TabsTrigger value="rejected">Rejected</TabsTrigger>
+              <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" className="flex flex-col gap-4">
+              {bookings.map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  onclick={()=>redirect(`/home/services/${booking.offer.serviceId}/bookings/${booking.id}`)}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="pending" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="PENDING").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  onclick={()=>redirect(`/home/services/${booking.offer.serviceId}/bookings/${booking.id}`)}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="accepted" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="ACCEPTED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  onclick={()=>redirect(`/home/services/${booking.offer.serviceId}/bookings/${booking.id}`)}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="rejected" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="REJECTED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  onclick={()=>redirect(`/home/services/${booking.offer.serviceId}/bookings/${booking.id}`)}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="cancelled" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="CANCELLED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  onclick={()=>redirect(`/home/services/${booking.offer.serviceId}/bookings/${booking.id}`)}
+                  />
+              ))}
+            </TabsContent>
+          </Tabs>
+          <div className="flex h-[20rem] w-full">
+
+          </div>
         </div>
-        </div>
+      </div>
     </RoleGate>
   )
 }

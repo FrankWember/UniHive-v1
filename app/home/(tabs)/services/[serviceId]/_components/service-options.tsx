@@ -45,8 +45,9 @@ export const ServiceOptions = ({ service }: ServiceOptionsProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="outline">
-          <PanelRight className="h-4 w-4" />
+        <Button variant="outline">
+          Options
+          <PanelRight className="h-4 w-4 ml-2" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[20rem]">

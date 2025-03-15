@@ -20,6 +20,7 @@ import { ImagesStep } from './steps/images-step'
 import { AdditionalDetailsStep } from './steps/additional-details-step'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Progress } from '@/components/ui/progress'
+import { combineAvailabilityTimeSlots, parseAvailability } from '@/utils/helpers/availability'
 
 interface MultiStepServiceFormProps {
   initialData?: Service
@@ -49,7 +50,7 @@ export const MultiStepServiceForm = ({
       images: initialData.images,
       defaultLocation: initialData.defaultLocation || "",
       isMobile: initialData.isMobileService,
-      availability: initialData.availability as Record<string, [string, string][]>,
+      availability: combineAvailabilityTimeSlots(parseAvailability(initialData.availability)!),
       portfolio: initialData.portfolio
     } : {
       name: "",

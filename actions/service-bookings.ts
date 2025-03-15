@@ -10,13 +10,8 @@ import { ServiceBookingSchema } from "@/constants/zod"
 import { JsonValue } from "@prisma/client/runtime/library"
 import { parseBookingTime } from "@/utils/helpers/availability"
 import { APP_URL } from "@/constants/paths"
+import { getTimeRange as getBookingTimeRange } from "@/utils/helpers/time"
 
-const getTimeRange = (time: JsonValue) => {
-    const { startTime, endTime } = parseBookingTime(time) ?? {}
-    const startTimeString = startTime ? new Date(startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    const endTimeString = endTime ? new Date(endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'
-    return `${startTimeString} - ${endTimeString}`
-  }
 
 export async function createBooking(offerId: string, values: z.infer<typeof ServiceBookingSchema>) {
     try {
@@ -69,7 +64,7 @@ export async function createBooking(offerId: string, values: z.infer<typeof Serv
                 <p><strong>Service:</strong> ${offer.service.name}</p>
                 <p><strong>Offer:</strong> ${offer.title}</p>
                 <p><strong>Date:</strong> ${values.date.toLocaleDateString()}</p>
-                <p><strong>Start Time:</strong> ${startTime.toLocaleTimeString()} - ${stopTime.toLocaleTimeString()}</p>
+                <p><strong>Time:</strong> ${getBookingTimeRange(booking.date, booking.time)}</p>
                 <p><strong>Location:</strong> ${values.location || offer.service.defaultLocation}</p>
                 <a href="${APP_URL}/home/services/${offer.service.id}/bookings/${booking.id}">View Booking</a>
             `
@@ -126,7 +121,7 @@ export async function acceptBooking(bookingId: string) {
                 <h2>Booking Accepted</h2>
                 <p>Your booking for ${booking.offer.service.name} has been accepted!</p>
                 <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
+                <p><strong>Time:</strong> ${getBookingTimeRange(booking.date, booking.time)}</p>
                 <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
                 <p>Please proceed with the payment to confirm your booking.</p>
             `
@@ -182,7 +177,7 @@ export async function rejectBooking(bookingId: string) {
                 <h2>Booking Rejected</h2>
                 <p>Unfortunately, your booking for ${booking.offer.service.name} has been rejected.</p>
                 <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
-                <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
+                <p><strong>Time:</strong> ${getBookingTimeRange(booking.date, booking.time)}</p>
                 <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
                 <p>You may try booking a different time or contact the service provider.</p>
             `
@@ -234,7 +229,7 @@ export async function cancelBooking(bookingId: string, userId: string) {
                 html: `
                     <h2>Booking Cancelled</h2>
                     <p>The booking for ${booking.offer.service.name} has been cancelled.</p>
-                    <p><strong>Time:</strong> ${getTimeRange(booking.time)}</p>
+                    <p><strong>Time:</strong> ${getBookingTimeRange(booking.date, booking.time)}</p>
                     <p><strong>Date:</strong> ${booking.date.toLocaleDateString()}</p>
                     <p><strong>Location:</strong> ${booking.location || booking.offer.service.defaultLocation}</p>
                 `

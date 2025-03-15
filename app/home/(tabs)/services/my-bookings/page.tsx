@@ -6,6 +6,7 @@ import { RoleGate } from "@/components/role-gate"
 import { UserRole } from "@prisma/client"
 import { ProviderNav } from "../provider/[providerId]/_components/provider-nav"
 import { ProviderHeader } from "../provider/[providerId]/_components/provider-header"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default async function MyBookingsPage() {
 
@@ -13,29 +14,61 @@ export default async function MyBookingsPage() {
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-      <div className="flex flex-col min-h-screen w-screen">
+      <div className="flex flex-col gap-4 min-h-screen w-screen">
         {/* Header */}
         <ProviderHeader text={"My Bookings"} />
 
-        <div className='w-full'>
-            <ProviderNav />
-        </div>
-
         {/* Content */}
         <div className="container mx-auto px-4 mt-24 pb-24 flex flex-col gap-4">
-          {bookings.map((booking, idx)=>(
-            <BookingCard 
-              key={idx} 
-              title={booking.offer.title} 
-              dayOfTheWeek={booking.date.toLocaleDateString('default', { weekday: 'short' })} 
-              dayOfTheMonth={booking.date.toLocaleDateString('default', { day: 'numeric' })} 
-              startTime={parseBookingTime(booking.time)?.startTime ?? ''}
-              endTime={parseBookingTime(booking.time)?.endTime ?? ''}
-              location={booking.location ?? ''}
-              price={booking.offer.price}
-              status={booking.status}
-              />
-          ))}
+        <Tabs defaultValue="all">
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="accepted">Accepted</TabsTrigger>
+              <TabsTrigger value="rejected">Rejected</TabsTrigger>
+              <TabsTrigger value="cancelled">Cancelled</TabsTrigger>
+            </TabsList>
+            <TabsContent value="all" className="flex flex-col gap-4">
+              {bookings.map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="pending" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="PENDING").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="accepted" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="ACCEPTED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="rejected" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="REJECTED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  />
+              ))}
+            </TabsContent>
+            <TabsContent value="cancelled" className="flex flex-col gap-4">
+              {bookings.filter(booking=>booking.status==="CANCELLED").map((booking, idx)=>(
+                <BookingCard 
+                  key={idx} 
+                  booking={booking}
+                  />
+              ))}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </RoleGate>

@@ -53,6 +53,22 @@ export function splitTimeSlots(availability: DayAvailability): DayAvailability {
   return splitAvailability;
 }
 
+export function combineAvailabilityTimeSlots(availability: DayAvailability): DayAvailability {
+  const newAvailability: DayAvailability = {};
+  
+  (Object.keys(availability) as Array<keyof DayAvailability>).forEach(day => {
+    const daySlots = availability[day];
+    
+    if (daySlots) {
+      // Only consolidate if there are slots for the day
+      newAvailability[day] = consolidateTimeSlots(daySlots);
+    }
+  });
+  
+  return newAvailability;
+}
+
+
 
 type Booking = {
   date: Date;

@@ -58,7 +58,7 @@ export const PortfolioSection = ({images, providerId}: PortfolioSectionProps) =>
                     )}
                 </CarouselContent>
                 
-                <div className="absolute bottom-8 right-14 flex items-center gap-2">
+                <div className="absolute bottom-8 right-14 flex items-center gap-2 z-20">
                     <CarouselPrevious />
                     <CarouselNext />
                 </div>

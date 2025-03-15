@@ -17,9 +17,9 @@ const EditServicePage = async ({ params }: { params: { serviceId: string } }) =>
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-      <div className="flex flex-col min-h-screen w-full">
+      <div className="flex flex-col gap-4 min-h-screen w-full">
         {/* Header */}
-        <div className="flex items-center justify-start h-14 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
+        <div className="flex items-center justify-start h-14 w-full border-b py-2 px-6">
           <BackButton />
           <h1 className="text-2xl font-bold">Edit Service: {service.name}</h1>
         </div>

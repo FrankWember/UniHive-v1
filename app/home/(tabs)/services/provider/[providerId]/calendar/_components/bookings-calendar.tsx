@@ -28,6 +28,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { BookingStatus, Service, ServiceBooking, ServiceOffer, User } from "@prisma/client"
 import { getTimeRange } from "@/utils/helpers/time"
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 // Define the booking type based on your Prisma model
 type Booking = ServiceBooking & {
@@ -98,7 +99,7 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
     const hasBookings = dayBookings.length > 0
 
     return (
-      <div className={calendarStyles.dayWrapper}>
+      <div className={cn(calendarStyles.dayWrapper, "cursor-pointer")} onClick={() => {setSelectedDate(day); setView("day")}}>
         <div className={`text-center ${hasBookings ? "font-bold" : ""}`}>{format(day, "d")}</div>
         {hasBookings && (
           <div className="absolute bottom-1 left-0 right-0 flex justify-center">
@@ -222,7 +223,7 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
                 table: "w-full border-collapse",
                 row: "w-full flex",
                 head_row: "flex w-full mt-4",
-                head_cell: "text-muted-foreground rounded-md w-full font-normal text-[0.8rem]",
+                head_cell: "text-muted-foreground rounded-md w-full font-normal text-[0.8rem] cursor-pointer",
                 cell: "h-10 w-full p-0 text-center relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                 day: "h-10 w-full p-0 flex items-center justify-center aria-selected:opacity-100",
                 day_range_end: "day-range-end",
@@ -288,7 +289,7 @@ export default function BookingsCalendar({ bookings }: { bookings: Booking[] }) 
                           </div>
                         )}
                         <div className="mt-3 pt-3 border-t flex items-center gap-2">
-                          <div className="flex-shrink-0">
+                          <div className="">
                             {booking.customer.image ? (
                               <div className="h-8 w-8 rounded-full overflow-hidden">
                                 <img
