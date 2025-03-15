@@ -13,9 +13,9 @@ export default async function MyCalendarPage() {
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-        <div className="flex flex-col items-center h-full w-screen pt-[32rem] md:pt-[14rem]">
+        <div className="flex flex-col items-center h-full w-screen pt-8 md:pt-0">
             {/* Header */}
-            <ProviderHeader text={"My Calendar"} />
+            <ProviderHeader text={"My Calendar"} fixed={false} />
 
             <div className='w-full pt-8'>
                 <ProviderNav />

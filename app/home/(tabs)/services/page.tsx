@@ -16,21 +16,21 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
   const user = await currentUser()
 
   const categories = [
-    { name: "Barber", icon: Scissors },
-    { name: "Braiding", icon: Brush },
-    { name: "Electronics", icon: Laptop },
-    { name: "Makeup", icon: Brush },
-    { name: "Nails", icon: Pencil },
-    { name: "Housing", icon: Home },
-    { name: "Tutoring", icon: BookOpen },
-    { name: "Automobile", icon: Car },
-    { name: "Photography", icon: Camera },
-    { name: "Tailoring", icon: PencilRuler },
-    { name: "Cooking", icon: ChefHat },
-    { name: "Massage", icon: Hand },
-    { name: "Cleaning", icon: WashingMachine },
-    { name: "Graphic Design", icon: Palette },
-    { name: "Music", icon: Music },
+    { name: "Barber", icon: Scissors, link: "/icons/icons8-scissors-50.png" },
+    { name: "Braiding", icon: Brush, link: "/icons/icons8-braid-48.png" },
+    { name: "Electronics", icon: Laptop, link: "/icons/icons8-electronics-50.png" },
+    { name: "Makeup", icon: Brush, link: "/icons/icons8-makeup-64.png" },
+    { name: "Nails", icon: Pencil, link: "/icons/icons8-nails-50.png" },
+    { name: "Housing", icon: Home, link: "/icons/icons8-house-50.png" },
+    { name: "Tutoring", icon: BookOpen, link: "/icons/icons8-tutor-48.png" },
+    { name: "Automobile", icon: Car, link: "/icons/icons8-car-50.png" },
+    { name: "Photography", icon: Camera, link: "/icons/icons8-camera-50.png" },
+    { name: "Tailoring", icon: PencilRuler, link: "/icons/icons8-dress-50.png" },
+    { name: "Cooking", icon: ChefHat, link: "/icons/icons8-cooking-50.png" },
+    { name: "Massage", icon: Hand, link: "/icons/icons8-massage-50.png" },
+    { name: "Cleaning", icon: WashingMachine, link: "/icons/icons8-cleaning-50.png" },
+    { name: "Graphic Design", icon: Palette, link: "/icons/icons8-design-50.png" },
+    { name: "Music", icon: Music, link: "/icons/icons8-music-50.png" },
   ]
 
   
@@ -41,29 +41,11 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
       <div className='p-2 max-w-screen'>
         <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-8 bg-muted/5 shadow-sm">
-          <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-16 md:h-20'>
-            <div className="group flex flex-col items-center justify-center gap-2">
-              <Link href={`/home/services`}>
-                <div className="flex justify-center items-center rounded-full bg-transparent">
-                  <ArrowDownAZ className='h-4 w-4 md:h-8 md:w-8 text-muted-foreground fill-muted-foreground' />
-                </div>
-              </Link>
-              <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>All</h2>
-              <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
-            </div>
-            <div className="group flex flex-col items-center justify-center gap-2">
-              <Link href={`/home/services/favourites`}>
-                <div className="flex justify-center items-center rounded-full bg-transparent">
-                  <Heart className='h-4 w-4 md:h-8 md:w-8 text-muted-foreground fill-muted-foreground' />
-                </div>
-              </Link>
-              <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>Favourites</h2>
-              <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
-            </div>
+          <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-fit'>
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                 <div className='group flex flex-col items-center justify-center gap-2'>
-                  <category.icon className='h-4 w-4 md:h-8 md:w-8 text-muted-foreground fill-muted-foreground' />
+                  <Image src={category.link} alt={category.name} width={48} height={48} className='object-cover' />
                   <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>{category.name}</h2>
                   <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
                 </div>

@@ -18,13 +18,11 @@ type Booking = ServiceBooking & {
 
 export const BookingCard = ({
     booking,
-    onclick
 }:{
     booking: Booking,
-    onclick?: () => void
 }) => {
   return (
-    <Card className="overflow-hidden" onClick={onclick}>
+    <Card className="overflow-hidden">
         <div
         className={`h-1 ${
             booking.status === "ACCEPTED"

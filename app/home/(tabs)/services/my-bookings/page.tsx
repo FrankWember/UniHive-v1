@@ -19,7 +19,7 @@ export default async function MyBookingsPage() {
         <ProviderHeader text={"My Bookings"} />
 
         {/* Content */}
-        <div className="container mx-auto px-4 mt-24 pb-24 flex flex-col gap-4">
+        <div className="container mx-auto px-4 pb-24 flex flex-col gap-4">
         <Tabs defaultValue="all">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>

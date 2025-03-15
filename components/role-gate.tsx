@@ -37,8 +37,8 @@ export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
       </div>
     )
   } else return (
-    <div>
+    <>
       {children}
-    </div>
+    </>
   )
 }

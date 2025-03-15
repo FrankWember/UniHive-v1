@@ -119,7 +119,7 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
       setSuccess("")
       await createBooking(offerId, values)
       setSuccess("Your booking has been made!")
-      router.push(`/home/services/${service.id}`)
+      router.push(`/home/services/my-bookings`)
       router.refresh()
     } catch (error) {
       console.error(error)
@@ -175,7 +175,7 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
                     <SelectItem 
                       key={index} 
                       value={`${slot[0]} - ${slot[1]}`}>
-                      {`${slot[0]}  ~to~  ${slot[1]}`}
+                      {`${(new Date("1970-01-01T" + slot[0].replace(/-/g, ":"))).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })} to ${(new Date("1970-01-01T" + slot[1].replace(/-/g, ":"))).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
