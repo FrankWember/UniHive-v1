@@ -32,7 +32,7 @@ export const Navbar = () => {
                 <div
                     key={tab.name}
                     onClick={()=>router.push(tab.link)}
-                    className={`w-full h-full flex flex-col gap-1 items-center justify-center text-xs ${pathname.includes(tab.link) ? "text-red-500" : "hover:text-red-800"}`}
+                    className={`w-full h-full flex flex-col gap-1 items-center justify-center text-xs ${pathname===tab.link ? "text-red-500" : "hover:text-red-800"}`}
                 >
                     {tab.icon}
                     {tab.name}

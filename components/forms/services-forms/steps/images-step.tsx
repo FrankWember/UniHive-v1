@@ -47,7 +47,7 @@ export const ImagesStep = ({ form }: ImagesStepProps) => {
               <MultiImageUpload
                 value={field.value!}
                 onChange={field.onChange}
-                maxFiles={5}
+                maxFiles={10}
               />
             </FormControl>
             <FormDescription>Upload additional portfolio images to showcase your previous work.</FormDescription>

@@ -66,7 +66,7 @@ export const ProviderDetails: React.FC<ProviderDetailsProps> = ({ provider }) =>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {provider.bio && (
           <div className="flex flex-col space-y-3">
             <h2 className="text-xl font-semibold">About</h2>

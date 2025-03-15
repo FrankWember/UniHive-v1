@@ -17,7 +17,7 @@ export default async function MyCalendarPage() {
             {/* Header */}
             <ProviderHeader text={"My Calendar"} />
 
-            <div className='w-full pt-[15rem]'>
+            <div className='w-full pt-8'>
                 <ProviderNav />
             </div>
 

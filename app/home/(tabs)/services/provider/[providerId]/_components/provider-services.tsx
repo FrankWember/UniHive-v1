@@ -26,7 +26,7 @@ export const ProviderServices: React.FC<ProviderServicesProps> = ({ services, pr
   return (
     <div className="space-y-8 pb-20">
       <h2 className="text-2xl font-bold py-4">Services Offered</h2>
-      <div className="grid grid-cols-2  lg:grid-cols-3 gap-6 md:overflow-y-auto md:max-h-[90vh]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 gap-y-8 md:gap-5 px-3 py-6">
         {services.map((service) => (
           <ServiceCard key={service.id} service={service} />
         ))}
@@ -34,13 +34,13 @@ export const ProviderServices: React.FC<ProviderServicesProps> = ({ services, pr
       {services.length === 0 && (
         <p className="text-center text-muted-foreground">This seller has no products yet.</p>
       )}
-      <Separator className='my-8' />
+      {/* <Separator className='my-8' />
       <h2 className="text-2xl font-bold py-4">Products by this Provider</h2>
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }

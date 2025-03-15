@@ -8,7 +8,7 @@ import { VerifiedIcon } from "@/components/icons/verified-icon"
 import { Badge } from "@/components/ui/badge"
 import { WeeklyAvailabilityCalendar } from "./weekly-availability-calendar"
 import { useToast } from "@/hooks/use-toast"
-import { Share1Icon } from "@radix-ui/react-icons"
+import { Pencil2Icon, Share1Icon } from "@radix-ui/react-icons"
 import { useCurrentUser } from "@/hooks/use-current-user"
 import React from "react"
 import { isFavouriteService, likeService } from "@/actions/services"
@@ -46,7 +46,7 @@ interface ServiceInfoProps {
     reviews: any[];
 }
 
-export const ProviderSection = ({ service, averageRating, reviews }: ServiceInfoProps) => {
+export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProps) => {
     const { toast } = useToast()
     const user = useCurrentUser()
     const router = useRouter()
@@ -164,7 +164,7 @@ export const ProviderSection = ({ service, averageRating, reviews }: ServiceInfo
             } else {
                 chatId = await newChat({ sellerId: service.provider.id, customerId: user!.id!, type: 'services' })
             }
-            router.push(`/home/inbox?chatId=${chatId}`)
+            router.push(`/home/inbox/${chatId}`)
         } catch {
             toast({
                 title: 'Failed to create chat',
@@ -176,49 +176,44 @@ export const ProviderSection = ({ service, averageRating, reviews }: ServiceInfo
         }
     }
     
-  return (
-    <div className='flex flex-col gap-4 py-4 w-full mx-auto'>
-        <div className="flex flex-col gap-3">
-                <h2 className="text-xl font-semibold">Meet Your Provider</h2>
-                <div className="flex gap-6 p-3 rounded-lg border w-full cursor-pointer hover:bg-muted" onClick={() => router.push(`/home/services/provider/${service.provider.id}`)}>
-                    <Avatar className="h-16 w-16 lg:h-28 lg:w-28">
-                        <AvatarImage src={service.provider.image || undefined} alt={service.provider.name || 'provider'} className="object-cover" />
-                        <AvatarFallback>{service.provider.name ? service.provider.name[0] : 'S'}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col gap-2 w-full">
-                        <span className="flex items-center justify-start text-lg font-semibold gap-1">
-                            {service.provider.name}
-                            <VerifiedIcon className="h-4 w-4 md:h-6 md:w-6" />
+
+    return (
+        <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
+            <div className="flex flex-col gap-2">
+                <p className="text-xl md:text-2xl font-semibold truncate">{service.name}</p>
+                <div className="flex justify-between">
+                    <span className="flex items-end mt-2">
+                        <span className='text-xl mr-4'>Starts at</span>
+                        <span className='text-green-500 font-semibold text-3xl'>$</span>
+                        <span className="font-semibold text-3xl mr-3">
+                            {service.price.toFixed(2)}
                         </span>
-                        <span className="text-sm text-muted-foreground">Since {service.provider.createdAt.toLocaleDateString()}</span>
+                    </span>
+                </div>
+                <div className="flex justify-between gap-3">
+                    <span className="flex items-center text-sm md:text-base">
+                        <MapPin className="mr-1 h-4 w-4" />
+                        {service.defaultLocation}
+                    </span>
+                    <div className="flex gap-3 justify-end">
+                        <Button onClick={() => router.push(`/home/services/${service.id}/edit`)} disabled={creatingChat}>
+                            <Pencil2Icon className="h-4 w-4 mr-2" /> Edit
+                        </Button> 
+                        <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
+                            {isSharing ? <Spinner /> : <Share1Icon />}
+                        </Button>        
                     </div>
                 </div>
+                
             </div>
-            {service.provider.bio?.length! > 0 && (
-                <div className="flex flex-col gap-3 p-4 rounded-lg border">
-                    <h3 className="text-xl font-semibold">About</h3>
-                    <p className="text-sm text-muted-foreground">{service.provider.bio}</p>
-                </div>
-            )}
 
             <Separator className="my-4" />
-            <div className="grid grid-cols-8 gap-y-6 my-4">
-                <Star className="h-8 w-8" />
-                <div className="col-span-7 flex flex-col">
-                    <h3 className="font-semibold">Trusted Reviews</h3>
-                    <p className="text-sm text-muted-foreground">All review are verified and originate only from authentic users and customers for this service</p>
-                </div>
-                <Book className="h-8 w-8" />
-                <div className="col-span-7 flex flex-col">
-                    <h3 className="font-semibold">Efficient Bookings</h3>
-                    <p className="text-sm text-muted-foreground">We offer a fast and efficient booking process. Schedule your service appointment in seconds</p>
-                </div>
-                <Calendar className="h-8 w-8" />
-                <div className="col-span-7 flex flex-col">
-                    <h3 className="font-semibold">Refund within 48 hours</h3>
-                    <p className="text-sm text-muted-foreground">Get a full refund in case of cancellation or refusal within 48 hours</p>
-                </div>
+            <div className="flex w-full">
+                <WeeklyAvailabilityCalendar availability={service.availability!} />
             </div>
-    </div>
-  )
+
+            
+            
+        </div>
+    )
 }

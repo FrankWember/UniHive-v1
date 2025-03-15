@@ -20,6 +20,8 @@ import {
 import { calculateServiceReviewMetrics } from '@/utils/helpers/reviews'
 import { ArrowDownNarrowWide, ChevronsUpDown, Filter } from 'lucide-react'
 import { useServices } from '@/contexts/services-context'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { FiltersSection } from './filters-section'
 
 type ServiceProps = Service & { 
   reviews: ServiceReview[], 
@@ -34,6 +36,7 @@ type ServiceProps = Service & {
 }
 
 export const ServicesContent = ({ services }: { services: ServiceProps[] }) => {
+  const isMobile = useIsMobile()
   
   const { providerFilter, sortOption, setProviderFilter, setSortOption, isMobileFilter, setIsMobileFilter, locationFilter, setLocationFilter, priceRangeFilter, setPriceRangeFilter } = useServices()
 
@@ -64,6 +67,7 @@ export const ServicesContent = ({ services }: { services: ServiceProps[] }) => {
 
   return (
     <div className="flex flex-col gap-4">
+      {isMobile && <FiltersSection />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 gap-y-8 md:gap-5 px-3 py-6">
         {sortedServices.map((service) => (
           <ServiceCard key={service.id} service={service} />

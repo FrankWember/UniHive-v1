@@ -16,6 +16,7 @@ import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarI
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useMode } from '@/contexts/mode-context'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -23,6 +24,7 @@ export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
   const user = useCurrentUser()
   const isMobile = useIsMobile()
+  const { mode } = useMode()
 
   if (isMobile) return null
 
@@ -42,7 +44,7 @@ export function SideMenu({ className }: SidebarProps) {
       <DropdownMenuContent className="w-[20rem]">
         <DropdownMenuLabel>Campus Marketplace</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {user && user.role === "SELLER" || user?.role === "ADMIN" ? (
+        {user && mode === "PROVIDER" ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">Seller</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => router.push('/home/services/favourites')} className='flex items-center gap-2'>

@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { ServiceDetails } from '@/app/home/(tabs)/services/[serviceId]/_components/service-details'
+import { ServiceDetails } from './_components/service-details'
 import { getRelatedServices, getServiceById } from '@/utils/data/services'
 import { Skeleton } from "@/components/ui/skeleton"
 import { getServiceReviews } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
-import { ServiceHeader } from '@/app/home/(tabs)/services/[serviceId]/_components/service-header'
+import { ServiceHeader } from './_components/service-header'
 
 
 const ServicePage = async ({ params }: { params: { serviceId: string } }) => {

@@ -30,9 +30,7 @@ export const ServicesHeader = () => {
         <div className="flex items-center space-x-3">
           <SearchBar />
           <FiltersSection />
-          {user && (
-            <SideMenu />
-          )}
+          <SideMenu />
         </div>
       </div>
   )

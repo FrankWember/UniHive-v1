@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ShoppingCart, MessageCircle } from 'lucide-react'
-import { SearchBar } from '../../_components/search-bar'
+import { SearchBar } from '@/app/home/(tabs)/services/_components/search-bar'
 import { ServiceOptions } from './service-options'
 import { BackButton } from '@/components/back-button'
 import { Service } from '@prisma/client'
@@ -11,7 +11,7 @@ import { ChevronLeftIcon } from '@radix-ui/react-icons'
 import { useRouter } from 'next/navigation'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useMode } from '@/contexts/mode-context'
-import { SideMenu } from '../../_components/side-menu'
+import { SideMenu } from '@/app/home/(tabs)/services/_components/side-menu'
 
 interface ServiceHeaderProps {
     user: any;

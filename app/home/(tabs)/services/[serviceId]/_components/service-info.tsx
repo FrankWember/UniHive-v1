@@ -180,42 +180,30 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
     return (
         <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
             <div className="flex flex-col gap-2">
-                <p className="text-2xl md:text-3xl font-semibold">{service.name}</p>
-                {/* <div className="flex items-center space-x-2">
-                    <Star
-                        className={`h-6 w-6 text-yellow-500 fill-yellow-500`}
-                    />
-                    <span className="text-xl font-semibold">{averageRating}</span>
-                    <div className="text-base text-muted-foreground underline">
-                        #{reviews.length} reviews
-                    </div>
-                    {service.isMobileService && (
-                        <Badge variant='success' className="ml-8">
-                            Mobile
-                        </Badge>
-                    )}    
-                </div> */}
-                <span className="flex items-end mt-2">
-                    <span className='text-sm md:text-sm mr-4'>Starts at</span>
-                    <span className='text-green-500 font-semibold text-4xl'>$</span>
-                    <span className="font-semibold text-4xl mr-3">
-                        {service.price.toFixed(2)}
+                <p className="text-xl md:text-2xl font-semibold truncate">{service.name}</p>
+                <div className="flex justify-between">
+                    <span className="flex items-end mt-2">
+                        <span className='text-xl mr-4'>Starts at</span>
+                        <span className='text-green-500 font-semibold text-3xl'>$</span>
+                        <span className="font-semibold text-3xl mr-3">
+                            {service.price.toFixed(2)}
+                        </span>
                     </span>
-                </span>
+                    <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
+                        {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
+                    </Button>
+                </div>
                 <div className="flex justify-between gap-3">
-                    <Button className="flex items-center" variant="ghost">
+                    <span className="flex items-center text-sm md:text-base">
                         <MapPin className="mr-1 h-4 w-4" />
                         {service.defaultLocation}
-                    </Button>
+                    </span>
                     <div className="flex gap-3 justify-end">
                         <Button size="icon" onClick={createChat} disabled={creatingChat}>
                             {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
                         </Button> 
                         <Button variant="outline" size="icon" onClick={share} disabled={isSharing}>
                             {isSharing ? <Spinner /> : <Share1Icon />}
-                        </Button>
-                        <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
-                            {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
                         </Button>        
                     </div>
                 </div>
