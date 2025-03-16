@@ -205,21 +205,21 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
       </div>
       <div className="flex justify-between px-2">
         <div className="flex flex-col gap-[0.15rem] md:gap-[0.7rem]">
-          <p className="text-[1rem] font-semibold truncate w-[15rem] md:w-[16rem]">{service.name}</p>
+          <p className="text-[1rem] font-semibold truncate w-[15rem] md:w-[12rem]">{service.name}</p>
           <span className="text-sm">
             Starts At <span className="text-green-500 text-sm">$</span>
             {service.price}
           </span>
           {/* <span className="text-[0.4rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span> */}
-          <span className="text-xs text-muted-foreground max-w-[12rem] truncate">{service.defaultLocation}</span>
+          <span className="text-xs text-muted-foreground max-w-[8rem] truncate">{service.defaultLocation}</span>
         </div>
-        <div className="relative flex flex-col items-end justify-between gap-2">
+        <div className="relative flex flex-col items-end justify-between gap-2 max-w-[6rem]">
           <div className="flex items-center gap-2">
             <Star className="fill-foreground h-4 w-4" />
             <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[0.7rem] underline">{customerList.length} active customers</p>
+            <p className="text-[0.5rem] underline">{customerList.length} active customers</p>
           </div>
         </div>
       </div>
