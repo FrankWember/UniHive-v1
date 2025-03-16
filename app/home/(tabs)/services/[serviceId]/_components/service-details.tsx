@@ -90,7 +90,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <ImagesSection service={service} />  
 
           {/* Service Info */}
-          <div className="mx-4">
+          <div className="mx-2">
             <ServiceInfo 
               service={service}
               averageRating={averageRating}
@@ -98,17 +98,17 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             />
           </div>
           
-          <Separator className="my-4" />
+          <Separator className="my-2" />
 
           {/* Offers section */}
-          <div className="mx-8">
+          <div className="mx-2">
             <OffersSection service={service} userId={user?.id} />
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-2" />
 
           {/* Offers section */}
-          <div className="mx-8">
+          <div className="mx-2">
             <ProviderSection 
               service={service}
               averageRating={averageRating}
@@ -119,14 +119,14 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <Separator className="my-4" />
 
           {/* Portfolio section */}
-          <div className="mx-8">
+          <div className="mx-4">
             <PortfolioSection images={service.portfolio} providerId={service.providerId} />
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-2" />
 
           {/* Reviews section */}
-          <div className="mx-8">
+          <div className="mx-4">
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
@@ -135,10 +135,10 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
             />
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-2" />
 
           {/* Related Services section */}
-          <div className="mx-8">
+          <div className="mx-4">
             <RelatedServicesSection relatedServices={relatedServices} />
           </div>
         </div>
