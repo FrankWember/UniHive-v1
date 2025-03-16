@@ -68,8 +68,8 @@ const ServicePage = async ({ params }: { params: { serviceId: string } }) => {
     <div className="flex flex-col min-h-screen w-full">
       <ServiceHeader user={user} service={service} />
       {/* Content */}
-      <div className="flex flex-col md:mt-[5.7rem] pb-24">
-        <Suspense fallback={<Skeleton className="w-full h-[600px]" />}>
+      <div className="flex flex-col md:mt-[5.7rem] pb-16">
+        <Suspense fallback={<Skeleton className="w-full h-[550px]" />}>
           <ServiceDetails service={service} reviews={reviews} relatedServices={relatedServices} />
         </Suspense>
       </div>
