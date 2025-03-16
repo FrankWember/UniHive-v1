@@ -179,25 +179,28 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
 
     return (
         <div className='flex flex-col gap-4 py-4 w-full px-4 mx-auto'>
-            <div className="flex flex-col gap-2">
-                <p className="text-xl md:text-2xl font-semibold truncate">{service.name}</p>
+            <div className="flex flex-col gap-1">
                 <div className="flex justify-between">
-                    <span className="flex items-end mt-2">
-                        <span className='text-xl mr-4'>Starts at</span>
-                        <span className='text-green-500 font-semibold text-3xl'>$</span>
-                        <span className="font-semibold text-3xl mr-3">
-                            {service.price.toFixed(2)}
-                        </span>
-                    </span>
+                    <p className="text-xl md:text-2xl font-semibold truncate truncate max-w-[30ch]">{service.name}</p>
                     <Button variant="outline" size="icon" onClick={handleLike} disabled={isLiking}>
                         {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />}
                     </Button>
+                    </div>
+                <div className="flex justify-between">
+                    <span className="flex items-end mt-2">
+                        <span className='text-l mr-2'>Starts at</span>
+                        <span className='text-green-600 font-semibold text-xl'>$</span>
+                        <span className="font-semibold text-xl mr-3">
+                            {service.price.toFixed(2)}
+                        </span>
+                    </span>
+                    
                 </div>
                 <div className="flex justify-between gap-3">
-                    <span className="flex items-center text-sm md:text-base">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        {service.defaultLocation}
-                    </span>
+                  <span className="flex items-center text-sm md:text-base max-w-[25ch]">
+                    <MapPin className="mr-1 h-4 w-4 shrink-0" />
+                    <span className="truncate block">{service.defaultLocation}</span>
+                  </span>
                     <div className="flex gap-3 justify-end">
                         <Button size="icon" onClick={createChat} disabled={creatingChat}>
                             {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}

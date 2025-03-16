@@ -143,7 +143,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
 
   return (
     <div
-      className="relative flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden cursor-pointer"
+      className="relative flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden cursor-pointer max-w-[22rem]"
       onClick={(e) => {
         const target = e.target as HTMLElement
         // Don't navigate if the click is on or inside a carousel button or the like button
@@ -203,17 +203,17 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
           {isLiking ? <Spinner /> : <Heart className={`h-4 w-4 md:h-6 md:w-6 ${isLiked ? "fill-red-500 text-red-500" : "text-white"}`} />}
         </Button>
       </div>
-      <div className="flex justify-between px-1">
-        <div className="flex flex-col gap-[0.15rem] md:gap-1">
-          <p className="text-[1rem] font-semibold truncate w-[15rem] md:w-[16rem]">{service.name}</p>
+      <div className="flex justify-between px-2">
+        <div className="flex flex-col gap-[0.15rem] md:gap-[0.7rem]">
+          <p className="text-[1rem] font-semibold truncate w-[15rem] md:w-[12rem]">{service.name}</p>
           <span className="text-sm">
             Starts At <span className="text-green-500 text-sm">$</span>
             {service.price}
           </span>
           {/* <span className="text-[0.4rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span> */}
-          <span className="text-xs text-muted-foreground max-w-[12rem] truncate">{service.defaultLocation}</span>
+          <span className="text-xs text-muted-foreground max-w-[8rem] truncate">{service.defaultLocation}</span>
         </div>
-        <div className="relative flex flex-col items-end justify-between gap-2">
+        <div className="relative flex flex-col items-end justify-between gap-2 max-w-[6rem]">
           <div className="flex items-center gap-2">
             <Star className="fill-foreground h-4 w-4" />
             <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
