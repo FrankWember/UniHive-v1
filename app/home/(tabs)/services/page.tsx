@@ -39,13 +39,13 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       {/* Header  */}
       <ServicesHeader />
 
-      <div className='p-2 max-w-screen'>
-        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-4 bg-muted/5 shadow-sm">
-          <div className='flex items-center w-max gap-8 md:gap-12 p-4 h-fit'>
+      <div className='p-1 max-w-screen'>
+        <ScrollArea className="w-full whitespace-nowrap mt-24 px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth">
+          <div className='flex items-center w-max gap-5 md:gap-8 p-4 h-24'>
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                 <div className='group flex flex-col items-center justify-center gap-2'>
-                  <Image src={category.link} alt={category.name} width={20} height={20} className='object-cover' />
+                  <Image src={category.link} alt={category.name} width={20} height={20} className='object-cover' loading="lazy"/>
                   <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>{category.name}</h2>
                   <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
                 </div>
