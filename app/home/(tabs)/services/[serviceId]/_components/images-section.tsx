@@ -60,18 +60,44 @@ export const ImagesSection = ({
         </div>
     )
 
-    return (
-        <div className='grid grid-cols-4 grid-row-2 gap-3 w-full h-[30rem]'>
-            {service.images.map((image, index) => (
-                <div key={index} className={cn('relative w-full h-full', index === 0 && 'col-span-2 row-span-2')}>
-                    <Image
-                        src={image}
-                        alt={`${service.name} - Image ${index + 1}`}
-                        fill
-                        className="object-cover rounded-lg"
-                    />
-                </div>
-            ))}
+return (
+  <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-[30rem] overflow-hidden">
+    {service.images.map((image, index) => {
+      let roundedClass = ""
+
+      // Big main image — apply top-left and bottom-left rounding
+      if (index === 0) {
+        roundedClass = "rounded-l-lg"
+      }
+
+      // Top-right corner image (top-right of 2x2)
+      if (index === 1) {
+        roundedClass = "rounded-tr-lg"
+      }
+
+      // Bottom-right corner image (bottom-right of 2x2)
+      if (index === 3 || index === 4) {
+        roundedClass = "rounded-br-lg"
+      }
+
+      return (
+        <div
+          key={index}
+          className={cn(
+            'relative w-full h-full',
+            index === 0 && 'col-span-2 row-span-2'
+          )}
+        >
+          <Image
+            src={image}
+            alt={`${service.name} - Image ${index + 1}`}
+            fill
+            className={cn("object-cover", roundedClass)}
+          />
         </div>
-    )
+      )
+    })}
+  </div>
+)
+
 }
