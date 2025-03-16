@@ -1,1 +1,1 @@
-export const APP_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://unihive-v1.vercel.app")
+export const APP_URL = process.env.NEXT_PUBLIC_BASE_URL || (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://unihive-test.vercel.app")

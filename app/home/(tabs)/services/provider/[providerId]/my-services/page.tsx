@@ -17,9 +17,9 @@ export default async function MyBookingsPage() {
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-        <div className="flex flex-col min-h-screen h-full w-screen gap-8 m-0 pt-8 md:pt-0">
+        <div className="flex flex-col min-h-screen h-full w-screen m-0 pt-8 md:pt-0">
             {/* Header */}
-            <ProviderHeader text={"My Services"} fixed={false} />
+            <ProviderHeader text={"My Services"} fixed={false} homeBtn={true} />
 
             <div className='w-full'>
                 <ProviderNav />

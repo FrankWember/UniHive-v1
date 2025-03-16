@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarIcon, LogOut, Menu } from 'lucide-react'
+import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarIcon, LogOut, Menu, HomeIcon } from 'lucide-react'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -47,6 +47,10 @@ export function SideMenu({ className }: SidebarProps) {
         {user && mode === "PROVIDER" ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">Seller</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/home/services')} className='flex items-center gap-2'>
+              <HomeIcon className='mr-2 h-4 w-4' />
+              <span>Home</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push('/home/services/favourites')} className='flex items-center gap-2'>
               <Heart className='mr-2 h-4 w-4' />
               <span>Favorites</span>
@@ -75,6 +79,10 @@ export function SideMenu({ className }: SidebarProps) {
         ) : user ? (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">User</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/home/services')} className='flex items-center gap-2'>
+              <HomeIcon className='mr-2 h-4 w-4' />
+              <span>Home</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push('/home/services/favourites')}>
               <Heart className='mr-2 h-4 w-4' />
               <span>Favorites</span>
@@ -103,6 +111,10 @@ export function SideMenu({ className }: SidebarProps) {
         ) : (
           <DropdownMenuGroup>
             <DropdownMenuLabel className="text-muted-foreground">Visitor</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => router.push('/home/services')} className='flex items-center gap-2'>
+              <HomeIcon className='mr-2 h-4 w-4' />
+              <span>Home</span>
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push('/auth/sign-in')}>
               <CircleUser className='mr-2 h-4 w-4' />
               <span>Sign In</span>

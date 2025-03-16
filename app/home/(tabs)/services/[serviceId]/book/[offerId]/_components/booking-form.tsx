@@ -171,13 +171,17 @@ export function BookingForm({ offerId, service, offer }: BookingFormProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {availableSlots && availableSlots?.map((slot, index) => (
+                  {availableSlots ? availableSlots?.map((slot, index) => (
                     <SelectItem 
                       key={index} 
                       value={`${slot[0]} - ${slot[1]}`}>
                       {`${(new Date("1970-01-01T" + slot[0].replace(/-/g, ":"))).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })} to ${(new Date("1970-01-01T" + slot[1].replace(/-/g, ":"))).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })}`}
                     </SelectItem>
-                  ))}
+                  )) : (
+                    <div>
+                      <p>No available slots</p>
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage />

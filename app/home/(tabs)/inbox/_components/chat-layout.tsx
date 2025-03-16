@@ -35,14 +35,15 @@ export interface Chat {
     customer: {
         name: string
         image?: string
-    } | undefined
+    }
     lastMessage: {
         chatId: Id<"chats">
         senderId: string
         text: string
         timestamp: number
         read: boolean
-    } | null
+    } | null,
+    unreadCount: number
 }
 
 interface Customer {

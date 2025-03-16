@@ -60,7 +60,12 @@ export const getAllChats = query({
         .filter(q => q.eq(q.field("chatId"), chat._id))
         .order("desc")
         .first();
-      return { ...chat, lastMessage };
+      const unreadCount = await ctx.db
+        .query("messages")
+        .filter(q => q.eq(q.field("chatId"), chat._id))
+        .filter(q => q.not(q.eq(q.field("read"), true)))
+        .collect()
+      return { ...chat, lastMessage, unreadCount: unreadCount.length };
     }));
 
     return chatsWithLastMessage;

@@ -22,7 +22,7 @@ export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
           <CardHeader>
             <CardTitle>Unauthorized</CardTitle>
             <CardDescription>
-              You are not authorized to access this page. You need to be a Subscribed Seller to access this page. Go to you settings and request an upgrade.
+              You are not authorized to access this page. Contact the administrator for access. fwember@suie.edu +1 (650) 283-4228
             </CardDescription>
             <CardFooter className="flex gap-3 justify-end">
               <Button variant="outline" onClick={() => router.push("/home/services")}>

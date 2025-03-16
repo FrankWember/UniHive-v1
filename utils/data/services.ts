@@ -161,6 +161,9 @@ export async function getMatchedServices(searchParams: { [key: string]: string |
             }
           }
         },
+        orderBy: {
+          createdAt: 'desc'
+        },
         include: {
           offers: {
             select: {
@@ -274,6 +277,9 @@ export async function getBookingsByUserId () {
                 }
             },
             customer: true
+        },
+        orderBy: {
+          updatedAt: "desc"
         }
     })
 }
@@ -303,6 +309,9 @@ export async function getAllProviderAppointments () {
         }
       },
       customer: true
+    },
+    orderBy: {
+      updatedAt: "desc"
     }
   })
 }

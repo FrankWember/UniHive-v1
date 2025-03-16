@@ -28,7 +28,7 @@ export default async function SettingsPage() {
         <SideMenu />
       </div>
 
-      <div className='w-full'>
+      <div className='w-full pt-10'>
         <ProviderNav />
       </div>
 

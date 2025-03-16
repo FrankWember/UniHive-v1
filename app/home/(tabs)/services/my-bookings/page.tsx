@@ -4,7 +4,6 @@ import { BookingCard } from "@/components/booking-card"
 import { parseBookingTime } from "@/utils/helpers/availability"
 import { RoleGate } from "@/components/role-gate"
 import { UserRole } from "@prisma/client"
-import { ProviderNav } from "../provider/[providerId]/_components/provider-nav"
 import { ProviderHeader } from "../provider/[providerId]/_components/provider-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -14,12 +13,12 @@ export default async function MyBookingsPage() {
 
   return (
     <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
-      <div className="flex flex-col gap-4 min-h-screen w-screen">
+      <div className="flex flex-col gap-4 min-h-screen w-screen pt-8 md:pt-0">
         {/* Header */}
-        <ProviderHeader text={"My Bookings"} />
+        <ProviderHeader text={"My Bookings"} fixed={false} />
 
         {/* Content */}
-        <div className="container mx-auto px-4 pb-24 flex flex-col gap-4">
+        <div className="container mx-auto p-4 max-w-2xl space-y-4 md:space-y-8">
         <Tabs defaultValue="all">
             <TabsList>
               <TabsTrigger value="all">All</TabsTrigger>

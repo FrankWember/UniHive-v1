@@ -8,6 +8,7 @@ import { ChatListSkeleton } from './chat-list-skeleton'
 import { Id } from '@/convex/_generated/dataModel'
 import { format } from 'date-fns'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Badge } from '@/components/ui/badge'
 
 interface Chat {
   _id: Id<"chats">
@@ -19,6 +20,7 @@ interface Chat {
     text: string
     timestamp: number
   } | null
+  unreadCount: number
 }
 
 interface ChatListProps {
@@ -70,9 +72,16 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loadi
                   )}
                 </div>
                 {chat.lastMessage && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    {chat.lastMessage.text}
-                  </p>
+                  <div className='flex items-center justify-between gap-2'>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {chat.lastMessage.text}
+                    </p>
+                    {chat.unreadCount > 0 && (
+                      <Badge variant="default" className='text-xs'>
+                        {chat.unreadCount ?? 0}
+                      </Badge>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

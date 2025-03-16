@@ -29,7 +29,7 @@ export const ProviderNav = () => {
     ]
 
   return (
-    <div className='w-full flex justify-center pt-20 shadow-sm px-16'>
+    <div className='w-full flex justify-center pt-8 shadow-sm px-16'>
         <div className='flex justify-center items-center w-fit p-2 gap-8 bg-muted/20 rounded-md'>
             {tabs.map(tab=>(
                 <Link href={tab.link} key={tab.name}>

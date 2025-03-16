@@ -51,9 +51,6 @@ export async function createBooking(offerId: string, values: z.infer<typeof Serv
             }
         })
 
-        const startTime = new Date(values.time[0][0])
-        const stopTime = new Date(values.time[values.time.length-1][values.time[values.time.length-1].length-1])
-
         await sendEmail({
             to: offer.service.provider.email,
             subject: `New booking request: ${offer.service.name}`,
