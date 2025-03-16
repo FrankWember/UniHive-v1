@@ -197,7 +197,7 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     
                 </div>
                 <div className="flex justify-between gap-3">
-                    <span className="flex items-center text-sm md:text-base truncate ">
+                    <span className="flex items-center text-sm md:text-base truncate max-w-[40ch] ">
                         <MapPin className="mr-1 h-4 w-4" />
                         {service.defaultLocation}
                     </span>
