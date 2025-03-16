@@ -57,7 +57,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       </div>
 
       {/* Content */}
-      <div className="w-full pb-24">
+      <div className="w-full pb-8">
         <MatchedServices searchParams={searchParams} />
       </div>
     </div>
