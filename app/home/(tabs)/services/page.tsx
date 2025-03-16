@@ -45,7 +45,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
                 <div className='group flex flex-col items-center justify-center gap-2'>
-                  <Image src={category.link} alt={category.name} width={48} height={48} className='object-cover' />
+                  <Image src={category.link} alt={category.name} width={25} height={25} className='object-cover' />
                   <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>{category.name}</h2>
                   <div className='w-full h-1 rounded-lg bg-background group-hover:bg-foreground'></div>
                 </div>
