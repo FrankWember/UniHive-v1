@@ -143,7 +143,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
 
   return (
     <div
-      className="relative flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden cursor-pointer"
+      className="relative flex flex-col rounded-md p-2 gap-2 text-sm overflow-hidden cursor-pointer max-w-[22rem]"
       onClick={(e) => {
         const target = e.target as HTMLElement
         // Don't navigate if the click is on or inside a carousel button or the like button
@@ -204,7 +204,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
         </Button>
       </div>
       <div className="flex justify-between px-1">
-        <div className="flex flex-col gap-[0.15rem] md:gap-1">
+        <div className="flex flex-col gap-[0.15rem] md:gap-[0.85rem]">
           <p className="text-[1rem] font-semibold truncate w-[15rem] md:w-[16rem]">{service.name}</p>
           <span className="text-sm">
             Starts At <span className="text-green-500 text-sm">$</span>
@@ -219,7 +219,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
             <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[0.6rem] underline">{customerList.length} active customers</p>
+            <p className="text-[0.4rem] underline">{customerList.length} active customers</p>
           </div>
         </div>
       </div>
