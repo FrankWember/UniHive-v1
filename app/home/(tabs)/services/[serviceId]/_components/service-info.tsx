@@ -197,10 +197,10 @@ export const ServiceInfo = ({ service, averageRating, reviews }: ServiceInfoProp
                     
                 </div>
                 <div className="flex justify-between gap-3">
-                    <span className="flex items-center text-sm md:text-base truncate max-w-[25ch] ">
-                        <MapPin className="mr-1 h-4 w-4" />
-                        {service.defaultLocation}
-                    </span>
+                  <span className="flex items-center text-sm md:text-base max-w-[25ch]">
+                    <MapPin className="mr-1 h-4 w-4 shrink-0" />
+                    <span className="truncate block">{service.defaultLocation}</span>
+                  </span>
                     <div className="flex gap-3 justify-end">
                         <Button size="icon" onClick={createChat} disabled={creatingChat}>
                             {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
