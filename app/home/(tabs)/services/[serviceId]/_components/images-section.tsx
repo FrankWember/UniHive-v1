@@ -61,7 +61,7 @@ export const ImagesSection = ({
     )
 
 return (
-  <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-[24rem] overflow-hidden">
+  <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-[28rem] overflow-hidden">
     {service.images.map((image, index) => {
       let roundedClass = ""
 
