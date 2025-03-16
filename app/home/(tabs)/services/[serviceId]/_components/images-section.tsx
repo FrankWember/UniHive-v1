@@ -43,12 +43,12 @@ export const ImagesSection = ({
                 <CarouselContent>
                     {service.images.map((image, index) => (
                     <CarouselItem key={index}>
-                        <div className="relative w-full h-[65vh]">
+                        <div className="relative w-full h-[55vh]">
                         <Image
                             src={image}
                             alt={`${service.name} - Image ${index + 1}`}
                             fill
-                            className="object-cover rounded-b-lg"
+                            className="object-cover"
                         />
                         </div>
                     </CarouselItem>
@@ -61,7 +61,7 @@ export const ImagesSection = ({
     )
 
 return (
-  <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-[30rem] overflow-hidden">
+  <div className="grid grid-cols-4 grid-rows-2 gap-2 w-full h-[24rem] overflow-hidden">
     {service.images.map((image, index) => {
       let roundedClass = ""
 
@@ -71,12 +71,12 @@ return (
       }
 
       // Top-right corner image (top-right of 2x2)
-      if (index === 1) {
+      if (index === 2) {
         roundedClass = "rounded-tr-lg"
       }
 
       // Bottom-right corner image (bottom-right of 2x2)
-      if (index === 3 || index === 4) {
+      if (index === 4) {
         roundedClass = "rounded-br-lg"
       }
 
