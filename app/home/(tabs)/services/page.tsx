@@ -40,7 +40,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       <ServicesHeader />
 
       <div className='p-2 max-w-screen'>
-        <ScrollArea className="w-full whitespace-nowrap mt-6 px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth">
+        <ScrollArea className="w-full whitespace-nowrap mt-12 px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth">
           <div className='flex items-center w-max gap-8 md:gap-14 p-4 h-6'>
             {categories.map((category) => (
               <Link key={category.name} href={`/home/services?category=${category.name.toLocaleLowerCase()}`}>
