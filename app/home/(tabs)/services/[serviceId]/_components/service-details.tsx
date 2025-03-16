@@ -101,14 +101,14 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <Separator className="my-2" />
 
           {/* Offers section */}
-          <div className="mx-2">
+          <div className="mx-8">
             <OffersSection service={service} userId={user?.id} />
           </div>
 
           <Separator className="my-2" />
 
           {/* Offers section */}
-          <div className="mx-2">
+          <div className="mx-4">
             <ProviderSection 
               service={service}
               averageRating={averageRating}
@@ -126,7 +126,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <Separator className="my-2" />
 
           {/* Reviews section */}
-          <div className="mx-4">
+          <div className="mx-8">
             <ReviewsSection 
               averageRating={averageRating} 
               ratingCounts={ratingCounts} 
@@ -138,7 +138,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({ service, reviews
           <Separator className="my-2" />
 
           {/* Related Services section */}
-          <div className="mx-4">
+          <div className="mx-8">
             <RelatedServicesSection relatedServices={relatedServices} />
           </div>
         </div>
