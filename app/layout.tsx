@@ -19,28 +19,32 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "DormBiz",
+    default: "DormBiz – Hustle Smarter on Campus",
     template: "%s | DormBiz"
   },
   metadataBase: new URL(APP_URL),
+  description:
+    "Get services from students on campus – tutoring, photography, tech support & more. DormBiz connects students with talents to those who need them. Now live at SIUE.",
   keywords: [
-    "DormBiz Marketplace", "Marketplace for University Students", "Student Marketplace", "Buy and Sell University Products", "DormBiz", "University Services", "Student Services", "Campus Marketplace", "DormBiz Platform", "Digital Marketplace for Students"
+    "DormBiz", "DormBiz Marketplace", "Student Marketplace", "Campus Services", "University Side Hustle", "Freelance Student Work", "Peer-to-Peer Campus Platform", "Buy and Sell on Campus", "SIUE Student Services", "DormBiz SIUE"
   ],
   openGraph: {
-    title: "DormBiz Marketplace",
-    description: "A Platform for University Students to share their products and servcies",
-    creators: ["@DormBiz"],
-    images: [`${APP_URL}/DormBiz.png`],
+    title: "DormBiz – Hustle Smarter on Campus",
+    description:
+      "DormBiz is a student-powered marketplace. Find or offer services like tutoring, tech support, and more – exclusively for college students. Launched at SIUE.",
     url: APP_URL,
     siteName: "DormBiz",
-    
+    images: [`${APP_URL}/DormBiz.png`],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    creator: "@DormBiz",
-    title: "DormBiz Marketplace",
-    site: APP_URL,
-    description: "A Platform for University Students to share their products and servcies",
+    title: "DormBiz – Hustle Smarter on Campus",
+    creator: "@dormbiz",
+    description:
+      "The marketplace for college students to offer & discover services – from tutoring to tech help. Exclusively for students. DormBiz is live at SIUE.",
+    site: "https://www.instagram.com/dormbiz",
     images: [`${APP_URL}/DormBiz.png`],
   },
 };
