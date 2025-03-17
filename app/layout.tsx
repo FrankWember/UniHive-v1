@@ -55,41 +55,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <link
-            rel="icon"
-            href="/icon?<generated>"
-            type="image/<generated>"
-            sizes="<generated>"
-          />
-          <link
-            rel="apple-touch-icon"
-            href="/apple-icon?<generated>"
-            type="image/<generated>"
-            sizes="<generated>"
-          />
-          <link
-            rel="manifest"
-            href="/manifest?<generated>"
-            type="application/manifest+json"
-            />
-        </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
+  <SessionProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Favicon for browser and Google search */}
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+        {/* Apple Touch Icon for iOS homescreen */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+        {/* Web Manifest for PWA / Add to Home Screen */}
+        <link rel="manifest" href="/manifest.json" />
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Analytics />
-          </ThemeProvider>
-        </body>
-      </html>
-    </SessionProvider>
-  );
+          {children}
+          <Analytics />
+        </ThemeProvider>
+      </body>
+    </html>
+  </SessionProvider>
+);
 }
