@@ -19,28 +19,32 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "DormBiz",
+    default: "DormBiz – Hustle Smarter on Campus",
     template: "%s | DormBiz"
   },
   metadataBase: new URL(APP_URL),
+  description:
+    "Get services from students on campus – tutoring, photography, tech support & more. DormBiz connects students with talents to those who need them. Now live at SIUE.",
   keywords: [
-    "DormBiz Marketplace", "Marketplace for University Students", "Student Marketplace", "Buy and Sell University Products", "DormBiz", "University Services", "Student Services", "Campus Marketplace", "DormBiz Platform", "Digital Marketplace for Students"
+    "DormBiz", "DormBiz Marketplace", "Student Marketplace", "Campus Services", "University Side Hustle", "Freelance Student Work", "Peer-to-Peer Campus Platform", "Buy and Sell on Campus", "SIUE Student Services", "DormBiz SIUE"
   ],
   openGraph: {
-    title: "DormBiz Marketplace",
-    description: "A Platform for University Students to share their products and servcies",
-    creators: ["@DormBiz"],
-    images: [`${APP_URL}/DormBiz.png`],
+    title: "DormBiz – Hustle Smarter on Campus",
+    description:
+      "DormBiz is a student-powered marketplace. Find or offer services like tutoring, tech support, and more – exclusively for college students. Launched at SIUE.",
     url: APP_URL,
     siteName: "DormBiz",
-    
+    images: [`${APP_URL}/DormBiz.png`],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    creator: "@DormBiz",
-    title: "DormBiz Marketplace",
-    site: APP_URL,
-    description: "A Platform for University Students to share their products and servcies",
+    title: "DormBiz – Hustle Smarter on Campus",
+    creator: "@dormbiz",
+    description:
+      "The marketplace for college students to offer & discover services – from tutoring to tech help. Exclusively for students. DormBiz is live at SIUE.",
+    site: "https://www.instagram.com/dormbiz",
     images: [`${APP_URL}/DormBiz.png`],
   },
 };
@@ -51,41 +55,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <SessionProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <link
-            rel="icon"
-            href="/icon?<generated>"
-            type="image/<generated>"
-            sizes="<generated>"
-          />
-          <link
-            rel="apple-touch-icon"
-            href="/apple-icon?<generated>"
-            type="image/<generated>"
-            sizes="<generated>"
-          />
-          <link
-            rel="manifest"
-            href="/manifest?<generated>"
-            type="application/manifest+json"
-            />
-        </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
+  <SessionProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Favicon for browser and Google search */}
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+
+        {/* Apple Touch Icon for iOS homescreen */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+        {/* Web Manifest for PWA / Add to Home Screen */}
+        <link rel="manifest" href="/manifest.json" />
+      </head>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Analytics />
-          </ThemeProvider>
-        </body>
-      </html>
-    </SessionProvider>
-  );
+          {children}
+          <Analytics />
+        </ThemeProvider>
+      </body>
+    </html>
+  </SessionProvider>
+);
 }
