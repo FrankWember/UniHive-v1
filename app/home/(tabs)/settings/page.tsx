@@ -6,6 +6,12 @@ import { BackButton } from '@/components/back-button'
 import { ProviderNav } from '../services/provider/[providerId]/_components/provider-nav'
 import { SettingsContent } from './_components/settings-content'
 import { SideMenu } from '../services/_components/side-menu'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Account',
+  description: 'Manage your account settings and get Insights to your services.',
+}
 
 export default async function SettingsPage() {
   const user = await currentUser()
