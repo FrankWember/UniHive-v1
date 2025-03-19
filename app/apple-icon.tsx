@@ -1,5 +1,4 @@
-import { APP_URL } from '@/constants/paths'
-import Image from 'next/image'
+
 import { ImageResponse } from 'next/og'
  
 export const size = {
@@ -24,7 +23,7 @@ export default function AppleIcon() {
                 }}
             >
                 <img
-                    src='https://m4bzgt0vjx.ufs.sh/f/nYBT8PFt8ZHfDAVOgk9bI71OjXGr8lwPm3pQ5d2n6FRshMeg'
+                    src='https://6oop17dja4.ufs.sh/f/WzcpwnxBp1vSmDCMk4cBhpeS74YPAlR1G69cdbsrOWfMtqoy'
                     style={{
                         width: '100%',
                         height: '100%',
