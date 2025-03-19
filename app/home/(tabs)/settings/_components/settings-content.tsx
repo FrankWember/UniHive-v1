@@ -19,6 +19,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { User } from 'next-auth'
 import { UserSettingsForm } from './user-settings-form'
 import { Separator } from '@/components/ui/separator'
+import { ProfileImageForm } from './profile-image-form'
 
 export const SettingsContent = ({ user, userData }: { userData: PrismaUser, user: User & { role: UserRole} }) => {
     const isMobile = useIsMobile()
@@ -134,7 +135,10 @@ export const SettingsContent = ({ user, userData }: { userData: PrismaUser, user
                     </CardFooter>
                 </Card>
             </div>
-            <UserSettingsForm userData={userData} />
+            <div className="flex flex-col gap-3">
+                <ProfileImageForm user={userData!} />
+                <UserSettingsForm userData={userData} />
+            </div>
         </div>
     )
 }

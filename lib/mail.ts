@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { APP_URL } from "@/constants/paths"
+import { Resend } from 'resend';
 
 // Function to get the current domain
 const getCurrentDomain = () => {
@@ -8,18 +9,11 @@ const getCurrentDomain = () => {
     return window.location.origin;
   } else {
     // Server-side
-    return APP_URL || 'https://unihive-v1.vercel.app'; // Fallback to localhost if env var is not set
+    return APP_URL || 'https://dormbiz.net'; // Fallback to localhost if env var is not set
   }
 };
 
-// Create a transporter using Gmail SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'thomsonnguems@gmail.com',
-    pass: process.env.GMAIL_APP_PASSWORD // Use an app password for security
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Helper function to create HTML template
 const createEmailTemplate = (title: string, body: string, buttonText: string, buttonLink: string) => `
@@ -50,7 +44,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${domain}/auth/new-password?token=${token}`;
 
   const mailOptions = {
-    from: 'thomsonnguems@gmail.com',
+    from: 'noreply@dormbiz.net',
     to: email,
     subject: 'Reset your password',
     html: createEmailTemplate(
@@ -61,7 +55,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     )
   };
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send(mailOptions);
 };
 
 export const sendVerificationEmail = async (email: string, token: string) => {
@@ -69,7 +63,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
   const mailOptions = {
-    from: 'thomsonnguems@gmail.com',
+    from: 'noreply@dormbiz.net',
     to: email,
     subject: 'Confirm your email',
     html: createEmailTemplate(
@@ -80,13 +74,13 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     )
   };
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send(mailOptions);
 };
 
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   const domain = getCurrentDomain();
   const mailOptions = {
-    from: 'thomsonnguems@gmail.com',
+    from: 'noreply@dormbiz.net',
     to: email,
     subject: '2FA Code',
     html: createEmailTemplate(
@@ -97,7 +91,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     )
   };
 
-  await transporter.sendMail(mailOptions);
+  await resend.emails.send(mailOptions);
 };
 
 
@@ -167,8 +161,8 @@ export async function sendEmail({ to, subject, text, html }: EmailOptions) {
     </html>
   `
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_FROM,
+  await resend.emails.send({
+    from: "noreply@dormbiz.net",
     to,
     subject,
     text,

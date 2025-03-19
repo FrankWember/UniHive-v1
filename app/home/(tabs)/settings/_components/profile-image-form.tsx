@@ -48,7 +48,7 @@ export function ProfileImageForm({ user }: { user: User }) {
   }
 
   return (
-    <Card>
+    <Card className='bg-muted/40'>
       <CardHeader>
         <CardTitle>Profile Image</CardTitle>
       </CardHeader>
