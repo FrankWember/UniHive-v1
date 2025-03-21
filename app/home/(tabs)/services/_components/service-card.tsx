@@ -213,7 +213,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
           {/* <span className="text-[0.4rem] md:text-xs max-w-[7rem] truncate">Available {closestDay}</span> */}
           <span className="text-xs text-muted-foreground max-w-[8rem] truncate">{service.defaultLocation}</span>
         </div>
-        <div className="relative flex flex-col items-end justify-between gap-2 max-w-[6rem]">
+        <div className="relative flex flex-col items-end justify-between gap-2 max-w-[7rem]">
           <div className="flex items-center gap-2">
             <Star className="fill-foreground h-4 w-4" />
             <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
