@@ -12,7 +12,7 @@ export default async function MyBookingsPage() {
   const bookings = await getBookingsByUserId()
 
   return (
-    <RoleGate allowedRoles={[UserRole.SELLER, UserRole.ADMIN]}>
+    <RoleGate allowedRoles={[userRole.STUDENT, UserRole.SELLER, UserRole.ADMIN]}>
       <div className="flex flex-col gap-4 min-h-screen w-screen pt-8 md:pt-0">
         {/* Header */}
         <ProviderHeader text={"My Bookings"} fixed={false} />
