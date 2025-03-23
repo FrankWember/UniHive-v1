@@ -22,14 +22,12 @@ export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl font-bold">Access Restricted</CardTitle>
             <CardDescription className="text-base leading-relaxed">
-              Your account does not currently have access to this page.
-              <br />
-              If you'd like to <span className="font-semibold">offer services</span> on the platform,
+              To <span className="font-semibold">offer services</span> on Dormbiz,
               you can upgrade your account for free.
             </CardDescription>
             <div className="mt-4 space-y-1 text-sm text-muted-foreground">
               <p>
-                Contact <span className="font-medium text-foreground">Frank Wember</span> to upgrade:
+                Contact <span className="font-medium text-foreground">Frank Wember</span> at:
               </p>
               <p>Email: <span className="text-foreground font-semibold">fwember@siue.edu</span></p>
               <p>Phone: <span className="text-foreground font-semibold">+1 (650) 283-4228</span></p>
