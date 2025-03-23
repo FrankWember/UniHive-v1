@@ -219,7 +219,7 @@ export const ServiceCard: React.FC<ServiceProps> = ({ service, url }) => {
             <span className="text-xs md:text-sm font-bold">{(averageRating || 0).toFixed(1)}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[0.65rem] underline">{customerList.length} active customers</p>
+            <p className="text-[0.58rem] underline">{customerList.length} active customers</p>
           </div>
         </div>
       </div>

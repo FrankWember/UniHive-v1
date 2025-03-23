@@ -5,7 +5,7 @@ import { SideMenu } from '../_components/side-menu'
 
 const page = () => {
   return (
-    <div className="flex flex-col min-h-screen max-w-screen overscroll-x-none w-full">
+    <div className="flex flex-col min-h-screen max-w-screen overscroll-x-none w-full pt-8 md:pt-">
         <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6">
           <div className='flex items-center justify-start gap-3'>
             <BackButton />

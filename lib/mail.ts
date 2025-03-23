@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { APP_URL } from "@/constants/paths"
 import { Resend } from 'resend';
+import { text } from 'stream/consumers';
 
 // Function to get the current domain
 const getCurrentDomain = () => {
@@ -47,6 +48,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
     from: 'noreply@dormbiz.net',
     to: email,
     subject: 'Reset your password',
+    text: `You have requested to reset your password. Click the button below to set a new password: ${resetLink}`,
     html: createEmailTemplate(
       'Reset Your Password',
       'You have requested to reset your password. Click the button below to set a new password:',
@@ -66,6 +68,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     from: 'noreply@dormbiz.net',
     to: email,
     subject: 'Confirm your email',
+    text: `Thank you for signing up! Please confirm your email address by clicking the button below: ${confirmLink}`,
     html: createEmailTemplate(
       'Confirm Your Email',
       'Thank you for signing up! Please confirm your email address by clicking the button below:',
@@ -83,6 +86,7 @@ export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
     from: 'noreply@dormbiz.net',
     to: email,
     subject: '2FA Code',
+    text: `Your 2FA code is: ${token}. This code will expire in 5 minutes.`,
     html: createEmailTemplate(
       'Your Two-Factor Authentication Code',
       `Your 2FA code is: <strong>${token}</strong>. This code will expire in 5 minutes.`,

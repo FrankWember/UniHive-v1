@@ -28,7 +28,7 @@ export const MultiImageUpload: React.FC<MultiImageUploadProps> = ({ value, onCha
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: generateClientDropzoneAccept(['image/jpeg', 'image/png', 'image/gif']),
+    accept: generateClientDropzoneAccept(['image/*']),
     maxFiles: maxFiles - value.length,
     disabled: isUploading || value.length >= maxFiles,
     multiple: true, // Explicitly allow multiple file selection

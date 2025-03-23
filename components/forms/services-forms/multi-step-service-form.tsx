@@ -72,6 +72,8 @@ export const MultiStepServiceForm = ({
       fieldsToValidate = ['name', 'price', 'category']
     } else if (step === 2) {
       fieldsToValidate = ['images', 'portfolio']
+    } else if (step === 3) {
+      fieldsToValidate = ['defaultLocation', 'isMobile', 'availability']
     }
     
     // Validate only the fields for the current step
@@ -180,15 +182,12 @@ export const MultiStepServiceForm = ({
               Back
             </Button>
             
-            {step < totalSteps ? (
-              <Button type="button" onClick={handleNext}>
+              <Button className={step < totalSteps ? "" : "hidden"} type="button" onClick={handleNext}>
                 Next
               </Button>
-            ) : (
-              <Button type="submit" disabled={isSubmitting}>
+              <Button className={step === totalSteps ? "" : "hidden"} type="submit" disabled={isSubmitting}>
                 {isSubmitting ? <BeatLoader /> : submitButtonText}
               </Button>
-            )}
           </div>
         </form>
       </Form>
