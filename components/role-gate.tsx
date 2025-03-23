@@ -12,33 +12,41 @@ interface RoleGateProps {
 }
 
 export const RoleGate = ({ children, allowedRoles }: RoleGateProps) => {
-  const router = useRouter()
+  const router = useRouter();
   const role = useCurrentRole();
 
   if (!allowedRoles.includes(role!)) {
     return (
-      <div className="flex flex-col h-full w-full items-center justify-center gap-4">
-        <Card className="w-full max-w-md p-4">
-          <CardHeader>
-            <CardTitle>Unauthorized</CardTitle>
-            <CardDescription>
-              You are not authorized to access this page. Contact the administrator for access. fwember@suie.edu +1 (650) 283-4228
+      <div className="flex items-center justify-center min-h-screen px-4 bg-muted">
+        <Card className="w-full max-w-lg shadow-xl border border-border p-6">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl font-bold">Access Restricted</CardTitle>
+            <CardDescription className="text-base leading-relaxed">
+              Your account does not currently have access to this page.
+              <br />
+              If you'd like to <span className="font-semibold">offer services</span> on the platform,
+              you can upgrade your account for free.
             </CardDescription>
-            <CardFooter className="flex gap-3 justify-end">
-              <Button variant="outline" onClick={() => router.push("/home/services")}>
-                Home Page
-              </Button>
-              <Button onClick={() => router.push("/home/settings")}>
-                Settings
-              </Button>
-            </CardFooter>
+            <div className="mt-4 space-y-1 text-sm text-muted-foreground">
+              <p>
+                Contact <span className="font-medium text-foreground">Frank Wember</span> to upgrade:
+              </p>
+              <p>Email: <span className="text-foreground font-semibold">fwember@siue.edu</span></p>
+              <p>Phone: <span className="text-foreground font-semibold">+1 (650) 283-4228</span></p>
+            </div>
           </CardHeader>
+          <CardFooter className="flex justify-end gap-3 mt-6">
+            <Button variant="outline" onClick={() => router.push("/home/services")}>
+              Home Page
+            </Button>
+            <Button onClick={() => router.push("/home/settings")}>
+              Account Settings
+            </Button>
+          </CardFooter>
         </Card>
       </div>
-    )
-  } else return (
-    <>
-      {children}
-    </>
-  )
-}
+    );
+  }
+
+  return <>{children}</>;
+};
