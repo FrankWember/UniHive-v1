@@ -45,7 +45,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetLink = `${domain}/auth/new-password?token=${token}`;
 
   const mailOptions = {
-    from: 'noreply@dormbiz.net',
+    from: 'notifications@dormbiz.net',
     to: email,
     subject: 'Reset your password',
     text: `You have requested to reset your password. Click the button below to set a new password: ${resetLink}`,
@@ -65,7 +65,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
   const confirmLink = `${domain}/auth/new-verification?token=${token}`;
 
   const mailOptions = {
-    from: 'noreply@dormbiz.net',
+    from: 'notifications@dormbiz.net',
     to: email,
     subject: 'Confirm your email',
     text: `Thank you for signing up! Please confirm your email address by clicking the button below: ${confirmLink}`,
@@ -83,7 +83,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
 export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
   const domain = getCurrentDomain();
   const mailOptions = {
-    from: 'noreply@dormbiz.net',
+    from: 'notifications@dormbiz.net',
     to: email,
     subject: '2FA Code',
     text: `Your 2FA code is: ${token}. This code will expire in 5 minutes.`,
@@ -166,7 +166,7 @@ export async function sendEmail({ to, subject, text, html }: EmailOptions) {
   `
 
   await resend.emails.send({
-    from: "noreply@dormbiz.net",
+    from: "notifications@dormbiz.net",
     to,
     subject,
     text,
