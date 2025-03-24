@@ -23,7 +23,7 @@ export const SuieLocations: string[] = [
     "Edgewater Villas", 
     "Brookside Apartments", 
     "Lake Pointe Apartments", 
-    "Whispering Lake Townhomes"
+    "Whispering Lake Townhomes",
     "Student Fitness Center", 
     "Vadalabene Center",
     "Early Childhood Center",
