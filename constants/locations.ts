@@ -11,12 +11,23 @@ export const SuieLocations: string[] = [
     "Morris University Center",
     "Art and Design",
     "Art and Design West",
-    "Center for Spirituality and Sustainability",
-    "Metcalf Student Experimental Theater",
+    "Reserves Drive",
+    "Enclave West",
+    "Enclave II",
+    "Parc 720",
+    "The Pointe at SIUE", 
+    "Edwardsville Place Apartments",
+    "Whispering Heights", 
+    "Trace on the Parkway", 
+    "Quail Run Apartments", 
+    "Edgewater Villas", 
+    "Brookside Apartments", 
+    "Lake Pointe Apartments", 
+    "Whispering Lake Townhomes"
     "Student Fitness Center", 
-    "First Community Arena at the Vadalabene Center",
+    "Vadalabene Center",
     "Early Childhood Center",
-    "Cougar Village Commons", 
+    "Cougar Village Apartments", 
     "Supporting Services / University Police",
     "Woodland Residence Hall",
     "Prairie Residence Hall", 
@@ -52,6 +63,7 @@ export const SuieLocations: string[] = [
     "Simmons Law Firm",
     "Baseball Complex", 
     "The Gardens Support Center",
-    "The \"e\" Sculpture"
+    "The \"e\" Sculpture",
+    "off-campus"
 ]
 
