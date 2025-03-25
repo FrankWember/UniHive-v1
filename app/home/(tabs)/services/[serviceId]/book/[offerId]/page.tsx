@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect} from 'next/navigation'
 import { getServiceById } from '@/utils/data/services'
 import { currentUser } from '@/lib/auth'
 import { BookingForm } from './_components/booking-form'
@@ -20,14 +20,14 @@ type DayAvailability = {
 
 export default async function BookServicePage({ params }: { params: { serviceId: string, offerId: string } }) {
   const user = await currentUser()
-     if (!user) {
-                const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
-                router.push(`/auth/sign-in?callbackUrl=${callbackUrl}`)
-                return
-            }
-
   const service = await getServiceById(params.serviceId)
+
   if (!service) return notFound()
+  
+  if (!user) {
+    const callbackUrl = encodeURIComponent(`/home/services/${service.id}`)
+    return redirect(`/auth/sign-in?callbackUrl=${callbackUrl}`)
+  }
 
   const offer = service.offers.find(o => o.id === params.offerId)
   if (!offer) return notFound()
