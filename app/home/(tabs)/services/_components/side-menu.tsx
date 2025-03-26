@@ -36,7 +36,7 @@ export function SideMenu({ className }: SidebarProps) {
           <Avatar>
             <AvatarImage src={user?.image || ""} alt="Profile" className="object-cover" />
             <AvatarFallback>
-              <UserRound className="h-4 w-4 text-muted-foreground" />
+              <CircleUser className="h-4 w-4 text-muted-foreground" />
             </AvatarFallback>
           </Avatar>
 
