@@ -32,10 +32,14 @@ export function SideMenu({ className }: SidebarProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button size="lg" variant="outline" className="flex items-center gap-1 rounded-full p-0">
+         
           <Avatar>
-            <AvatarImage src={user?.image || ""} alt="Profile" className='object-cover' />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarImage src={user?.image || ""} alt="Profile" className="object-cover" />
+            <AvatarFallback>
+              <UserRound className="h-4 w-4 text-muted-foreground" />
+            </AvatarFallback>
           </Avatar>
+
           <div className='p-2'>
             <Menu className="h-4 w-4 mr-2" />
           </div>
