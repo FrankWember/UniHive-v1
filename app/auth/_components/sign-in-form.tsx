@@ -80,20 +80,18 @@ const EmailForm = () => {
 
           if (data?.success) {
             form.reset();
-            setSuccess(data?.success);
+            setSuccess(data.success);
+            router.refresh();
+            router.push(callbackUrl);
+           
           }
 
           if (data?.twoFactor) {
             setShowTwoFactor(true);
           }
         })
-        .catch(() => setError("Something went wrong"))
-        .finally(() => {
-          router.push(callbackUrl)
-          router.refresh()
-        })
-    })
-    router.push(callbackUrl)
+        .catch(() => setError("Something went wrong"));
+    });
     }
 
   return (
