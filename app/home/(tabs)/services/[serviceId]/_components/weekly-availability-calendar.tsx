@@ -19,9 +19,11 @@ type TimeSlot = [string, string];
 
 
 function formatTime(timeString: string): string {
-  const date = parseISO(`1970-01-01T${timeString}`);
+  const [hours, minutes, seconds] = timeString.split('-').map(Number);
+  const date = new Date(1970, 0, 1, hours, minutes, seconds || 0);
   return format(date, 'h:mm a');
 }
+
 
 export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityCalendarProps) {
   const isMobile = useIsMobile()
