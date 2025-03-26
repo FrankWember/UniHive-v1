@@ -124,6 +124,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatI
               >
                 <div className={`flex items-end ${message.senderId === userId ? 'flex-row-reverse' : 'flex-row'}`}>
                   <Avatar className="w-8 h-8">
+                    <AvatarImage src={chat.customer?.image || ""} alt={chat.customer?.name} className="object-cover" />
                     <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
                   </Avatar>
                   <div
