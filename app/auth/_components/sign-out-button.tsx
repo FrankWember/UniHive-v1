@@ -19,6 +19,7 @@ export const SignOutButton = () => {
                 description: "Your account was signed out successfully."
             })
         })
+        router.refresh();
         router.push("/home")
     }
   return (
