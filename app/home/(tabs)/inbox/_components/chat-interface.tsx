@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar,AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
@@ -124,7 +124,6 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatI
               >
                 <div className={`flex items-end ${message.senderId === userId ? 'flex-row-reverse' : 'flex-row'}`}>
                   <Avatar className="w-8 h-8">
-                    <AvatarImage src={chat.customer?.image || ""} alt={chat.customer?.name} className="object-cover" />
                     <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
                   </Avatar>
                   <div
