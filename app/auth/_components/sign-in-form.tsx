@@ -55,7 +55,7 @@ const EmailForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/home"
+  const callbackUrl = searchParams.get("callbackUrl") || "/home/services"
   const router = useRouter()
 
   const form = useForm<z.infer<typeof EmailSignInSchema>>({
@@ -81,8 +81,7 @@ const EmailForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
-            router.refresh();
-            router.push(callbackUrl);
+            window.location.href = callbackUrl || "/home/services";
            
           }
 
@@ -128,7 +127,7 @@ const EmailForm = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="johndoe@gmail.com" {...field} />
+                    <Input placeholder="Enter you .edu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -208,6 +207,7 @@ const IDForm = () => {
             if (data?.success) {
               form.reset();
               setSuccess(data?.success);
+              window.location.href = callbackUrl;
             }
   
             if (data?.twoFactor) {
