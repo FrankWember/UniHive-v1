@@ -207,7 +207,7 @@ const IDForm = () => {
             if (data?.success) {
               form.reset();
               setSuccess(data?.success);
-              window.location.href = callbackUrl;
+              window.location.href = callbackUrl || "/home/services";
             }
   
             if (data?.twoFactor) {
