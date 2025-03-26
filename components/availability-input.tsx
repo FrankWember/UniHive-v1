@@ -44,9 +44,8 @@ export function AvailabilityInput({
   className,
 }: AvailabilityInputProps) {
   const [selectedDay, setSelectedDay] = useState<string>(DAYS_OF_WEEK[0])
-  const [open1, setOpen1] = useState(false)
-  const [open2, setOpen2] = useState(false)
-
+  const [activeDialog, setActiveDialog] = useState<string | null>(null)
+  
   const handleAddTimeSlot = () => {
     const newValue = { ...value }
     if (!newValue[selectedDay]) {
@@ -138,14 +137,16 @@ export function AvailabilityInput({
               <Label className="capitalize">{day}</Label>
               {value[day].map((slot, index) => (
                 <div key={index} className="flex md:items-center gap-2">
-                  <Dialog open={open1} onOpenChange={setOpen1}>
+                  <Dialog open={activeDialog === `${day}-${index}-start`} 
+                    onOpenChange={(isOpen) => setActiveDialog(isOpen ? `${day}-${index}-start` : null)}
+                    >     
                     <DialogTrigger asChild>
                       <Button variant="outline">
                         {formatTimeToLocaleString(parseTimeString(slot[0]))}
                         <ClockIcon className="h-4 w-4 ml-2" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="space-y-4">
+                    <DialogContent className="space-y-4 p-2">
                       <DialogHeader>
                         <DialogTitle>Set the Start Time</DialogTitle>
                         <DialogDescription>Give the start time for this shift (time slot) for your service.</DialogDescription>
@@ -162,7 +163,7 @@ export function AvailabilityInput({
                       </div>
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button variant="outline">Close</Button>
+                          <Button variant="outline">Confirm</Button>
                         </DialogClose>
                       </DialogFooter>
                     </DialogContent>
@@ -171,14 +172,17 @@ export function AvailabilityInput({
                   <span className="flex mx-3 md:my-3 md:mx-0 items-center">
                     <ArrowRightIcon />
                   </span>
-                  <Dialog open={open2} onOpenChange={setOpen2}>
+                  <Dialog 
+                    open={activeDialog === `${day}-${index}-end`}
+                    onOpenChange={(isOpen) => setActiveDialog(isOpen ? `${day}-${index}-end` : null)}
+                    >
                     <DialogTrigger asChild>
                       <Button variant="outline">
                         {formatTimeToLocaleString(parseTimeString(slot[1]))}
                         <ClockIcon className="h-4 w-4 ml-2" />
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="space-y-4">
+                    <DialogContent className="space-y-4 p-2">
                       <DialogHeader>
                         <DialogTitle>Set the Stop Time</DialogTitle>
                         <DialogDescription>Give the Stop time for this shift (time slot) for your service.</DialogDescription>
@@ -195,7 +199,7 @@ export function AvailabilityInput({
                       </div>
                       <DialogFooter>
                         <DialogClose asChild>
-                          <Button variant="outline">Close</Button>
+                          <Button variant="outline">Confirm</Button>
                         </DialogClose>
                       </DialogFooter>
                     </DialogContent>
