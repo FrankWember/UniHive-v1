@@ -31,12 +31,12 @@ export function SideMenu({ className }: SidebarProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="lg" variant="outline" className="flex items-center gap-1 rounded-full p-0">
+        <Button size="lg" variant="outline" className="flex items-center rounded-full p-0">
          
           <Avatar>
             <AvatarImage src={user?.image || ""} alt="Profile" className="object-cover" />
             <AvatarFallback>
-              <CircleUser className="h-4 w-4 text-muted-foreground" />
+              <CircleUser className="h-6 w-6" />
             </AvatarFallback>
           </Avatar>
 
