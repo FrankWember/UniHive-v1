@@ -58,24 +58,14 @@ export default function RootLayout({
   <SessionProvider>
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link
-          rel="icon"
-          href="/icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
-        <link
-          rel="apple-touch-icon"
-          href="/apple-icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
-        <link
-          rel="manifest"
-          href="/manifest?<generated>"
-          type="application/manifest+json"
-          />
-      </head>
+  
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/DormBiz.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/DormBiz.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/DormBiz.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+</head>
+
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
       >
