@@ -26,6 +26,7 @@ export const ServicesHeader = () => {
             <Link href="/home/services">
               <Image src="/DormBiz.png" alt="logo" width={50} height={50} className="rounded-md border" />
             </Link>
+            <p className="text-lg font-medium text-muted-foreground">Any Skill Pays the Bill</p>
         </div>
         <div className="flex items-center space-x-3">
           <SearchBar />
