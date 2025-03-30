@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { SignUpSchema } from "@/constants/zod";
 import { prisma } from "@/prisma/connection";
-import { getUserByEmail, getUserById } from "@/utils/user";
+import { getUserByEmail, getUserByStudentId } from "@/utils/user";
 import { generateVerificationToken } from "@/lib/tokens";
 import { sendVerificationEmail } from "@/lib/mail";
 
@@ -24,7 +24,7 @@ export const register = async (values: z.infer<typeof SignUpSchema>) => {
     return { error: "Email already in use!" };
   }
 
-  const existingUserById = await getUserById(student_id);
+  const existingUserById = await getUserByStudentId(student_id);
   if (existingUserById) {
     return { error: "Student ID already in use!" };
   }
