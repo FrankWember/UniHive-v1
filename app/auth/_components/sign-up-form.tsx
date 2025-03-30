@@ -84,7 +84,7 @@ export const SignUpForm = () => {
                 <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                    <Input placeholder="+1 600-000-111" {...field} />
+                    <Input placeholder="600-000-111" {...field} />
                 </FormControl>
                 <FormMessage />
                 </FormItem>
