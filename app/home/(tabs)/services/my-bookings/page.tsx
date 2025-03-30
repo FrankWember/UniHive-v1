@@ -2,8 +2,6 @@
 import { getBookingsByUserId } from "@/utils/data/services"
 import { BookingCard } from "@/components/booking-card"
 import { parseBookingTime } from "@/utils/helpers/availability"
-import { RoleGate } from "@/components/role-gate"
-import { UserRole } from "@prisma/client"
 import { ProviderHeader } from "../provider/[providerId]/_components/provider-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -12,7 +10,6 @@ export default async function MyBookingsPage() {
   const bookings = await getBookingsByUserId()
 
   return (
-    <RoleGate allowedRoles={[UserRole.STUDENT, UserRole.SELLER, UserRole.ADMIN]}>
       <div className="flex flex-col gap-4 min-h-screen w-screen pt-8 md:pt-0">
         {/* Header */}
         <ProviderHeader text={"My Bookings"} fixed={false} />
@@ -70,6 +67,5 @@ export default async function MyBookingsPage() {
           </Tabs>
         </div>
       </div>
-    </RoleGate>
   )
 }
