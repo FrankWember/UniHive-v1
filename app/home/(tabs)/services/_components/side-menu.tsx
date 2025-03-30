@@ -13,20 +13,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarIcon, LogOut, Menu, HomeIcon } from 'lucide-react'
-import { useCurrentUser } from '@/hooks/use-current-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useMode } from '@/contexts/mode-context'
+import { useSession } from "next-auth/react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
-  const user = useCurrentUser()
   const isMobile = useIsMobile()
   const { mode } = useMode()
+  const { data: session, status } = useSession();
 
-  if (isMobile) return null
+  
+  if (status === "loading" || isMobile) return null;
+  const user = session?.user;
 
   return (
     <DropdownMenu>
