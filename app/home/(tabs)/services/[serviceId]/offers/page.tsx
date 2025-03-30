@@ -10,15 +10,17 @@ import { getServiceOffers } from '@/utils/data/services'
 import { Badge } from '@/components/ui/badge'
 import { DeleteOfferDialog } from './_components/delete-offer-dialog'
 import { redirect } from 'next/navigation'
+import { SideMenu } from '../../_components/side-menu'
 
 const OffersPage = async ({params}: {params: {serviceId: string}}) => {
-  const offers = await getServiceOffers(params.serviceId)
+  
   const user = await currentUser()
 
   if (!user) {
     const callbackUrl = encodeURIComponent(`/home/services/${params.serviceId}/offers`);
     redirect(`/auth/sign-in?callbackUrl=${callbackUrl}`)
   }
+  const offers = await getServiceOffers(params.serviceId)
 
   return (
     <div className="flex flex-col min-h-screen w-full">
@@ -26,25 +28,13 @@ const OffersPage = async ({params}: {params: {serviceId: string}}) => {
         <div className="flex items-center justify-between h-16 w-full border-b py-2 px-6 fixed top-0 backdrop-blur-sm z-50 bg-background/80">
           <div className="flex justify-start items-center gap-3">
             <BackButton />
-            <Link href="/home/services">
+            <Link href="/home/services/${serviceId}">
               <Image src="/DormBiz.png" alt="logo" width={50} height={50} className="rounded-md border" />
             </Link>
           </div>
           <div className="flex items-center space-x-3">
             <SearchBar />
-            {user?(
-              <Link href={`/home/services/cart`}>
-                <Button variant="outline" size="icon">
-                  <ShoppingCart className="h-4 w-4" />
-                </Button>
-              </Link>
-            ):(
-              <Link href={`/auth/sign-up`}>
-                <Button>
-                  Join
-                </Button>
-              </Link>
-            )}
+            <SideMenu />
           </div>
         </div>
 
