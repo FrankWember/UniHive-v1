@@ -1,6 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 
 type Mode = "PROVIDER" | "USER"
 
@@ -12,7 +13,8 @@ type ModeContextType = {
 const ModeContext = createContext<ModeContextType | undefined>(undefined)
 
 export const ModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize the mode from localStorage, defaulting to "USER"
+  const { data: session, status } = useSession()
+
   const [mode, setMode] = useState<Mode>(() => {
     if (typeof window !== "undefined") {
       const storedMode = localStorage.getItem("mode") as Mode | null
@@ -21,10 +23,18 @@ export const ModeProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return "USER"
   })
 
-  // Persist the mode change to localStorage
+  // Update localStorage when mode changes manually
   useEffect(() => {
     localStorage.setItem("mode", mode)
   }, [mode])
+
+  // Automatically set mode based on session when user logs in/out
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role) {
+      const userRole = session.user.role as Mode
+      setMode(userRole)
+    }
+  }, [session, status])
 
   return (
     <ModeContext.Provider value={{ mode, setMode }}>
