@@ -81,8 +81,9 @@ const EmailForm = () => {
           if (data?.success) {
             form.reset();
             setSuccess(data.success);
-            window.location.href = callbackUrl || "/home/services";
-           
+
+            router.push(callbackUrl || "/home/services");
+            router.refresh();
           }
 
           if (data?.twoFactor) {
