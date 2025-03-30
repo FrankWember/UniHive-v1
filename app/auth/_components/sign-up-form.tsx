@@ -111,7 +111,7 @@ export const SignUpForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="johndoe@gmail.com" {...field} />
+                <Input placeholder="johndoe@siue.edu" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -125,7 +125,7 @@ export const SignUpForm = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="********" {...field} type="password" />
+                  <Input placeholder="**********" {...field} type="password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,7 +138,7 @@ export const SignUpForm = () => {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input placeholder="********" {...field} type="password" />
+                  <Input placeholder="**********" {...field} type="password" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
