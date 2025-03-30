@@ -14,27 +14,28 @@ const ModeContext = createContext<ModeContextType | undefined>(undefined)
 
 export const ModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { data: session, status } = useSession()
+  const [mode, setMode] = useState<Mode>("USER")
+  const [hasInitialized, setHasInitialized] = useState(false)
 
-  const [mode, setMode] = useState<Mode>(() => {
-    if (typeof window !== "undefined") {
-      const storedMode = localStorage.getItem("mode") as Mode | null
-      return storedMode ?? "USER"
-    }
-    return "USER"
-  })
-
-  // Update localStorage when mode changes manually
-  useEffect(() => {
-    localStorage.setItem("mode", mode)
-  }, [mode])
-
-  // Automatically set mode based on session when user logs in/out
+  // Sync mode with session.role or fallback to localStorage
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role) {
       const userRole = session.user.role as Mode
       setMode(userRole)
+      setHasInitialized(true)
+    } else if (status === "unauthenticated") {
+      const storedMode = localStorage.getItem("mode") as Mode | null
+      setMode(storedMode ?? "USER")
+      setHasInitialized(true)
     }
   }, [session, status])
+
+  // Save mode to localStorage *after* initialization
+  useEffect(() => {
+    if (hasInitialized) {
+      localStorage.setItem("mode", mode)
+    }
+  }, [mode, hasInitialized])
 
   return (
     <ModeContext.Provider value={{ mode, setMode }}>
