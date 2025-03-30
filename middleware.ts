@@ -66,6 +66,6 @@ async function getSession(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!.+\\.[\\w]+$|_next|home/services|home/products|home/events|home$|api/services|api/products|api/events|api/uploadthing|auth/new-verification).*)"
+    "/((?!.+\\.[\\w]+$|_next|home/products|home/events|home$|api/services|api/products|api/events|api/uploadthing|auth/new-verification).*)"
   ],
 };
