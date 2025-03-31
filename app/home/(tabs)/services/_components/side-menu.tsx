@@ -16,7 +16,7 @@ import { MessageCircle, UserRound, CircleUser, UserPlus, Heart, Store, CalendarI
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useMode } from '@/contexts/mode-context'
-import { useSession } from "next-auth/react";
+import { useCurrentUser } from '@/hooks/use-current-user'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -24,11 +24,9 @@ export function SideMenu({ className }: SidebarProps) {
   const router = useRouter()
   const isMobile = useIsMobile()
   const { mode } = useMode()
-  const { data: session, status } = useSession();
-
+  const user = useCurrentUser()
   
-  if (status === "loading" || isMobile) return null;
-  const user = session?.user;
+  if (isMobile) return null
 
   return (
     <DropdownMenu>
