@@ -1,7 +1,6 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
 
 type Mode = "PROVIDER" | "USER"
 
@@ -13,30 +12,21 @@ type ModeContextType = {
 const ModeContext = createContext<ModeContextType | undefined>(undefined)
 
 export const ModeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { data: session, status } = useSession()
-  const [mode, setMode] = useState<Mode>("USER")
-  const [hasInitialized, setHasInitialized] = useState(false)
+  
+  // Initialize the mode from localStorage, defaulting to "USER"
+   const [mode, setMode] = useState<Mode>(() => {
+     if (typeof window !== "undefined") {
+       const storedMode = localStorage.getItem("mode") as Mode | null
+       return storedMode ?? "USER"
+     }
+     return "USER"
+   })
 
-  // Sync mode with session.role or fallback to localStorage
+  // Persist the mode change to localStorage
   useEffect(() => {
-    if (status === "authenticated" && session?.user?.role) {
-      const userRole = session.user.role as Mode
-      setMode(userRole)
-      setHasInitialized(true)
-    } else if (status === "unauthenticated") {
-      const storedMode = localStorage.getItem("mode") as Mode | null
-      setMode(storedMode ?? "USER")
-      setHasInitialized(true)
-    }
-  }, [session, status])
-
-  // Save mode to localStorage *after* initialization
-  useEffect(() => {
-    if (hasInitialized) {
-      localStorage.setItem("mode", mode)
-    }
-  }, [mode, hasInitialized])
-
+     localStorage.setItem("mode", mode)
+   }, [mode])
+ 
   return (
     <ModeContext.Provider value={{ mode, setMode }}>
       {children}
