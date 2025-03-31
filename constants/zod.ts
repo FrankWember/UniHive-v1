@@ -76,8 +76,8 @@ export const ServiceSchema = z.object({
     message: "Please select at least one category.",
   }),
   images: z.array(z.string())
-  .min(1, {
-    message: "Please upload at least one image.",
+  .min(5, {
+    message: "Please upload at least 5 images.",
   })
   .max(5, {
     message: "You can upload a maximum of 5 images.",
