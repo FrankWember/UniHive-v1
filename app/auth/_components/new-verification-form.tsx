@@ -32,12 +32,16 @@ export const NewVerificationForm = () => {
       .then((data) => {
         setSuccess(data.success);
         setError(data.error);
-        router.push("/home")
+
+        if (!data.error) {
+          const callbackUrl = searchParams.get("callbackUrl") || "/auth/onboarding";
+          router.push(callbackUrl);
+        }
       })
       .catch(() => {
         setError("Something went wrong!");
       });
-  }, [token, success, error]);
+  }, [token, success, error, searchParams, router]);
 
   useEffect(() => {
     onSubmit();
