@@ -33,8 +33,10 @@ export async function updateUserSettings(data: {
 }
 
 export async function completeOnboarding(data: {
-  profileImage: string
+  profileImage?: string
+  bio?: string
   agreeTerms: boolean
+  
 }) {
   const user = await currentUser()
 
@@ -45,7 +47,8 @@ export async function completeOnboarding(data: {
   await prisma.user.update({
     where: { id: user.id },
     data: {
-      image: data.profileImage,
+      ...(data.profileImage && { image: data.profileImage }),
+      ...(data.bio && { bio: data.bio }),
       isOnboarded: true,
     },
   })
