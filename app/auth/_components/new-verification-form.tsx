@@ -34,8 +34,8 @@ export const NewVerificationForm = () => {
         setError(data.error);
 
         if (!data.error) {
-          const callbackUrl = searchParams.get("callbackUrl") || "/auth/onboarding";
-          router.push(callbackUrl);
+            router.push(`/auth/sign-in?callbackUrl=/auth/onboarding`)
+
         }
       })
       .catch(() => {
