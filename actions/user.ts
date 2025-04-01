@@ -47,8 +47,8 @@ export async function completeOnboarding(data: {
   await prisma.user.update({
     where: { id: user.id },
     data: {
-      ...(data.profileImage && { image: data.profileImage }),
-      ...(data.bio && { bio: data.bio }),
+      image: data.profileImage,
+      bio: data.bio,
       isOnboarded: true,
     },
   })
@@ -88,7 +88,7 @@ export async function sendAccountUpgradeEmail() {
   const user = await currentUser()
 
   await sendEmail({
-      to: 'unihive2025@gmail.com',
+      to: 'notifications@dormbiz.net',
       subject: 'DormBiz Account Upgrade',
       text: `The User with email ${user?.email} has requested an upgrade to premium account.`,
       html: `
