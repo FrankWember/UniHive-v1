@@ -28,8 +28,8 @@ import { ProfileImageUpload } from "@/components/profile-image-upload"
 import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes"
 
 const OnboardingSchema = z.object({
-  profileImage: z.string().url("Invalid image URL"),
-  bio: z.string().min(10, "Bio must be at least 10 characters").max(300, "Bio can't be more than 300 characters"),
+  profileImage: z.string().url("Please upload your profile picture"),
+  bio: z.string().min(10, "Bio must be at least 10 characters").max(300, "Bio can't be more than 300 characters").optional(),
   agreeTerms: z.boolean().refine((value) => value === true, {
     message: "You must agree to the terms and conditions",
   }),
@@ -90,11 +90,19 @@ export function OnboardingForm() {
         <FormItem>
           <FormLabel>Bio</FormLabel>
             <FormControl>
+              <div>
               <Textarea
                 placeholder="Tell us a little about yourself..."
                 className="resize-none"
                 {...field}
               />
+                <div className={`text-sm text-right mt-1 ${
+                  (field.value?.length || 0) > 250
+                  ? "text-destructive" : "text-muted-foreground"}`}
+                  >
+                  {field.value?.length || 0}/300
+                </div>
+              </div>
             </FormControl>
           <FormMessage />
         </FormItem>
