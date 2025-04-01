@@ -29,6 +29,7 @@ import { DEFAULT_SIGNIN_REDIRECT } from "@/constants/routes"
 
 const OnboardingSchema = z.object({
   profileImage: z.string().url("Invalid image URL"),
+  bio: z.string().min(10, "Bio must be at least 10 characters").max(300, "Bio can't be more than 300 characters"),
   agreeTerms: z.boolean().refine((value) => value === true, {
     message: "You must agree to the terms and conditions",
   }),
@@ -46,6 +47,7 @@ export function OnboardingForm() {
     resolver: zodResolver(OnboardingSchema),
     defaultValues: {
       profileImage: "",
+      bio: "",
       agreeTerms: false,
     },
   })
@@ -81,6 +83,24 @@ export function OnboardingForm() {
             </FormItem>
           )}
         />
+    <FormField
+      control={form.control}
+      name="bio"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Bio</FormLabel>
+            <FormControl>
+              <Textarea
+                placeholder="Tell us a little about yourself..."
+                className="resize-none"
+                {...field}
+              />
+            </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+
         <FormField
           control={form.control}
           name="agreeTerms"
