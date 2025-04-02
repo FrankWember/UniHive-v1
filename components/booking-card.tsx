@@ -146,8 +146,18 @@ export const BookingCard = ({
                 </div>
             </div>
             <div>
-                <Button size="icon" onClick={createChat} disabled={creatingChat}>
-                    {creatingChat ? <Spinner/> : <MessageCircle className="h-4 w-4" />}
+                <Button 
+                    onClick={createChat}
+                    disabled={creatingChat}
+                    className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md flex items-center gap-1"
+                    >
+                  {creatingChat ? (
+                    <Spinner />) : (
+                    <>
+                      <MessageCircle className="h-4 w-4" />
+                      Start a chat
+                    </>
+                  )}
                 </Button>
             </div>
         </div>
