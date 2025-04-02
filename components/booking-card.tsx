@@ -47,7 +47,8 @@ export const BookingCard = ({
         } : "skip"
       );
 
-    const createChat = async () => {
+    const createChat = async (e?: React.MouseEvent) => {
+        e?.stopPropagation();
         try {
             setCreatingChat(true)
             let chatId = ''
@@ -147,7 +148,7 @@ export const BookingCard = ({
             </div>
             <div>
                 <Button 
-                    onClick={createChat}
+                    onClick={(e) => createChat(e)}
                     disabled={creatingChat}
                     className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md flex items-center gap-1"
                     >
