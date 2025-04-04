@@ -9,25 +9,25 @@ import { currentUser } from '@/lib/auth'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import Image from 'next/image'
 import { Separator } from '@/components/ui/separator'
-import { Scissors, Brush, Laptop, Home, BookOpen, Car, Camera, PencilRuler, ChefHat, Hand, WashingMachine, Palette, Music } from 'lucide-react';
+import { Scissors, Brush, Laptop, Home, BookOpen, Car, Camera, PencilRuler, ChefHat, WashingMachine, Palette, Music, Rotate3d} from 'lucide-react';
 import { ServicesHeader } from './_components/services-header'
 
 const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) => {
   const user = await currentUser()
 
   const categories = [
-    { name: "Barber", icon: Scissors, link: "/icons/icons8-scissors-50.png" },
+    { name: "Barber", icon: Scissors, link: "/icons/Barber.png" },
     { name: "Braiding", icon: Brush, link: "/icons/icons8-braid-48.png" },
-    { name: "Electronics", icon: Laptop, link: "/icons/icons8-electronics-50.png" },
-    { name: "Makeup", icon: Brush, link: "/icons/icons8-makeup-64.png" },
+    { name: "Electronics", icon: Laptop, link: "/Electronics.png" },
+    { name: "Makeup", icon: Brush, link: "/icons/Beauty.png" },
     { name: "Nails", icon: Pencil, link: "/icons/icons8-nails-50.png" },
     { name: "Housing", icon: Home, link: "/icons/icons8-house-50.png" },
     { name: "Tutoring", icon: BookOpen, link: "/icons/icons8-tutor-48.png" },
+    { name: "3D Printing", icon: Rotate3d, link: "/icons/3d-printing.png" },
     { name: "Automobile", icon: Car, link: "/icons/icons8-car-50.png" },
     { name: "Photography", icon: Camera, link: "/icons/icons8-camera-50.png" },
     { name: "Tailoring", icon: PencilRuler, link: "/icons/icons8-dress-50.png" },
     { name: "Cooking", icon: ChefHat, link: "/icons/icons8-cooking-50.png" },
-    { name: "Massage", icon: Hand, link: "/icons/icons8-massage-50.png" },
     { name: "Cleaning", icon: WashingMachine, link: "/icons/icons8-cleaning-50.png" },
     { name: "Graphic Design", icon: Palette, link: "/icons/icons8-design-50.png" },
     { name: "Music", icon: Music, link: "/icons/icons8-music-50.png" },
