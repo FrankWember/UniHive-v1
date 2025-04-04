@@ -19,7 +19,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     { name: "Barber", icon: Scissors, link: "/icons/Barber.png" },
     { name: "Braiding", icon: Brush, link: "/icons/icons8-braid-48.png" },
     { name: "Electronics", icon: Laptop, link: "/Electronics.png" },
-    { name: "Makeup", icon: Brush, link: "/icons/Beauty.png" },
+    { name: "Makeup", icon: Brush, link: "/icons/icons8-makeup-64.png" },
     { name: "Nails", icon: Pencil, link: "/icons/icons8-nails-50.png" },
     { name: "Housing", icon: Home, link: "/icons/icons8-house-50.png" },
     { name: "Tutoring", icon: BookOpen, link: "/icons/icons8-tutor-48.png" },
@@ -44,7 +44,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
           <div className='flex items-center w-max gap-8 md:gap-12 p-2 h-14'>
             <Link  href={`/home/services`}>
               <div className='group flex flex-col items-center justify-center gap-2'>
-                <Image src="/icons/icons8-list-64.png" alt={"all"} width={16} height={16} className='object-cover'/>
+                <Image src="/icons/icons8-list-64.png" alt={"all"} width={18} height={16} className='object-cover'/>
                 <h2 className='text-xs md:text-sm font-semibold text-center text-muted-foreground'>All</h2>
                 <div className='w-full h-0.5 rounded-lg bg-background group-hover:bg-gray-800'></div>
               </div>
