@@ -106,10 +106,10 @@ export const EmailLogin = async (
     await signIn("credentials", {
       email,
       password,
-      redirectTo: callbackUrl || DEFAULT_SIGNIN_REDIRECT,
+      redirect: false,
     });
-
-    // return { success: "Login Sucess!" };
+    return { success: "Login Sucess!" };
+    
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -214,10 +214,10 @@ export const IDLogin = async (
     await signIn("credentials", {
       email: existingUser.email,
       password,
-      redirectTo: callbackUrl || DEFAULT_SIGNIN_REDIRECT,
+      redirect: false,
     });
 
-    // return { success: "Login Sucess!" };
+    return { success: "Login Sucess!" };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
