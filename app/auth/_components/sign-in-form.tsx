@@ -55,8 +55,8 @@ const EmailForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/home/services"
-  const router = useRouter()
+  const callbackUrl = searchParams.get("callbackUrl") || "/home/services";
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof EmailSignInSchema>>({
       resolver: zodResolver(EmailSignInSchema),
@@ -183,7 +183,7 @@ const IDForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl")
+  const callbackUrl = searchParams.get("callbackUrl") || "/home/services";
   const router = useRouter()
  
     const form = useForm<z.infer<typeof IDSignInSchema>>({
