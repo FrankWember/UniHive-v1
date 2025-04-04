@@ -21,7 +21,7 @@ export const register = async (values: z.infer<typeof SignUpSchema>) => {
 
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
-    return { error: "Email already in use!" };
+    return { error: "A confirmation email has been sent. Please check your junk or spam folder" };
   }
 
   const existingUserById = await getUserByStudentId(student_id);
