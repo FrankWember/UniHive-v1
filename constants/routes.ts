@@ -2,12 +2,11 @@
  * An array of routes that are accessible to the public
  * These routes do not require authentication
  * @type {string[]}
-   I removed "/home/services/:path*",
  */
 export const publicRoutes = [
   "/",
   "/home",
-  "/home/services",
+  "/home/services/:path*",
   "/api/services",
   "/home/products",
   "/home/products/:path*",
