@@ -19,8 +19,8 @@ export const SignOutButton = () => {
                 description: "Your account was signed out successfully."
             })
         })
-        router.refresh();
         router.push("/home")
+        router.refresh();
     }
   return (
     <Button onClick={onSignOut} variant="destructive">
