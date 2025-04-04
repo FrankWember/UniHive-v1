@@ -21,7 +21,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     { name: "Electronics", icon: Laptop, link: "/Electronics.png" },
     { name: "Makeup", icon: Brush, link: "/icons/icons8-makeup-64.png" },
     { name: "Nails", icon: Pencil, link: "/icons/icons8-nails-50.png" },
-    { name: "Housing", icon: Home, link: "/icons/icons8-house-50.png" },
+    { name: "Housing", icon: Home, link: "/icons/Housing.png" },
     { name: "Tutoring", icon: BookOpen, link: "/icons/icons8-tutor-48.png" },
     { name: "3D Printing", icon: Rotate3d, link: "/icons/3d-printing.png" },
     { name: "Automobile", icon: Car, link: "/icons/icons8-car-50.png" },
