@@ -18,7 +18,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
   const categories = [
     { name: "Barber", icon: Scissors, link: "/icons/Barber.png" },
     { name: "Braiding", icon: Brush, link: "/icons/icons8-braid-48.png" },
-    { name: "Electronics", icon: Laptop, link: "/Electronics.png" },
+    { name: "Electronics", icon: Laptop, link: "/icons/Electronics.png" },
     { name: "Makeup", icon: Brush, link: "/icons/icons8-makeup-64.png" },
     { name: "Nails", icon: Pencil, link: "/icons/icons8-nails-50.png" },
     { name: "Housing", icon: Home, link: "/icons/Housing.png" },
