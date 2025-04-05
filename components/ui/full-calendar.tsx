@@ -105,6 +105,12 @@ type CalendarProps = {
   onEventClick?: (event: CalendarEvent) => void;
 };
 
+const ensureFullTimeFormat = (time: string): string => {
+  const [h = '00', m = '00', s = '00'] = time.split(':');
+  return `${h.padStart(2, '0')}:${m.padStart(2, '0')}:${s.padStart(2, '0')}`;
+};
+
+
 const Calendar = ({
   children,
   defaultDate = new Date(),
@@ -125,8 +131,8 @@ const Calendar = ({
         return {
           id: event.id,
           date: new Date(event.date),
-          startTime: format(event.startTime, 'HH:mm:ss'),
-          stopTime: format(event.stopTime, 'HH:mm:ss'),
+          startTime: ensureFullTimeFormat(event.startTime),
+          stopTime: ensureFullTimeFormat(event.stopTime),
           title: event.title,
           color: event.color
         };
