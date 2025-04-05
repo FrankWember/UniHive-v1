@@ -704,18 +704,21 @@ const generateWeekdays = (locale: Locale) => {
 };
 
 const timeStringToDate = (dateObj: Date, timeString: string): Date => {
-  if (!timeString || !timeString.includes(':')) {
-    console.error('Invalid time string:', timeString);
-    return new Date(NaN); // will be caught before use
+  if (!timeString || typeof timeString !== 'string') {
+    console.error('Missing or invalid time string:', timeString);
+    return new Date(NaN);
   }
 
-  const [hours = '00', minutes = '00', seconds = '00'] = timeString.split(':');
+  // Parse "17-30-00" => "17:30:00"
+  const cleaned = timeString.replace(/-/g, ':');
+
+  const [hours = '00', minutes = '00', seconds = '00'] = cleaned.split(':');
   const h = Number(hours);
   const m = Number(minutes);
   const s = Number(seconds);
 
-  if (isNaN(h) || isNaN(m) || isNaN(s)) {
-    console.error('Invalid time values:', { h, m, s, timeString });
+  if ([h, m, s].some((v) => isNaN(v))) {
+    console.error('Invalid parsed time values:', { h, m, s, cleaned });
     return new Date(NaN);
   }
 
@@ -723,6 +726,7 @@ const timeStringToDate = (dateObj: Date, timeString: string): Date => {
   newDate.setHours(h, m, s);
   return newDate;
 };
+
 
 
 export {
