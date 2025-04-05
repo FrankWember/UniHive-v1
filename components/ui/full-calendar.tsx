@@ -704,9 +704,9 @@ const generateWeekdays = (locale: Locale) => {
 };
 
 const timeStringToDate = (dateObj: Date, timeString: string): Date => {
-  const [hours, minutes, seconds] = timeString.split(':').map(Number);
+  const [hours = '00', minutes = '00', seconds = '00'] = timeString.split(':');
   const newDate = new Date(dateObj);
-  newDate.setHours(hours, minutes, seconds);
+  newDate.setHours(Number(hours), Number(minutes), Number(seconds));
   return newDate;
 };
 
