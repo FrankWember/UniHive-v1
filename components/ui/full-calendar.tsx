@@ -217,31 +217,6 @@ const EventGroup = ({
   events: CalendarEvent[];
   hour: Date;
 }) => {
-
-  console.log('🟩 [Hour Block] Rendering hour:', hour.toISOString());
-
-  const matchingEvents = events.filter((event) => {
-    const eventStart = timeStringToDate(event.date, event.startTime);
-    const sameHour = eventStart.getHours() === hour.getHours();
-    const sameDay = isSameDay(eventStart, hour);
-
-    console.log('🔍 Checking event:', {
-      id: event.id,
-      title: event.title,
-      eventDate: event.date.toISOString(),
-      startTime: event.startTime,
-      parsedEventStart: eventStart.toISOString(),
-      hourBlock: hour.toISOString(),
-      sameHour,
-      sameDay,
-      matched: sameHour && sameDay,
-    });
-
-    return sameHour && sameDay;
-  });
-
-  console.log(`✅ Matched ${matchingEvents.length} events for ${hour.getHours()}:00`);
-
   return (
     <div className="h-20 border-t last:border-b">
       {events
@@ -705,7 +680,7 @@ const generateWeekdays = (locale: Locale) => {
 
 const timeStringToDate = (dateObj: Date, timeString: string): Date => {
   if (!timeString || typeof timeString !== 'string') {
-    console.error('Missing or invalid time string:', timeString);
+
     return new Date(NaN);
   }
 
@@ -718,7 +693,7 @@ const timeStringToDate = (dateObj: Date, timeString: string): Date => {
   const s = Number(seconds);
 
   if ([h, m, s].some((v) => isNaN(v))) {
-    console.error('Invalid parsed time values:', { h, m, s, cleaned });
+
     return new Date(NaN);
   }
 

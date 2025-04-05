@@ -30,9 +30,10 @@ export function splitTimeSlots(availability: DayAvailability): DayAvailability {
       if (currentEnd > endTime) break;
 
       intervals.push([
-        format(currentStart, 'HH-mm-ss'),
-        format(currentEnd, 'HH-mm-ss')
+        format(currentStart, 'HH:mm:ss'), 
+        format(currentEnd, 'HH:mm:ss')
       ]);
+
 
       currentStart = currentEnd;
     }
