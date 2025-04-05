@@ -326,6 +326,12 @@ const CalendarWeekView = () => {
         </div>
         <div className="grid grid-cols-7 flex-1">
           {weekDates.map((hours, i) => {
+            const dayStart = hours[0]; // this is 00:00 of that day
+
+            // ✅ Filter only the events for that day
+            const dayEvents = events.filter((event) =>
+              isSameDay(event.date, dayStart)
+            );
             return (
               <div
                 className={cn(
@@ -338,7 +344,7 @@ const CalendarWeekView = () => {
                   <EventGroup
                     key={hour.toString()}
                     hour={hour}
-                    events={events}
+                    events={dayEvents}
                   />
                 ))}
               </div>
