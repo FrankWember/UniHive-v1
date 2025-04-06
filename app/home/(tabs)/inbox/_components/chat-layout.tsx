@@ -56,29 +56,24 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const router = useRouter()
   const pathname = usePathname()
   const isMobile = useIsMobile()
+
+  const user = useCurrentUser()
+  const userId = user?.id
+
+  // Avoid rendering until user is loaded
+  if (!userId) {
+    return <div className="flex h-full items-center justify-center">Loading user...</div>
+  }
+
   const [chats, setChats] = useState<Chat[]>([])
   const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(
     chatId ? (chatId as Id<"chats">) : null
   )
   const [loading, setLoading] = useState(false)
-  const user = useCurrentUser()
-  
-
-  const userId = user?.id
-
-  if (!user) {
-  return <div>Loading chats...</div>
-  }
-
 
   const currentChat = chats.find((chat) => chat._id === currentChatId)
 
-  const allChats = useQuery(
-    api.chats.getAllChats,
-    userId ? { userId } : "skip"
-  );
-  
-  
+  const allChats = useQuery(api.chats.getAllChats, { userId })
 
   useEffect(() => {
     console.log("[ChatLayout Debug]", {
@@ -91,24 +86,12 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
       chatsState: chats,
       pathname,
       isMobile
-    });
-  
-    console.log("🗂️ All Chats result:", allChats);
-  }, [chatId, currentChatId, user, userId, allChats, loading, chats, pathname, isMobile]);
-  
-
-if (!userId || !allChats) {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <p className="text-sm text-muted-foreground">Loading chats...</p>
-    </div>
-  )
-}
-
+    })
+  }, [chatId, currentChatId, user, userId, allChats, loading, chats, pathname, isMobile])
 
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
-      if (!allChats || allChats.length === 0) return;
+      if (!allChats || allChats.length === 0) return
 
       setLoading(true)
 
@@ -120,9 +103,7 @@ if (!userId || !allChats) {
       const userIds = allUserIds.map((u) => u.userId)
 
       try {
-        const { data: users }: { data: Customer[] } = await axios.post('/api/users', {
-          userIds
-        })
+        const { data: users }: { data: Customer[] } = await axios.post('/api/users', { userIds })
 
         const resolvedChats = allChats.map((chat) => {
           const userRef = allUserIds.find((id) => id._id === chat._id)
@@ -175,7 +156,7 @@ if (!userId || !allChats) {
           currentChatId={currentChatId}
           setCurrentChatId={setCurrentChatId}
           userId={userId}
-          participant={currentChat?.customer}
+          participant={currentChat?.customer ?? { name: "Unknown" }}
         />
       </div>
     )
@@ -223,18 +204,14 @@ if (!userId || !allChats) {
             currentChatId={currentChatId}
             setCurrentChatId={setCurrentChatId}
             userId={userId}
-            participant={currentChat?.customer}
+            participant={currentChat?.customer ?? { name: "Unknown" }}
           />
         ) : (
           <div className="flex h-full items-center justify-center p-4">
             <Card className="max-w-md">
               <CardHeader>
-                <CardTitle className="text-center text-2xl font-bold">
-                  No Chat Selected
-                </CardTitle>
-                <CardDescription className="text-center">
-                  Select a chat from the sidebar to start messaging.
-                </CardDescription>
+                <CardTitle className="text-center text-2xl font-bold">No Chat Selected</CardTitle>
+                <CardDescription className="text-center">Select a chat from the sidebar to start messaging.</CardDescription>
               </CardHeader>
               <CardContent />
             </Card>
