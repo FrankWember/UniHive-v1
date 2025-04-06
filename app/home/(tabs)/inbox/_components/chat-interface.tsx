@@ -58,22 +58,21 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   const chatMessages = useQuery(api.messages.getChatMessages, 
     currentChatId ? { chatId: currentChatId } : "skip"
   )
-      
+
   useEffect(() => {
-    if (chatMessages) {
-      setMessages(chatMessages);
-    }
+    if (!chatMessages || !currentChatId) return;
+    setMessages(chatMessages);
+
     const makeAllAsRead = async () => {
-      chatMessages?.forEach(async (message) => {
-        if (!message.read) {
-          await markAsRead({
-            messageId: message._id!,
-          })
+      for (const message of chatMessages) {
+        if (!message.read && message.senderId !== userId) {
+          await markAsRead({ messageId: message._id! });
         }
-      })
+      }
     }
+
     makeAllAsRead()
-  }, [chatMessages, markAsRead])
+  }, [chatMessages, currentChatId, markAsRead, userId])
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -83,7 +82,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSendingMessage(true)
-    const message = await sendMessage({
+    await sendMessage({
       chatId: currentChatId!,
       senderId: userId,
       text: values.message
@@ -92,7 +91,6 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     setSendingMessage(false)
   }
 
-  // Back button for mobile view
   const handleBackClick = () => {
     if (isMobile) {
       router.push('/home/inbox')
@@ -104,51 +102,75 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full h-[calc(100vh-8rem)] sm:h-full flex flex-col"
+      className="w-full max-h-screen flex flex-col overflow-hidden"
     >
-      <Card className="h-full w-full flex flex-col">
-          {isMobile && (
-            <div className="p-3 border-b flex items-center">
-              <Button variant="outline" size="sm" onClick={handleBackClick} className="mr-2">
-                <ChevronLeft className='h-4 w-4' />
-                <span className='sr-only'>Back</span>
-              </Button>
-              {participant?.image && (
-                <Avatar className="w-6 h-6 mr-2">
-                  <img src={participant.image} alt={participant.name} className="rounded-full object-cover" />
-                  <AvatarFallback>{participant.name?.charAt(0)}</AvatarFallback>
-                </Avatar>
+      <Card className="flex flex-col flex-grow w-full max-h-screen overflow-hidden">
+        {isMobile && (
+          <div className="p-3 border-b flex items-center">
+            <Button variant="outline" size="sm" onClick={handleBackClick} className="mr-2">
+              <ChevronLeft className='h-4 w-4' />
+              <span className='sr-only'>Back</span>
+            </Button>
+            <Avatar className="w-7 h-7 mr-2">
+              {participant?.image ? (
+                <img src={participant.image} alt={participant.name} className="rounded-full object-cover" />
+              ) : (
+                <AvatarFallback>{participant?.name?.charAt(0) ?? '?'}</AvatarFallback>
               )}
-              <h2 className="font-semibold">{participant?.name ?? 'Chat'}</h2>
-            </div>
-          )}    
+            </Avatar>
+            <h2 className="font-semibold truncate">{participant?.name ?? 'Chat'}</h2>
+          </div>
+        )}
+
         <CardContent className="flex-grow p-0 overflow-hidden">
           <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
-            {messages.map((message) => (
-              <div
-                key={message._id}
-                className={`flex ${message.senderId === userId ? 'justify-end' : 'justify-start'} mb-4`}
-              >
-                <div className={`flex items-end ${message.senderId === userId ? 'flex-row-reverse' : 'flex-row'}`}>
-                  <Avatar className="w-8 h-8">
-                    <AvatarFallback>{message.senderId === userId ? 'Me' : 'P'}</AvatarFallback>
-                  </Avatar>
-                  <div
-                    className={`flex flex-col mx-2 p-2 rounded-lg max-w-[80%] ${
-                      message.senderId === userId ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-                    }`}
-                  >
-                    <span className="text-sm">{message.text}</span>
-                    <span className={`w-full flex justify-end text-[0.5rem] ${message.senderId === userId ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
-                      {new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(message.timestamp))}
-                    </span>
+            {messages.map((message) => {
+              const isMe = message.senderId === userId
+              const avatarImage = isMe ? undefined : participant?.image
+              const avatarName = isMe ? 'Me' : participant?.name
+
+              return (
+                <div
+                  key={message._id}
+                  className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-4`}
+                >
+                  <div className={`flex items-end ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <Avatar className="w-8 h-8">
+                      {avatarImage ? (
+                        <img src={avatarImage} alt={avatarName} className="rounded-full object-cover" />
+                      ) : (
+                        <AvatarFallback>{avatarName?.charAt(0) ?? '?'}</AvatarFallback>
+                      )}
+                    </Avatar>
+
+                    <div
+                      className={`flex flex-col mx-2 p-3 rounded-2xl max-w-[75%] shadow ${
+                        isMe
+                          ? 'bg-primary text-primary-foreground rounded-br-none'
+                          : 'bg-muted text-foreground rounded-bl-none'
+                      }`}
+                    >
+                      <span className="text-sm whitespace-pre-wrap">{message.text}</span>
+                      <span
+                        className={`w-full flex justify-end text-[0.7rem] mt-1 ${
+                          isMe ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                        }`}
+                      >
+                        {new Intl.DateTimeFormat(undefined, {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: true,
+                        }).format(new Date(message.timestamp))}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </ScrollArea>
         </CardContent>
-        <CardFooter className="border-t p-3">
+
+        <CardFooter className="border-t p-3 shrink-0 bg-background z-10">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full space-x-2">
               <FormField
