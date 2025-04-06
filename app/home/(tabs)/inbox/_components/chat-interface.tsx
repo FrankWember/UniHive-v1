@@ -75,18 +75,25 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   }, [chatMessages, currentChatId, markAsRead, userId])
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
-  }, [messages])
+    const timeout = setTimeout(() => {
+      scrollAreaRef.current?.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }, 100);
+    return () => clearTimeout(timeout);
+  }, [messages]);
+  
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setSendingMessage(true)
+    if (!currentChatId) return;
     await sendMessage({
-      chatId: currentChatId!,
+      chatId: currentChatId,
       senderId: userId,
-      text: values.message
-    })
+      text: values.message,
+    });
+    
     form.reset()
     setSendingMessage(false)
   }
@@ -98,13 +105,13 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-h-screen flex flex-col overflow-hidden"
-    >
-      <Card className="flex flex-col flex-grow w-full max-h-screen overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="h-full flex flex-col"
+      >
+      <Card className="flex flex-col h-full">
         {isMobile && (
           <div className="p-3 border-b flex items-center">
             <Button variant="outline" size="sm" onClick={handleBackClick} className="mr-2">
@@ -122,7 +129,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
           </div>
         )}
 
-        <CardContent className="flex-grow p-0 overflow-hidden">
+          <CardContent className="flex-grow p-0 overflow-hidden">
           <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
             {messages.map((message) => {
               const isMe = message.senderId === userId
@@ -150,7 +157,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
                           : 'bg-muted text-foreground rounded-bl-none'
                       }`}
                     >
-                      <span className="text-sm whitespace-pre-wrap">{message.text}</span>
+                      <span className="text-lg whitespace-pre-wrap">{message.text}</span>
                       <span
                         className={`w-full flex justify-end text-[0.7rem] mt-1 ${
                           isMe ? 'text-primary-foreground/60' : 'text-muted-foreground'
@@ -170,7 +177,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
           </ScrollArea>
         </CardContent>
 
-        <CardFooter className="border-t p-3 shrink-0 bg-background z-10">
+        <CardFooter className="border-t p-3 bg-background z-10">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full space-x-2">
               <FormField

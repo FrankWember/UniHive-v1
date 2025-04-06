@@ -5,15 +5,13 @@ export async function POST(req: NextRequest) {
   try {
     const { userIds } = await req.json();
 
-    if (!userIds || !Array.isArray(userIds)) {
-      return NextResponse.json({ error: "Invalid userIds" }, { status: 400 });
+    if (!Array.isArray(userIds) || !userIds.every(id => typeof id === "string")) {
+      return NextResponse.json({ error: "Invalid userIds format" }, { status: 400 });
     }
 
     const users = await prisma.user.findMany({
       where: {
-        id: {
-          in: userIds
-        }
+        id: { in: userIds }
       },
       select: {
         id: true,

@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { ChevronLeft } from 'lucide-react'
 import axios from 'axios'
+import Loading from '@/loading'
 
 interface ChatPlusUserId {
   _id: Id<"chats">
@@ -60,32 +61,34 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(
     chatId ? (chatId as Id<"chats">) : null
   )
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+
   const user = useCurrentUser()
-  
-  if (!user?.id) return null;
-  const userId = user.id;
+  const userId = user?.id
+  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+
+  // While loading chats or resolving users
+  if (!userId || !allChats || loading) {
+    return <Loading />
+  }
 
   const currentChat = chats.find((chat) => chat._id === currentChatId)
 
-  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : 'skip') || []
-
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
-      if (!allChats.length) return
-
-      setLoading(true)
+      if (!allChats || allChats.length === 0) {
+        setLoading(false)
+        return
+      }
 
       const allUserIds: ChatPlusUserId[] = allChats.map((chat) => ({
         _id: chat._id,
-        userId: chat.customerId === userId ? chat.sellerId : chat.customerId
+        userId: chat.customerId === userId ? chat.sellerId : chat.customerId,
       }))
-
-      const userIds = allUserIds.map((u) => u.userId)
 
       try {
         const { data: users }: { data: Customer[] } = await axios.post('/api/users', {
-          userIds
+          userIds: allUserIds.map(u => u.userId),
         })
 
         const resolvedChats = allChats.map((chat) => {
@@ -96,8 +99,8 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
             ...chat,
             customer: {
               name: customer?.name ?? 'Unknown',
-              image: customer?.image
-            }
+              image: customer?.image,
+            },
           }
         })
 
@@ -108,7 +111,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
           setCurrentChatId(resolvedChats[0]._id)
         }
       } catch (err) {
-        console.error('Error fetching user data:', err)
+        console.error('Error resolving users:', err)
       } finally {
         setLoading(false)
       }
@@ -132,33 +135,37 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const isInboxPage = pathname === '/home/inbox'
 
-  if (isMobile && !isInboxPage && currentChatId) {
-    return (
-      <div className="h-full w-full">
-        <ChatInterface
-          currentChatId={currentChatId}
-          setCurrentChatId={setCurrentChatId}
-          userId={userId}
-          participant={currentChat?.customer}
-        />
-      </div>
-    )
+  // Mobile views
+  if (isMobile) {
+    if (!isInboxPage && currentChatId) {
+      return (
+        <div className="h-full w-full">
+          <ChatInterface
+            currentChatId={currentChatId}
+            setCurrentChatId={setCurrentChatId}
+            userId={userId}
+            participant={currentChat?.customer}
+          />
+        </div>
+      )
+    }
+
+    if (isInboxPage) {
+      return (
+        <div className="h-full w-full">
+          <ChatList
+            currentChatId={currentChatId}
+            setCurrentChatId={handleChatSelect}
+            loading={loading}
+            userId={userId}
+            chats={chats}
+          />
+        </div>
+      )
+    }
   }
 
-  if (isMobile && isInboxPage) {
-    return (
-      <div className="h-full w-full">
-        <ChatList
-          currentChatId={currentChatId}
-          setCurrentChatId={handleChatSelect}
-          loading={loading}
-          userId={userId}
-          chats={chats}
-        />
-      </div>
-    )
-  }
-
+  // Desktop layout
   return (
     <SidebarProvider>
       <Sidebar>
