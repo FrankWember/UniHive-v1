@@ -70,22 +70,25 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const currentChat = chats.find((chat) => chat._id === currentChatId)
 
-  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+  const allChats = userId ? useQuery(api.chats.getAllChats, { userId }) : undefined;
   
 
-  console.log("[ChatLayout Debug]", {
-    chatIdProp: chatId,
-    currentChatIdState: currentChatId,
-    user: user,
-    userId: user?.id,
-    allChatsResult: allChats,
-    loading,
-    chatsState: chats,
-    pathname,
-    isMobile
-  })
+  useEffect(() => {
+    console.log("[ChatLayout Debug]", {
+      chatIdProp: chatId,
+      currentChatIdState: currentChatId,
+      user,
+      userId,
+      allChatsResult: allChats,
+      loading,
+      chatsState: chats,
+      pathname,
+      isMobile
+    });
   
-  console.log("🗂️ All Chats result:", allChats)
+    console.log("🗂️ All Chats result:", allChats);
+  }, [chatId, currentChatId, user, userId, allChats, loading, chats, pathname, isMobile]);
+  
 
 if (!userId || !allChats) {
   return (
