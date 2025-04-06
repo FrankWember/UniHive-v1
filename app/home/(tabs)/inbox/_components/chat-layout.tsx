@@ -74,9 +74,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const currentChat = chats.find((chat) => chat._id === currentChatId)
 
   const allChats = useQuery(
-    userId ? api.chats.getAllChats : null,
-    userId ? { userId } : undefined
+    api.chats.getAllChats,
+    userId ? { userId } : "skip"
   )
+  
   
 
   useEffect(() => {
