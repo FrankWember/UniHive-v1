@@ -60,7 +60,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const user = useCurrentUser()
   const userId = user?.id
 
-  // Avoid rendering until user is loaded
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
+
   if (!userId) {
     return <div className="flex h-full items-center justify-center">Loading user...</div>
   }
@@ -71,14 +74,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   )
   const [loading, setLoading] = useState(false)
 
-  const currentChat = chats.find((chat) => chat._id === currentChatId)
-
-  const allChats = useQuery(
-    api.chats.getAllChats,
-    userId ? { userId } : "skip"
-  )
-  
-  
+  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
 
   useEffect(() => {
     console.log("[ChatLayout Debug]", {
@@ -126,8 +122,12 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
         resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
         setChats(resolvedChats)
 
-        if (!currentChatId && resolvedChats.length > 0) {
-          setCurrentChatId(resolvedChats[0]._id)
+        if (!chatId && resolvedChats.length > 0 && currentChatId === null) {
+          const firstChatId = resolvedChats[0]._id
+          setCurrentChatId(firstChatId)
+          if (isMobile) {
+            router.push(`/home/inbox/${firstChatId}`)
+          }
         }
       } catch (err) {
         console.error('Error fetching user data:', err)
@@ -137,13 +137,13 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     }
 
     fetchChatsWithCustomer()
-  }, [allChats, userId])
+  }, [allChats, userId, chatId, currentChatId, isMobile, router])
 
   useEffect(() => {
-    if (chatId) {
+    if (chatId && currentChatId !== chatId) {
       setCurrentChatId(chatId as Id<"chats">)
     }
-  }, [chatId])
+  }, [chatId, currentChatId])
 
   const handleChatSelect = (chatId: Id<"chats">) => {
     setCurrentChatId(chatId)
@@ -154,6 +154,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const isInboxPage = pathname === '/home/inbox'
 
+  if (allChats === "skip") {
+    return <div className="flex h-full items-center justify-center">Loading inbox...</div>
+  }
+
   if (isMobile && !isInboxPage && currentChatId) {
     return (
       <div className="h-full w-full">
@@ -161,7 +165,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
           currentChatId={currentChatId}
           setCurrentChatId={setCurrentChatId}
           userId={userId}
-          participant={currentChat?.customer ?? { name: "Unknown" }}
+          participant={chats.find((c) => c._id === currentChatId)?.customer ?? { name: "Unknown" }}
         />
       </div>
     )
@@ -209,7 +213,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
             currentChatId={currentChatId}
             setCurrentChatId={setCurrentChatId}
             userId={userId}
-            participant={currentChat?.customer ?? { name: "Unknown" }}
+            participant={chats.find((c) => c._id === currentChatId)?.customer ?? { name: "Unknown" }}
           />
         ) : (
           <div className="flex h-full items-center justify-center p-4">
