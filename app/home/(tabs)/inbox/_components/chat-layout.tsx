@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { ChevronLeft } from 'lucide-react'
 import axios from 'axios'
-import Loading from '@/loading'
+import Loading from '@/components/ui/loading'
 
 interface ChatPlusUserId {
   _id: Id<"chats">
