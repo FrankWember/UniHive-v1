@@ -72,6 +72,21 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
   
+
+  console.log("[ChatLayout Debug]", {
+    chatIdProp: chatId,
+    currentChatIdState: currentChatId,
+    user: user,
+    userId: user?.id,
+    allChatsResult: allChats,
+    loading,
+    chatsState: chats,
+    pathname,
+    isMobile
+  })
+  
+  console.log("🗂️ All Chats result:", allChats)
+
 if (!userId || !allChats) {
   return (
     <div className="flex h-full items-center justify-center">
@@ -80,7 +95,6 @@ if (!userId || !allChats) {
   )
 }
 
-  
 
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
