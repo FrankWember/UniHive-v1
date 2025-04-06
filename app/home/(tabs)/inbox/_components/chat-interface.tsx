@@ -24,6 +24,7 @@ interface ChatInterfaceProps {
   currentChatId: Id<"chats"> | null
   setCurrentChatId: React.Dispatch<React.SetStateAction<Id<"chats"> | null>>
   userId: string
+  participant?: { name: string, image?: string }
 }
 
 interface Message {
@@ -38,7 +39,7 @@ const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
 })
 
-export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatInterfaceProps) => {
+export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, participant }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [sendingMessage, setSendingMessage] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -106,15 +107,21 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId }: ChatI
       className="w-full h-[calc(100vh-8rem)] sm:h-full flex flex-col"
     >
       <Card className="h-full w-full flex flex-col">
-        {isMobile && (
-          <div className="p-3 border-b flex items-center">
-            <Button variant="outline" size="sm" onClick={handleBackClick} className="mr-2">
-              <ChevronLeft className='h-4 w-4' />
-              <span className='sr-only'>Back</span>
-            </Button>
-            <h2 className="font-semibold">Chat</h2>
-          </div>
-        )}
+          {isMobile && (
+            <div className="p-3 border-b flex items-center">
+              <Button variant="outline" size="sm" onClick={handleBackClick} className="mr-2">
+                <ChevronLeft className='h-4 w-4' />
+                <span className='sr-only'>Back</span>
+              </Button>
+              {participant?.image && (
+                <Avatar className="w-6 h-6 mr-2">
+                  <img src={participant.image} alt={participant.name} className="rounded-full object-cover" />
+                  <AvatarFallback>{participant.name?.charAt(0)}</AvatarFallback>
+                </Avatar>
+              )}
+              <h2 className="font-semibold">{participant?.name ?? 'Chat'}</h2>
+            </div>
+          )}    
         <CardContent className="flex-grow p-0 overflow-hidden">
           <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
             {messages.map((message) => (

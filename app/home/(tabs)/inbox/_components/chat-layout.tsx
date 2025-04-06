@@ -61,6 +61,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const [loading, setLoading] = useState(false);
   const user = useCurrentUser()
   const userId = user?.id!
+  const currentChat = chats.find(chat => chat._id === currentChatId)
   
   // Fetch chats from Convex
   const allChats = useQuery(api.chats.getAllChats,
@@ -88,14 +89,17 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
                 }
             });  
             const resolvedChats = allChats.map((chat) => {
-                const user = users.find((user: Customer) => {
-                    return allUserIds.find((id) => id.userId === user.id)?._id === chat._id
-                })
-                return {
-                    ...chat,
-                    customer: user
-                };
-            });
+              const user = users.find((user: Customer) => {
+                return allUserIds.find((id) => id.userId === user.id)?._id === chat._id
+              })
+              return {
+                ...chat,
+                customer: user
+              }
+            })
+            
+            resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
+            
 
             setChats(resolvedChats);
             if (!currentChatId && resolvedChats[0]) {
@@ -124,6 +128,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     }
   }
 
+  
   // Determine if we're on the main inbox page
   const isInboxPage = pathname === '/home/inbox'
 
@@ -134,8 +139,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
         <ChatInterface 
           currentChatId={currentChatId} 
           setCurrentChatId={setCurrentChatId} 
-          userId={userId} 
+          userId={userId}
+          participant={currentChat?.customer}
         />
+
       </div>
     )
   }
@@ -181,10 +188,11 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
       <SidebarInset>
         {currentChatId ? (
           <ChatInterface 
-            currentChatId={currentChatId} 
-            setCurrentChatId={setCurrentChatId} 
-            userId={userId} 
-          />
+          currentChatId={currentChatId} 
+          setCurrentChatId={setCurrentChatId} 
+          userId={userId}
+          participant={currentChat?.customer}
+        />
         ) : (
           <div className="flex h-full items-center justify-center p-4">
             <Card className="max-w-md">
