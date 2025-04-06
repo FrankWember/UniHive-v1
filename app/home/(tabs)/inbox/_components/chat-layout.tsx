@@ -21,7 +21,6 @@ import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
 import { ChevronLeft } from 'lucide-react'
 import axios from 'axios'
-import Loading from '@/components/ui/loading'
 
 interface ChatPlusUserId {
   _id: Id<"chats">
@@ -61,34 +60,44 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(
     chatId ? (chatId as Id<"chats">) : null
   )
-  const [loading, setLoading] = useState(true)
-
+  const [loading, setLoading] = useState(false)
   const user = useCurrentUser()
-  const userId = user?.id
-  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+  
+  const userId = user?.id;
 
-  // While loading chats or resolving users
-  if (!userId || !allChats || loading) {
-    return <Loading />
-  }
+  if (!userId) return null;
+
 
   const currentChat = chats.find((chat) => chat._id === currentChatId)
 
+  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+  
+if (!userId || !allChats) {
+  return (
+    <div className="flex h-full items-center justify-center">
+      <p className="text-sm text-muted-foreground">Loading chats...</p>
+    </div>
+  )
+}
+
+  
+
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
-      if (!allChats || allChats.length === 0) {
-        setLoading(false)
-        return
-      }
+      if (!allChats || allChats.length === 0) return;
+
+      setLoading(true)
 
       const allUserIds: ChatPlusUserId[] = allChats.map((chat) => ({
         _id: chat._id,
-        userId: chat.customerId === userId ? chat.sellerId : chat.customerId,
+        userId: chat.customerId === userId ? chat.sellerId : chat.customerId
       }))
+
+      const userIds = allUserIds.map((u) => u.userId)
 
       try {
         const { data: users }: { data: Customer[] } = await axios.post('/api/users', {
-          userIds: allUserIds.map(u => u.userId),
+          userIds
         })
 
         const resolvedChats = allChats.map((chat) => {
@@ -99,8 +108,8 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
             ...chat,
             customer: {
               name: customer?.name ?? 'Unknown',
-              image: customer?.image,
-            },
+              image: customer?.image
+            }
           }
         })
 
@@ -111,7 +120,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
           setCurrentChatId(resolvedChats[0]._id)
         }
       } catch (err) {
-        console.error('Error resolving users:', err)
+        console.error('Error fetching user data:', err)
       } finally {
         setLoading(false)
       }
@@ -135,37 +144,33 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const isInboxPage = pathname === '/home/inbox'
 
-  // Mobile views
-  if (isMobile) {
-    if (!isInboxPage && currentChatId) {
-      return (
-        <div className="h-full w-full">
-          <ChatInterface
-            currentChatId={currentChatId}
-            setCurrentChatId={setCurrentChatId}
-            userId={userId}
-            participant={currentChat?.customer}
-          />
-        </div>
-      )
-    }
-
-    if (isInboxPage) {
-      return (
-        <div className="h-full w-full">
-          <ChatList
-            currentChatId={currentChatId}
-            setCurrentChatId={handleChatSelect}
-            loading={loading}
-            userId={userId}
-            chats={chats}
-          />
-        </div>
-      )
-    }
+  if (isMobile && !isInboxPage && currentChatId) {
+    return (
+      <div className="h-full w-full">
+        <ChatInterface
+          currentChatId={currentChatId}
+          setCurrentChatId={setCurrentChatId}
+          userId={userId}
+          participant={currentChat?.customer}
+        />
+      </div>
+    )
   }
 
-  // Desktop layout
+  if (isMobile && isInboxPage) {
+    return (
+      <div className="h-full w-full">
+        <ChatList
+          currentChatId={currentChatId}
+          setCurrentChatId={handleChatSelect}
+          loading={loading}
+          userId={userId}
+          chats={chats}
+        />
+      </div>
+    )
+  }
+
   return (
     <SidebarProvider>
       <Sidebar>
