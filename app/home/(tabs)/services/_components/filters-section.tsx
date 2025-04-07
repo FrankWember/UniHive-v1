@@ -20,7 +20,7 @@ import { useServices } from '@/contexts/services-context'
 export const FiltersSection = () => {
     const { providerFilter, sortOption, setProviderFilter, setSortOption, isMobileFilter, setIsMobileFilter, locationFilter, setLocationFilter, priceRangeFilter, setPriceRangeFilter } = useServices()
   return (
-    <div className="flex gap-4 px-4 py-1 mt-8">
+    <div className="flex gap-4 p-4 mt-8">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" className="bg-muted">
