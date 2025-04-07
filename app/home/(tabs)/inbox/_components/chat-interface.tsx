@@ -95,7 +95,11 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   }, [messages])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    if (!currentChatId) return
+
     setSendingMessage(true)
+    
     await sendMessage({
       chatId: currentChatId,
       senderId: userId,
