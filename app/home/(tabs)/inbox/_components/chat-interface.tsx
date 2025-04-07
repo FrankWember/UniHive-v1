@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -40,6 +40,16 @@ const formSchema = z.object({
 })
 
 export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, participant }: ChatInterfaceProps) => {
+  // 🚨 EARLY EXIT to avoid calling hooks when currentChatId is null
+  if (!currentChatId) {
+    return (
+      <div className="h-full flex items-center justify-center text-muted-foreground">
+        Select a conversation to start chatting.
+      </div>
+    )
+  }
+
+  // ✅ SAFE HOOKS START HERE
   const [messages, setMessages] = useState<Message[]>([])
   const [sendingMessage, setSendingMessage] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -55,20 +65,18 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     },
   })
 
-  // 🛡️ Guarded query call
-  const chatMessages = useQuery(
-    api.messages.getChatMessages,
-    useMemo(() => (currentChatId ? { chatId: currentChatId } : "skip"), [currentChatId])
-  )
+  const chatMessages = useQuery(api.messages.getChatMessages, {
+    chatId: currentChatId
+  })
 
   useEffect(() => {
-    if (!chatMessages || !currentChatId) return;
-    setMessages(chatMessages);
+    if (!chatMessages) return
+    setMessages(chatMessages)
 
     const makeAllAsRead = async () => {
       for (const message of chatMessages) {
         if (!message.read && message.senderId !== userId) {
-          await markAsRead({ messageId: message._id! });
+          await markAsRead({ messageId: message._id })
         }
       }
     }
@@ -81,19 +89,18 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
       scrollAreaRef.current?.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
-      });
-    }, 100);
-    return () => clearTimeout(timeout);
+      })
+    }, 100)
+    return () => clearTimeout(timeout)
   }, [messages])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!currentChatId) return;
     setSendingMessage(true)
     await sendMessage({
       chatId: currentChatId,
       senderId: userId,
       text: values.message,
-    });
+    })
 
     form.reset()
     setSendingMessage(false)
@@ -103,14 +110,6 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     if (isMobile) {
       router.push('/home/inbox')
     }
-  }
-
-  if (!currentChatId) {
-    return (
-      <div className="h-full flex items-center justify-center text-muted-foreground">
-        Select a conversation to start chatting.
-      </div>
-    )
   }
 
   return (
