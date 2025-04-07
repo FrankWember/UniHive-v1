@@ -39,36 +39,35 @@ export const getChatByUserIds = query({
 export const getAllChats = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
-    const sellerChats = await ctx.db
+    // Get all chats where the user is either seller or customer
+    const allChats = await ctx.db
       .query("chats")
-      .filter(q => q.eq(q.field("sellerId"), args.userId))
-      .filter(q => q.not(q.eq(q.field("customerId"), args.userId)))
-      .order("asc")
-      .collect();
-
-    const customerChats = await ctx.db
-      .query("chats")
-      .filter(q => q.eq(q.field("customerId"), args.userId))
-      .order("asc")
+      .filter(q => 
+        q.or(
+          q.eq(q.field("sellerId"), args.userId),
+          q.eq(q.field("customerId"), args.userId)
+        )
+      )
       .collect();
     
-    const allChats = [...sellerChats, ...customerChats]
-
     const chatsWithLastMessage = await Promise.all(allChats.map(async (chat) => {
       const lastMessage = await ctx.db
         .query("messages")
         .filter(q => q.eq(q.field("chatId"), chat._id))
         .order("desc")
         .first();
+      
+      // Only count messages as unread if they were sent TO the current user (not BY them)
       const unreadCount = await ctx.db
         .query("messages")
         .filter(q => q.eq(q.field("chatId"), chat._id))
-        .filter(q => q.not(q.eq(q.field("read"), true)))
-        .collect()
+        .filter(q => q.not(q.eq(q.field("senderId"), args.userId))) // Not sent by current user
+        .filter(q => q.eq(q.field("read"), false))
+        .collect();
+      
       return { ...chat, lastMessage, unreadCount: unreadCount.length };
     }));
 
     return chatsWithLastMessage;
   },
 });
-
