@@ -57,8 +57,9 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
 
   const chatMessages = useQuery(
     api.messages.getChatMessages,
-    currentChatId ? { chatId: currentChatId } : "skip"
+    useMemo(() => (currentChatId ? { chatId: currentChatId } : "skip"), [currentChatId])
   )
+  
 
   useEffect(() => {
     if (!chatMessages || !currentChatId) return;
