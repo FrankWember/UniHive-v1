@@ -154,9 +154,10 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   const isInboxPage = pathname === '/home/inbox'
 
-  if (allChats === "skip") {
+  if (allChats === undefined) {
     return <div className="flex h-full items-center justify-center">Loading inbox...</div>
   }
+  
 
   if (isMobile && !isInboxPage && currentChatId) {
     return (
