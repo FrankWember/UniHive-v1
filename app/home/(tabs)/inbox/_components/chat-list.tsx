@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -32,17 +32,39 @@ interface ChatListProps {
 }
 
 export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loading = false }: ChatListProps) => {
+  console.log("[ChatList] Rendering with props:", { currentChatId, userId, chatsCount: chats.length, loading })
+  
   const router = useRouter()
   const isMobile = useIsMobile()
+  console.log("[ChatList] Device type:", isMobile ? "Mobile" : "Desktop")
+  
+  // Log detailed chat information on mount and updates
+  useEffect(() => {
+    console.log("[ChatList] Detailed chats data:", chats)
+    console.log("[ChatList] Current chat ID:", currentChatId)
+  }, [chats, currentChatId])
 
   return (
     <AnimatePresence>
       {loading ? (
-        <ChatListSkeleton />
+        <React.Fragment>
+          {console.log("[ChatList] Rendering loading skeleton")}
+          <ChatListSkeleton />
+        </React.Fragment>
       ) : (
         chats.map((chat) => {
           const customerName = chat.customer?.name ?? 'Unknown'
           const customerInitial = customerName.charAt(0)
+          const isActive = currentChatId === chat._id
+          
+          console.log(`[ChatList] Rendering chat item: ${chat._id}`, { 
+            customerName, 
+            hasImage: !!chat.customer?.image,
+            lastMessage: chat.lastMessage?.text,
+            timestamp: chat.lastMessage?.timestamp,
+            unreadCount: chat.unreadCount,
+            isActive
+          })
 
           return (
             <motion.div
@@ -52,11 +74,13 @@ export const ChatList = ({ currentChatId, setCurrentChatId, userId, chats, loadi
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.2 }}
               className={`p-4 border-b cursor-pointer hover:bg-muted transition-colors ${
-                currentChatId === chat._id ? 'bg-muted' : ''
+                isActive ? 'bg-muted' : ''
               }`}
               onClick={() => {
+                console.log(`[ChatList] Chat clicked: ${chat._id}`)
                 setCurrentChatId(chat._id)
                 if (isMobile) {
+                  console.log(`[ChatList] Navigating to chat on mobile: ${chat._id}`)
                   router.push(`/home/inbox/${chat._id}`)
                 }
               }}

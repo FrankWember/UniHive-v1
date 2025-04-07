@@ -48,12 +48,17 @@ interface Customer {
 }
 
 export function ChatLayout({ chatId }: { chatId?: string }) {
+  console.log("[ChatLayout] Initializing with chatId:", chatId)
+  
   const router = useRouter()
   const pathname = usePathname()
   const isMobile = useIsMobile()
+  console.log("[ChatLayout] Device type:", isMobile ? "Mobile" : "Desktop")
+  console.log("[ChatLayout] Current pathname:", pathname)
 
   const user = useCurrentUser()
   const userId = user?.id
+  console.log("[ChatLayout] Current user:", user)
 
   const [mounted, setMounted] = useState(false)
   const [chats, setChats] = useState<Chat[]>([])
@@ -64,22 +69,37 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+  console.log("[ChatLayout] Raw allChats from query:", allChats)
+  
   const isInboxPage = pathname === '/home/inbox'
+  console.log("[ChatLayout] Is inbox page:", isInboxPage)
 
   // Delay rendering until mounted (for hydration safety)
-  useEffect(() => setMounted(true), [])
-  if (!mounted) return null
+  useEffect(() => {
+    console.log("[ChatLayout] Setting mounted state to true")
+    setMounted(true)
+  }, [])
+  
+  if (!mounted) {
+    console.log("[ChatLayout] Not mounted yet, returning null")
+    return null
+  }
 
   // Block rendering until user is available
   if (!userId) {
+    console.log("[ChatLayout] No userId available yet")
     return <div className="flex h-full items-center justify-center">Loading user...</div>
   }
 
   // Fetch user info for chat partners
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
-      if (!allChats || allChats.length === 0) return
+      if (!allChats || allChats.length === 0) {
+        console.log("[ChatLayout] No chats available, skipping user fetch")
+        return
+      }
 
+      console.log("[ChatLayout] Starting to fetch user data for chat partners")
       setLoading(true)
       setErrorMessage(null)
 
@@ -87,19 +107,20 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
       const userIds = allChats.map(chat => 
         chat.customerId === userId ? chat.sellerId : chat.customerId
       )
+      console.log("[ChatLayout] User IDs to fetch:", userIds)
 
       try {
-        console.log("Fetching user data with IDs:", userIds)
-        
+        console.log("[ChatLayout] Sending API request to /api/users")
         const response = await axios.post('/api/users', { userIds })
         const users: Customer[] = response.data
         
-        console.log("Received user data:", users)
+        console.log("[ChatLayout] Received user data:", users)
 
         // Map chat partners to each chat
         const resolvedChats = allChats.map((chat) => {
           const partnerId = chat.customerId === userId ? chat.sellerId : chat.customerId
           const customer = users.find((u) => u.id === partnerId)
+          console.log(`[ChatLayout] Resolving chat ${chat._id} with partner ${partnerId}:`, customer)
 
           return {
             ...chat,
@@ -112,20 +133,24 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
         // Sort by most recent message
         resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
+        console.log("[ChatLayout] Sorted chats:", resolvedChats)
         setChats(resolvedChats)
 
         // Auto-select first chat if none selected
         if (!chatId && resolvedChats.length > 0 && currentChatId === null) {
           const firstChatId = resolvedChats[0]._id
+          console.log(`[ChatLayout] Auto-selecting first chat: ${firstChatId}`)
           setCurrentChatId(firstChatId)
           if (isMobile) {
+            console.log(`[ChatLayout] Redirecting to first chat on mobile: ${firstChatId}`)
             router.push(`/home/inbox/${firstChatId}`)
           }
         }
       } catch (err) {
-        console.error('Error fetching user data:', err)
+        console.error('[ChatLayout] Error fetching user data:', err)
         setErrorMessage('Failed to load chat participants. Please try refreshing the page.')
       } finally {
+        console.log("[ChatLayout] Finished fetching user data")
         setLoading(false)
       }
     }
@@ -136,19 +161,23 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   // Sync URL chatId to state if necessary
   useEffect(() => {
     if (chatId && currentChatId !== chatId) {
+      console.log(`[ChatLayout] Syncing currentChatId state with URL: ${chatId}`)
       setCurrentChatId(chatId as Id<"chats">)
     }
   }, [chatId, currentChatId])
 
   const handleChatSelect = (chatId: Id<"chats">) => {
+    console.log(`[ChatLayout] Chat selected: ${chatId}`)
     setCurrentChatId(chatId)
     if (isMobile) {
+      console.log(`[ChatLayout] Navigating to chat on mobile: ${chatId}`)
       router.push(`/home/inbox/${chatId}`)
     }
   }
 
   // Display error if any
   if (errorMessage) {
+    console.log("[ChatLayout] Rendering error view:", errorMessage)
     return (
       <div className="flex h-full items-center justify-center p-4">
         <Card className="max-w-md">
@@ -166,11 +195,13 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   // Wait for chats to load
   if (allChats === undefined) {
+    console.log("[ChatLayout] Chats are loading, showing loading state")
     return <div className="flex h-full items-center justify-center">Loading inbox...</div>
   }
 
   // ✅ MOBILE: chat view only
   if (isMobile && !isInboxPage && currentChatId) {
+    console.log("[ChatLayout] Rendering mobile chat view")
     return (
       <div className="h-full w-full">
         <ChatInterface
@@ -185,6 +216,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
 
   // ✅ MOBILE: chat list only
   if (isMobile && isInboxPage) {
+    console.log("[ChatLayout] Rendering mobile chat list view")
     return (
       <div className="h-full w-full">
         <ChatList
@@ -199,6 +231,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   }
 
   // ✅ DESKTOP: Full layout
+  console.log("[ChatLayout] Rendering desktop layout")
   return (
     <SidebarProvider>
       <Sidebar>

@@ -40,6 +40,8 @@ const formSchema = z.object({
 })
 
 export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, participant }: ChatInterfaceProps) => {
+  console.log("[ChatInterface] Rendering with props:", { currentChatId, userId, participant })
+
   // Always declare hooks first
   const [messages, setMessages] = useState<Message[]>([])
   const [sendingMessage, setSendingMessage] = useState(false)
@@ -48,6 +50,8 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   const markAsRead = useMutation(api.messages.markAsRead)
   const router = useRouter()
   const isMobile = useIsMobile()
+
+  console.log("[ChatInterface] Device type:", isMobile ? "Mobile" : "Desktop")
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -61,9 +65,12 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     api.messages.getChatMessages, 
     currentChatId ? { chatId: currentChatId } : "skip"
   )
+  
+  console.log("[ChatInterface] Raw chatMessages from query:", chatMessages)
 
   // Early return for no chat selected
   if (!currentChatId) {
+    console.log("[ChatInterface] No chat selected, showing placeholder")
     return (
       <div className="h-full flex items-center justify-center text-muted-foreground">
         Select a conversation to start chatting.
@@ -72,36 +79,60 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
   }
 
   useEffect(() => {
-    if (!chatMessages) return
+    if (!chatMessages) {
+      console.log("[ChatInterface] No chat messages available yet")
+      return
+    }
+    
+    console.log("[ChatInterface] Setting messages state with:", chatMessages)
     setMessages(chatMessages)
 
     const makeAllAsRead = async () => {
+      console.log("[ChatInterface] Starting to mark messages as read")
+      let markedCount = 0
+      
       for (const message of chatMessages) {
         if (!message.read && message.senderId !== userId) {
+          console.log(`[ChatInterface] Marking message as read: ${message._id}`)
           await markAsRead({ messageId: message._id })
+          markedCount++
         }
       }
+      
+      console.log(`[ChatInterface] Marked ${markedCount} messages as read`)
     }
 
     makeAllAsRead()
   }, [chatMessages, markAsRead, userId])
 
   useEffect(() => {
+    console.log("[ChatInterface] Messages state updated, scrolling to bottom")
     const timeout = setTimeout(() => {
       if (scrollAreaRef.current) {
+        const scrollHeight = scrollAreaRef.current.scrollHeight
+        console.log(`[ChatInterface] Scrolling to ${scrollHeight}px`)
+        
         scrollAreaRef.current.scrollTo({
-          top: scrollAreaRef.current.scrollHeight,
+          top: scrollHeight,
           behavior: 'smooth',
         })
+      } else {
+        console.log("[ChatInterface] scrollAreaRef is not available")
       }
     }, 100)
     return () => clearTimeout(timeout)
   }, [messages])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!currentChatId) return
+    console.log("[ChatInterface] Form submitted with:", values)
+    
+    if (!currentChatId) {
+      console.log("[ChatInterface] No chatId available, cannot send message")
+      return
+    }
 
     setSendingMessage(true)
+    console.log("[ChatInterface] Sending message to chat:", currentChatId)
     
     try {
       await sendMessage({
@@ -109,17 +140,21 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
         senderId: userId,
         text: values.message,
       })
+      console.log("[ChatInterface] Message sent successfully")
 
       form.reset()
     } catch (error) {
-      console.error("Error sending message:", error)
+      console.error("[ChatInterface] Error sending message:", error)
     } finally {
       setSendingMessage(false)
+      console.log("[ChatInterface] Message sending state reset")
     }
   }
 
   const handleBackClick = () => {
+    console.log("[ChatInterface] Back button clicked")
     if (isMobile) {
+      console.log("[ChatInterface] Navigating to inbox on mobile")
       router.push('/home/inbox')
     }
   }
