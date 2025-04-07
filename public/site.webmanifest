@@ -9,7 +9,7 @@
   "theme_color": "#111111",
   "icons": [
     {
-      "src": "/DormBiz-250.png",
+      "src": "/DormBiz.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"

@@ -11,7 +11,6 @@ export const ModeSwitcher = () => {
     const newMode = mode === "PROVIDER" ? "USER" : "PROVIDER"
     setMode(newMode)
 
-    setTimeout(() => {
       if (newMode === "PROVIDER") {
         // Reload current page after switching to provider mode
         window.location.reload()
@@ -19,7 +18,6 @@ export const ModeSwitcher = () => {
         // Redirect to user service home
         window.location.href = "/home/services"
       }
-    }, 100)
   }
 
   return (
