@@ -61,13 +61,6 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const userId = user?.id
 
   const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
-  if (!mounted) return null
-
-  if (!userId) {
-    return <div className="flex h-full items-center justify-center">Loading user...</div>
-  }
-
   const [chats, setChats] = useState<Chat[]>([])
   const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(
     chatId ? (chatId as Id<"chats">) : null
@@ -75,21 +68,18 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
   const [loading, setLoading] = useState(false)
 
   const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
+  const isInboxPage = pathname === '/home/inbox'
 
-  useEffect(() => {
-    console.log("[ChatLayout Debug]", {
-      chatIdProp: chatId,
-      currentChatIdState: currentChatId,
-      user,
-      userId,
-      allChatsResult: allChats,
-      loading,
-      chatsState: chats,
-      pathname,
-      isMobile
-    })
-  }, [chatId, currentChatId, user, userId, allChats, loading, chats, pathname, isMobile])
+  // Delay rendering until mounted (for hydration safety)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
 
+  // Block rendering until user is available
+  if (!userId) {
+    return <div className="flex h-full items-center justify-center">Loading user...</div>
+  }
+
+  // Fetch user info for chat partners
   useEffect(() => {
     const fetchChatsWithCustomer = async () => {
       if (!allChats || allChats.length === 0) return
@@ -139,6 +129,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     fetchChatsWithCustomer()
   }, [allChats, userId, chatId, currentChatId, isMobile, router])
 
+  // Sync URL chatId to state if necessary
   useEffect(() => {
     if (chatId && currentChatId !== chatId) {
       setCurrentChatId(chatId as Id<"chats">)
@@ -152,13 +143,12 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     }
   }
 
-  const isInboxPage = pathname === '/home/inbox'
-
+  // Wait for chats to load
   if (allChats === undefined) {
     return <div className="flex h-full items-center justify-center">Loading inbox...</div>
   }
-  
 
+  // ✅ MOBILE: chat view only
   if (isMobile && !isInboxPage && currentChatId) {
     return (
       <div className="h-full w-full">
@@ -172,6 +162,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     )
   }
 
+  // ✅ MOBILE: chat list only
   if (isMobile && isInboxPage) {
     return (
       <div className="h-full w-full">
@@ -186,6 +177,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     )
   }
 
+  // ✅ DESKTOP: Full layout
   return (
     <SidebarProvider>
       <Sidebar>
