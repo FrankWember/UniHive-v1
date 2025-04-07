@@ -27,7 +27,7 @@ export const Navbar = () => {
         ]
   return (
     <nav className="flex w-full justify-center md:hidden">
-        <div className="fixed bottom-0 flex z-50 border-t w-full h-20 bg-background items-center justify-center px-4 py-2">
+        <div className="fixed bottom-0 flex z-50 border-t w-full h-22 bg-background items-center justify-center px-4 py-2">
             {tabs.map(tab=>(
                 <div
                     key={tab.name}
