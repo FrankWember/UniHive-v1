@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider"
 import { Analytics } from "@vercel/analytics/react"
 import { SessionProvider } from "next-auth/react";
 import { APP_URL } from "@/constants/paths";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -47,6 +48,24 @@ export const metadata: Metadata = {
     site: "https://www.instagram.com/dormbiz",
     images: [`${APP_URL}/DormBiz.png`],
   },
+  // PWA specific metadata
+  manifest: "/site.webmanifest",
+  themeColor: "#111111",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "DormBiz",
+  },
+  applicationName: "DormBiz",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
@@ -58,13 +77,17 @@ export default function RootLayout({
   <SessionProvider>
     <html lang="en" suppressHydrationWarning>
       <head>
-  
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/DormBiz.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/DormBiz.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/DormBiz.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/DormBiz-250.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/DormBiz-250.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/DormBiz-250.png" />
         <link rel="manifest" href="/site.webmanifest" />
-</head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="DormBiz" />
+        <meta name="theme-color" content="#111111" />
+        <link rel="mask-icon" href="/icons/DormBiz-mask.svg" color="#111111" />
+      </head>
 
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground selection:bg-red-200 selection:text-red-500 dark:selection:bg-red-900 dark:selection:text-red-500 w-screen h-screen`}
@@ -77,6 +100,7 @@ export default function RootLayout({
         >
           {children}
           <Analytics />
+          <Script src="/register-sw.js" strategy="lazyOnload" />
         </ThemeProvider>
       </body>
     </html>
