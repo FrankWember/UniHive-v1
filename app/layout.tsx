@@ -78,10 +78,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        {/* <link rel="apple-touch-icon" sizes="180x180" href="/icons/DormBiz-250.png" /> */}
-        {/* <link rel="icon" type="image/png" sizes="32x32" href="/icons/DormBiz.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/icons/DormBiz.png" /> */}
-        {/* <link rel="manifest" href="/site.webmanifest" /> */}
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/DormBiz-250.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/DormBiz.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/DormBiz.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="DormBiz" />

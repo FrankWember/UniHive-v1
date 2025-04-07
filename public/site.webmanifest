@@ -1,6 +1,6 @@
 {
   "name": "DormBiz",
-  "short_name": "DormBiz",
+  "short_name": "DormBiz|Service",
   "description": "Hustle Smarter on Campus - The marketplace for college students",
   "start_url": "/home/services",
   "display": "standalone",
@@ -15,7 +15,7 @@
       "purpose": "any maskable"
     },
     {
-      "src": "/DormBiz-512.png",
+      "src": "/DormBiz.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
