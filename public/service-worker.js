@@ -3,8 +3,8 @@ const CACHE_NAME = 'dormbiz-cache-v1';
 const urlsToCache = [
   '/',
   '/DormBiz.png',
-  '/icons/DormBiz-250.png',
-  '/icons/DormBiz-512.png',
+  '/DormBiz-250.png',
+  '/DormBiz-512.png',
   '/site.webmanifest'
 ];
 

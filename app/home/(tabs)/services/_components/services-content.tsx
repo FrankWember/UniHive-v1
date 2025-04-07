@@ -68,7 +68,7 @@ export const ServicesContent = ({ services }: { services: ServiceProps[] }) => {
   return (
     <div className="flex flex-col gap-4">
       {isMobile && <FiltersSection />}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 gap-y-8 md:gap-5 px-3 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-2 gap-y-8 md:gap-5 px-3 py-4">
         {sortedServices.map((service) => (
           <ServiceCard key={service.id} service={service} />
         ))}

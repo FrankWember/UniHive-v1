@@ -37,10 +37,11 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
   return (
     <div className="flex flex-col min-h-screen max-w-screen overscroll-x-none w-full bg-background/100">
       {/* Header  */}
+      <div className="sticky top-0 z-50 bg-background">
       <ServicesHeader />
 
       <div className='p-2 max-w-screen'>
-        <ScrollArea className="w-full whitespace-nowrap mt-[5.5rem] px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth bg-background/100">
+        <ScrollArea className="w-full whitespace-nowrap px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth bg-background/100">
           <div className='flex items-center w-max gap-8 md:gap-12 p-2 h-14'>
             <Link  href={`/home/services`}>
               <div className='group flex flex-col items-center justify-center gap-2'>
@@ -61,6 +62,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
           </div>
           <ScrollBar orientation="horizontal" className='hidden' />
         </ScrollArea>
+        </div>
       </div>
 
       {/* Content */}
