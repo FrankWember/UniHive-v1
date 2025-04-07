@@ -40,16 +40,7 @@ const formSchema = z.object({
 })
 
 export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, participant }: ChatInterfaceProps) => {
-  // 🚨 EARLY EXIT to avoid calling hooks when currentChatId is null
-  if (!currentChatId) {
-    return (
-      <div className="h-full flex items-center justify-center text-muted-foreground">
-        Select a conversation to start chatting.
-      </div>
-    )
-  }
-
-  // ✅ SAFE HOOKS START HERE
+  // Always declare hooks first
   const [messages, setMessages] = useState<Message[]>([])
   const [sendingMessage, setSendingMessage] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
@@ -65,9 +56,20 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     },
   })
 
-  const chatMessages = useQuery(api.messages.getChatMessages, {
-    chatId: currentChatId
-  })
+  // Use "skip" parameter when chatId is null to avoid unnecessary queries
+  const chatMessages = useQuery(
+    api.messages.getChatMessages, 
+    currentChatId ? { chatId: currentChatId } : "skip"
+  )
+
+  // Early return for no chat selected
+  if (!currentChatId) {
+    return (
+      <div className="h-full flex items-center justify-center text-muted-foreground">
+        Select a conversation to start chatting.
+      </div>
+    )
+  }
 
   useEffect(() => {
     if (!chatMessages) return
@@ -82,32 +84,38 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     }
 
     makeAllAsRead()
-  }, [chatMessages, currentChatId, markAsRead, userId])
+  }, [chatMessages, markAsRead, userId])
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      scrollAreaRef.current?.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: 'smooth',
-      })
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollTo({
+          top: scrollAreaRef.current.scrollHeight,
+          behavior: 'smooth',
+        })
+      }
     }, 100)
     return () => clearTimeout(timeout)
   }, [messages])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     if (!currentChatId) return
 
     setSendingMessage(true)
     
-    await sendMessage({
-      chatId: currentChatId,
-      senderId: userId,
-      text: values.message,
-    })
+    try {
+      await sendMessage({
+        chatId: currentChatId,
+        senderId: userId,
+        text: values.message,
+      })
 
-    form.reset()
-    setSendingMessage(false)
+      form.reset()
+    } catch (error) {
+      console.error("Error sending message:", error)
+    } finally {
+      setSendingMessage(false)
+    }
   }
 
   const handleBackClick = () => {
@@ -143,49 +151,55 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
 
         <CardContent className="flex-grow p-0 overflow-hidden">
           <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
-            {messages.map((message) => {
-              const isMe = message.senderId === userId
-              const avatarImage = isMe ? undefined : participant?.image
-              const avatarName = isMe ? 'Me' : participant?.name
+            {messages.length > 0 ? (
+              messages.map((message) => {
+                const isMe = message.senderId === userId
+                const avatarImage = isMe ? undefined : participant?.image
+                const avatarName = isMe ? 'Me' : participant?.name
 
-              return (
-                <div
-                  key={message._id}
-                  className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-4`}
-                >
-                  <div className={`flex items-end ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
-                    <Avatar className="w-8 h-8">
-                      {avatarImage ? (
-                        <img src={avatarImage} alt={avatarName} className="rounded-full object-cover" />
-                      ) : (
-                        <AvatarFallback>{avatarName?.charAt(0) ?? '?'}</AvatarFallback>
-                      )}
-                    </Avatar>
+                return (
+                  <div
+                    key={message._id}
+                    className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-4`}
+                  >
+                    <div className={`flex items-end ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <Avatar className="w-8 h-8">
+                        {avatarImage ? (
+                          <img src={avatarImage} alt={avatarName} className="rounded-full object-cover" />
+                        ) : (
+                          <AvatarFallback>{avatarName?.charAt(0) ?? '?'}</AvatarFallback>
+                        )}
+                      </Avatar>
 
-                    <div
-                      className={`flex flex-col mx-2 p-3 rounded-2xl max-w-[75%] shadow ${
-                        isMe
-                          ? 'bg-primary text-primary-foreground rounded-br-none'
-                          : 'bg-muted text-foreground rounded-bl-none'
-                      }`}
-                    >
-                      <span className="text-lg whitespace-pre-wrap">{message.text}</span>
-                      <span
-                        className={`w-full flex justify-end text-[0.7rem] mt-1 ${
-                          isMe ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                      <div
+                        className={`flex flex-col mx-2 p-3 rounded-2xl max-w-[75%] shadow ${
+                          isMe
+                            ? 'bg-primary text-primary-foreground rounded-br-none'
+                            : 'bg-muted text-foreground rounded-bl-none'
                         }`}
                       >
-                        {new Intl.DateTimeFormat(undefined, {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          hour12: true,
-                        }).format(new Date(message.timestamp))}
-                      </span>
+                        <span className="text-lg whitespace-pre-wrap">{message.text}</span>
+                        <span
+                          className={`w-full flex justify-end text-[0.7rem] mt-1 ${
+                            isMe ? 'text-primary-foreground/60' : 'text-muted-foreground'
+                          }`}
+                        >
+                          {new Intl.DateTimeFormat(undefined, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true,
+                          }).format(new Date(message.timestamp))}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })
+            ) : (
+              <div className="flex h-full items-center justify-center text-muted-foreground">
+                No messages yet. Start the conversation!
+              </div>
+            )}
           </ScrollArea>
         </CardContent>
 

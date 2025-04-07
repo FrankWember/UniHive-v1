@@ -22,11 +22,6 @@ import { useCurrentUser } from '@/hooks/use-current-user'
 import { ChevronLeft } from 'lucide-react'
 import axios from 'axios'
 
-interface ChatPlusUserId {
-  _id: Id<"chats">
-  userId: string
-}
-
 export interface Chat {
   _id: Id<"chats">
   sellerId: string
@@ -66,6 +61,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     chatId ? (chatId as Id<"chats">) : null
   )
   const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
   const isInboxPage = pathname === '/home/inbox'
@@ -85,20 +81,25 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
       if (!allChats || allChats.length === 0) return
 
       setLoading(true)
+      setErrorMessage(null)
 
-      const allUserIds: ChatPlusUserId[] = allChats.map((chat) => ({
-        _id: chat._id,
-        userId: chat.customerId === userId ? chat.sellerId : chat.customerId
-      }))
-
-      const userIds = allUserIds.map((u) => u.userId)
+      // Create an array of user IDs we need to fetch
+      const userIds = allChats.map(chat => 
+        chat.customerId === userId ? chat.sellerId : chat.customerId
+      )
 
       try {
-        const { data: users }: { data: Customer[] } = await axios.post('/api/users', { userIds })
+        console.log("Fetching user data with IDs:", userIds)
+        
+        const response = await axios.post('/api/users', { userIds })
+        const users: Customer[] = response.data
+        
+        console.log("Received user data:", users)
 
+        // Map chat partners to each chat
         const resolvedChats = allChats.map((chat) => {
-          const userRef = allUserIds.find((id) => id._id === chat._id)
-          const customer = users.find((u) => u.id === userRef?.userId)
+          const partnerId = chat.customerId === userId ? chat.sellerId : chat.customerId
+          const customer = users.find((u) => u.id === partnerId)
 
           return {
             ...chat,
@@ -109,9 +110,11 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
           }
         })
 
+        // Sort by most recent message
         resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
         setChats(resolvedChats)
 
+        // Auto-select first chat if none selected
         if (!chatId && resolvedChats.length > 0 && currentChatId === null) {
           const firstChatId = resolvedChats[0]._id
           setCurrentChatId(firstChatId)
@@ -121,6 +124,7 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
         }
       } catch (err) {
         console.error('Error fetching user data:', err)
+        setErrorMessage('Failed to load chat participants. Please try refreshing the page.')
       } finally {
         setLoading(false)
       }
@@ -141,6 +145,23 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     if (isMobile) {
       router.push(`/home/inbox/${chatId}`)
     }
+  }
+
+  // Display error if any
+  if (errorMessage) {
+    return (
+      <div className="flex h-full items-center justify-center p-4">
+        <Card className="max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center text-xl font-bold">Error</CardTitle>
+            <CardDescription className="text-center text-red-500">{errorMessage}</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   // Wait for chats to load
