@@ -6,6 +6,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { userIds } = body;
 
+    console.log("Received userIds:", userIds);
 
     if (!Array.isArray(userIds) || !userIds.every(id => typeof id === "string")) {
       console.error("Invalid userIds format:", userIds);
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
+    console.log(`Found ${users.length} users out of ${userIds.length} requested IDs`);
     return NextResponse.json(users, { status: 200 });
   } catch (error) {
     console.error("Error fetching users:", error);
