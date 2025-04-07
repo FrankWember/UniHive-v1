@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useMemo} from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -55,11 +55,11 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     },
   })
 
+  // 🛡️ Guarded query call
   const chatMessages = useQuery(
     api.messages.getChatMessages,
     useMemo(() => (currentChatId ? { chatId: currentChatId } : "skip"), [currentChatId])
   )
-  
 
   useEffect(() => {
     if (!chatMessages || !currentChatId) return;
@@ -84,18 +84,17 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
       });
     }, 100);
     return () => clearTimeout(timeout);
-  }, [messages]);
-  
+  }, [messages])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setSendingMessage(true)
     if (!currentChatId) return;
+    setSendingMessage(true)
     await sendMessage({
       chatId: currentChatId,
       senderId: userId,
       text: values.message,
     });
-    
+
     form.reset()
     setSendingMessage(false)
   }
@@ -106,13 +105,21 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
     }
   }
 
+  if (!currentChatId) {
+    return (
+      <div className="h-full flex items-center justify-center text-muted-foreground">
+        Select a conversation to start chatting.
+      </div>
+    )
+  }
+
   return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="h-full flex flex-col"
-      >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="h-full flex flex-col"
+    >
       <Card className="flex flex-col h-full">
         {isMobile && (
           <div className="p-3 border-b flex items-center">
@@ -131,7 +138,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
           </div>
         )}
 
-          <CardContent className="flex-grow p-0 overflow-hidden">
+        <CardContent className="flex-grow p-0 overflow-hidden">
           <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
             {messages.map((message) => {
               const isMe = message.senderId === userId
