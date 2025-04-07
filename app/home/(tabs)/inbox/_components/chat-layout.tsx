@@ -8,218 +8,150 @@ import { Id } from '@/convex/_generated/dataModel'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ChatList } from './chat-list'
 import { ChatInterface } from './chat-interface'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarProvider,
+import { 
+  Sidebar, 
+  SidebarContent, 
+  SidebarHeader, 
+  SidebarProvider, 
   SidebarInset,
   SidebarRail
 } from '@/components/ui/sidebar'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useCurrentUser } from '@/hooks/use-current-user'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, HomeIcon } from 'lucide-react'
 import axios from 'axios'
 
+interface ChatPlusUserId {
+    _id: Id<"chats">
+    userId: string
+}
+
 export interface Chat {
-  _id: Id<"chats">
-  sellerId: string
-  customerId: string
-  type: string
-  customer: {
-    name: string
-    image?: string
-  }
-  lastMessage: {
-    chatId: Id<"chats">
-    senderId: string
-    text: string
-    timestamp: number
-    read: boolean
-  } | null
-  unreadCount: number
+    _id: Id<"chats">
+    sellerId: string
+    customerId: string
+    type: string
+    customer: {
+        name: string
+        image?: string
+    }
+    lastMessage: {
+        chatId: Id<"chats">
+        senderId: string
+        text: string
+        timestamp: number
+        read: boolean
+    } | null,
+    unreadCount: number
 }
 
 interface Customer {
-  id: string
-  name?: string
-  image?: string
+    id: string
+    name?: string
+    image?: string
 }
 
 export function ChatLayout({ chatId }: { chatId?: string }) {
-  console.log("[ChatLayout] Initializing with chatId:", chatId)
-  
   const router = useRouter()
   const pathname = usePathname()
   const isMobile = useIsMobile()
-  console.log("[ChatLayout] Device type:", isMobile ? "Mobile" : "Desktop")
-  console.log("[ChatLayout] Current pathname:", pathname)
-
-  const user = useCurrentUser()
-  const userId = user?.id
-  console.log("[ChatLayout] Current user:", user)
-
-  const [mounted, setMounted] = useState(false)
   const [chats, setChats] = useState<Chat[]>([])
-  const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(
-    chatId ? (chatId as Id<"chats">) : null
-  )
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const allChats = useQuery(api.chats.getAllChats, userId ? { userId } : "skip")
-  console.log("[ChatLayout] Raw allChats from query:", allChats)
+  const [currentChatId, setCurrentChatId] = useState<Id<"chats"> | null>(chatId ? chatId as Id<"chats"> : null)
+  const [loading, setLoading] = useState(false);
+  const user = useCurrentUser()
+  const userId = user?.id!
+  const currentChat = chats.find(chat => chat._id === currentChatId)
   
-  const isInboxPage = pathname === '/home/inbox'
-  console.log("[ChatLayout] Is inbox page:", isInboxPage)
+  // Fetch chats from Convex
+  const allChats = useQuery(api.chats.getAllChats,
+    userId ? { userId: userId } : "skip"
+  ) || []
 
-  // Delay rendering until mounted (for hydration safety)
   useEffect(() => {
-    console.log("[ChatLayout] Setting mounted state to true")
-    setMounted(true)
-  }, [])
-  
-  if (!mounted) {
-    console.log("[ChatLayout] Not mounted yet, returning null")
-    return null
-  }
-
-  // Block rendering until user is available
-  if (!userId) {
-    console.log("[ChatLayout] No userId available yet")
-    return <div className="flex h-full items-center justify-center">Loading user...</div>
-  }
-
-  // Fetch user info for chat partners
-  useEffect(() => {
-    const fetchChatsWithCustomer = async () => {
-      if (!allChats || allChats.length === 0) {
-        console.log("[ChatLayout] No chats available, skipping user fetch")
-        return
-      }
-
-      console.log("[ChatLayout] Starting to fetch user data for chat partners")
-      setLoading(true)
-      setErrorMessage(null)
-
-      // Create an array of user IDs we need to fetch
-      const userIds = allChats.map(chat => 
-        chat.customerId === userId ? chat.sellerId : chat.customerId
-      )
-      console.log("[ChatLayout] User IDs to fetch:", userIds)
-
-      try {
-        console.log("[ChatLayout] Sending API request to /api/users")
-        const response = await axios.post('/api/users', { userIds })
-        const users: Customer[] = response.data
-        
-        console.log("[ChatLayout] Received user data:", users)
-
-        // Map chat partners to each chat
-        const resolvedChats = allChats.map((chat) => {
-          const partnerId = chat.customerId === userId ? chat.sellerId : chat.customerId
-          const customer = users.find((u) => u.id === partnerId)
-          console.log(`[ChatLayout] Resolving chat ${chat._id} with partner ${partnerId}:`, customer)
-
-          return {
-            ...chat,
-            customer: {
-              name: customer?.name ?? 'Unknown',
-              image: customer?.image
+    const fetchChats = async () => {
+        if (!allChats || allChats.length <= 0) return;
+        setLoading(true)
+        let allUserIds: ChatPlusUserId[] = allChats.map((chat) => {
+            if (chat.customerId === user?.id) {
+                return {_id: chat._id, userId: chat.sellerId}
             }
-          }
+            return {_id: chat._id, userId: chat.customerId}
         })
+        
+        try {
+            const { data: users } = await axios.get(`/api/users`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    userIds: allUserIds
+                }
+            });  
+            const resolvedChats = allChats.map((chat) => {
+              const user = users.find((user: Customer) => {
+                return allUserIds.find((id) => id.userId === user.id)?._id === chat._id
+              })
+              return {
+                ...chat,
+                customer: user
+              }
+            })
+            
+            resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
+            
 
-        // Sort by most recent message
-        resolvedChats.sort((a, b) => (b.lastMessage?.timestamp ?? 0) - (a.lastMessage?.timestamp ?? 0))
-        console.log("[ChatLayout] Sorted chats:", resolvedChats)
-        setChats(resolvedChats)
-
-        // Auto-select first chat if none selected
-        if (!chatId && resolvedChats.length > 0 && currentChatId === null) {
-          const firstChatId = resolvedChats[0]._id
-          console.log(`[ChatLayout] Auto-selecting first chat: ${firstChatId}`)
-          setCurrentChatId(firstChatId)
-          if (isMobile) {
-            console.log(`[ChatLayout] Redirecting to first chat on mobile: ${firstChatId}`)
-            router.push(`/home/inbox/${firstChatId}`)
-          }
+            setChats(resolvedChats);
+            if (!currentChatId && resolvedChats[0]) {
+                setCurrentChatId(resolvedChats[0]._id);
+            }
+        } finally {
+            setLoading(false)
         }
-      } catch (err) {
-        console.error('[ChatLayout] Error fetching user data:', err)
-        setErrorMessage('Failed to load chat participants. Please try refreshing the page.')
-      } finally {
-        console.log("[ChatLayout] Finished fetching user data")
-        setLoading(false)
-      }
-    }
+    };
 
-    fetchChatsWithCustomer()
-  }, [allChats, userId, chatId, currentChatId, isMobile, router])
+        fetchChats();
+    }, [allChats, user]);
 
-  // Sync URL chatId to state if necessary
+  // Update currentChatId when chatId prop changes
   useEffect(() => {
-    if (chatId && currentChatId !== chatId) {
-      console.log(`[ChatLayout] Syncing currentChatId state with URL: ${chatId}`)
+    if (chatId) {
       setCurrentChatId(chatId as Id<"chats">)
     }
-  }, [chatId, currentChatId])
+  }, [chatId])
 
+  // Handle chat selection
   const handleChatSelect = (chatId: Id<"chats">) => {
-    console.log(`[ChatLayout] Chat selected: ${chatId}`)
     setCurrentChatId(chatId)
     if (isMobile) {
-      console.log(`[ChatLayout] Navigating to chat on mobile: ${chatId}`)
       router.push(`/home/inbox/${chatId}`)
     }
   }
 
-  // Display error if any
-  if (errorMessage) {
-    console.log("[ChatLayout] Rendering error view:", errorMessage)
-    return (
-      <div className="flex h-full items-center justify-center p-4">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle className="text-center text-xl font-bold">Error</CardTitle>
-            <CardDescription className="text-center text-red-500">{errorMessage}</CardDescription>
-          </CardHeader>
-          <CardContent className="flex justify-center">
-            <Button onClick={() => window.location.reload()}>Retry</Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  
+  // Determine if we're on the main inbox page
+  const isInboxPage = pathname === '/home/inbox'
 
-  // Wait for chats to load
-  if (allChats === undefined) {
-    console.log("[ChatLayout] Chats are loading, showing loading state")
-    return <div className="flex h-full items-center justify-center">Loading inbox...</div>
-  }
-
-  // ✅ MOBILE: chat view only
+  // For mobile: if we're on a specific chat page, only show the chat interface
   if (isMobile && !isInboxPage && currentChatId) {
-    console.log("[ChatLayout] Rendering mobile chat view")
     return (
       <div className="h-full w-full">
-        <ChatInterface
-          currentChatId={currentChatId}
-          setCurrentChatId={setCurrentChatId}
+        <ChatInterface 
+          currentChatId={currentChatId} 
+          setCurrentChatId={setCurrentChatId} 
           userId={userId}
-          participant={chats.find((c) => c._id === currentChatId)?.customer ?? { name: "Unknown" }}
+          participant={currentChat?.customer}
         />
+
       </div>
     )
   }
 
-  // ✅ MOBILE: chat list only
+  // For mobile: if we're on the main inbox page, only show the chat list
   if (isMobile && isInboxPage) {
-    console.log("[ChatLayout] Rendering mobile chat list view")
     return (
       <div className="h-full w-full">
-        <ChatList
+        <ChatList 
           currentChatId={currentChatId}
           setCurrentChatId={handleChatSelect}
           loading={loading}
@@ -230,21 +162,20 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
     )
   }
 
-  // ✅ DESKTOP: Full layout
-  console.log("[ChatLayout] Rendering desktop layout")
+  // For desktop: show sidebar with chat list and chat interface or "no chat selected" card
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader className="border-b p-4 flex gap-4">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => router.push('/home/services')}>
-              <ChevronLeft className="h-4 w-4" />
+          <div className='flex items-center gap-2'>
+            <Button variant="outline" size="icon" onClick={()=>router.push('/home/services')}>
+                <ChevronLeft className="h-4 w-4" />
             </Button>
             <h2 className="text-lg font-semibold">Inbox</h2>
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <ChatList
+          <ChatList 
             currentChatId={currentChatId}
             setCurrentChatId={handleChatSelect}
             loading={loading}
@@ -256,20 +187,23 @@ export function ChatLayout({ chatId }: { chatId?: string }) {
       </Sidebar>
       <SidebarInset>
         {currentChatId ? (
-          <ChatInterface
-            currentChatId={currentChatId}
-            setCurrentChatId={setCurrentChatId}
-            userId={userId}
-            participant={chats.find((c) => c._id === currentChatId)?.customer ?? { name: "Unknown" }}
-          />
+          <ChatInterface 
+          currentChatId={currentChatId} 
+          setCurrentChatId={setCurrentChatId} 
+          userId={userId}
+          participant={currentChat?.customer}
+        />
         ) : (
           <div className="flex h-full items-center justify-center p-4">
             <Card className="max-w-md">
               <CardHeader>
-                <CardTitle className="text-center text-2xl font-bold">No Chat Selected</CardTitle>
-                <CardDescription className="text-center">Select a chat from the sidebar to start messaging.</CardDescription>
+                <CardTitle className="flex items-center justify-center text-2xl font-bold">
+                  No Chat Selected
+                </CardTitle>
+                <CardDescription className="max-w-sm px-2 text-center">
+                  Select a chat from the sidebar to start messaging.
+                </CardDescription>
               </CardHeader>
-              <CardContent />
             </Card>
           </div>
         )}
