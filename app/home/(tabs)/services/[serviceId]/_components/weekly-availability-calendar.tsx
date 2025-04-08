@@ -55,8 +55,8 @@ export function WeeklyAvailabilityCalendar({ availability }: WeeklyAvailabilityC
 
     // Convert events to time slots and consolidate them
     const timeSlots = dayEvents.map(event => [
-      format(event.start, 'HH-mm-ss'),
-      format(event.end, 'HH-mm-ss')
+      format(event.start, 'HH:mm:ss'),
+      format(event.end, 'HH:mm:ss')
     ] as TimeSlot);
 
     const consolidatedSlots = consolidateTimeSlots(timeSlots);
