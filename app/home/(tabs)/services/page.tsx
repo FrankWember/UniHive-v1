@@ -67,7 +67,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
       {/* Content */}
         <div
-          className="flex-1 overflow-y-auto pb-8"
+          className="flex-1 overflow-y-auto pb-8 mt-4"
           style={{ paddingTop: 'env(safe-area-inset-top)' }}
         >
           <MatchedServices searchParams={searchParams} />
