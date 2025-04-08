@@ -147,8 +147,12 @@ export const BookingCard = ({
             </div>
             <div>
                 <Button 
-                    onClick={createChat}
-                    disabled={creatingChat}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        createChat();
+                      }}
+                      disabled={creatingChat}
                     className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md flex items-center gap-1"
                     >
                   {creatingChat ? (
