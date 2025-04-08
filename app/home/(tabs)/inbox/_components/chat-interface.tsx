@@ -111,14 +111,14 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
               <ChevronLeft className='h-4 w-4' />
               <span className='sr-only'>Back</span>
             </Button>
-            <Avatar className="w-7 h-7 mr-2">
+            <Avatar className="w-10 h-10 mr-2">
               {participant?.image ? (
                 <img src={participant.image} alt={participant.name} className="rounded-full object-cover" />
               ) : (
                 <AvatarFallback>{participant?.name?.charAt(0) ?? '?'}</AvatarFallback>
               )}
             </Avatar>
-            <h2 className="font-semibold truncate">{participant?.name ?? 'Chat'}</h2>
+            <h2 className="font-semibold text-lg truncate">{participant?.name ?? 'Chat'}</h2>
           </div>
         )}
 
@@ -150,7 +150,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
                           : 'bg-muted text-foreground rounded-bl-none'
                       }`}
                     >
-                      <span className="text-lg whitespace-pre-wrap">{message.text}</span>
+                      <span className="text-md whitespace-pre-wrap">{message.text}</span>
                       <span
                         className={`w-full flex justify-end text-[0.7rem] mt-1 ${
                           isMe ? 'text-primary-foreground/60' : 'text-muted-foreground'
@@ -170,7 +170,7 @@ export const ChatInterface = ({ currentChatId, setCurrentChatId, userId, partici
           </ScrollArea>
         </CardContent>
 
-       <CardFooter className="border-t p-3 bg-background z-10">
+       <CardFooter className="border-t p-3 bg-background z-10 mb-12">
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full space-x-2">
         <FormField
