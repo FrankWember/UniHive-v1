@@ -51,7 +51,7 @@ export function AvailabilityInput({
     if (!newValue[selectedDay]) {
       newValue[selectedDay] = []
     }
-    newValue[selectedDay].push(["09-00-00", "17-00-00"])
+    newValue[selectedDay].push(["09:00:00", "17:00:00"])
     onChange(newValue)
   }
 
@@ -67,11 +67,11 @@ export function AvailabilityInput({
   const formatTimeToString = (date: Date): string => {
     const hours = date.getHours().toString().padStart(2, '0')
     const minutes = date.getMinutes().toString().padStart(2, '0')
-    return `${hours}-${minutes}-00`
+    return `${hours}:${minutes}:00`
   }
 
   const parseTimeString = (timeString: string): Date => {
-    const [hours, minutes] = timeString.split("-")
+    const [hours, minutes] = timeString.split(":")
     const date = new Date()
     date.setHours(parseInt(hours, 10))
     date.setMinutes(parseInt(minutes, 10))
