@@ -68,7 +68,7 @@ export const SettingsContent = ({ user, userData }: { userData: PrismaUser, user
         <Link href="/home/settings/profile">
             <Button variant="ghost"><CircleUser className='h-4 w-4 mr-2' /> Profile Information</Button>
         </Link>
-        <Link href="auth/reset-password">
+        <Link href="/auth/reset-password">
             <Button variant="ghost"><Lock className='h-4 w-4 mr-2' /> Reset Password</Button>
         </Link>
         </div>
