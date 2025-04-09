@@ -23,14 +23,14 @@ export const ModeSwitcher = () => {
         // Redirect to user service home
         window.location.href = "/home/services"
       }
-    }, 1000)
+    }, 500)
   }
 
   return (
     <Button onClick={handleSwitch} disabled={isLoading}>
       {isLoading ? (
         <>
-          <Loader2 className="h-4 w-4 mr-2 animate-spin stroke-red-500" />
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
           Switching...
         </>
       ) : (

@@ -129,7 +129,7 @@ export const SettingsContent = ({ user, userData }: { userData: PrismaUser, user
                         <CardDescription>**********</CardDescription>
                     </CardHeader>
                     <CardFooter className='flex justify-end'>
-                        <Link href="auth/reset-password">
+                        <Link href="/auth/reset-password">
                             <Button><Lock className='h-4 w-4 mr-2' /> Reset Password</Button>
                         </Link>
                     </CardFooter>
