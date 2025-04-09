@@ -24,8 +24,8 @@ export function generateEvents(availability: Availability): CalendarEvent[] {
     const date = addDays(startOfWeek, dayIndex);
 
     slots.forEach(([start, end], index) => {
-      const [startHour, startMinute] = start.split('-').map(Number);
-      const [endHour, endMinute] = end.split('-').map(Number);
+      const [startHour, startMinute] = start.split(':').map(Number);
+      const [endHour, endMinute] = end.split(':').map(Number);
 
       const eventStart = setHours(setMinutes(setSeconds(date, 0), startMinute), startHour);
       const eventEnd = setHours(setMinutes(setSeconds(date, 0), endMinute), endHour);

@@ -40,7 +40,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
       <div className="sticky top-0 z-50 bg-background">
       <ServicesHeader />
 
-      <div className='p-2 max-w-screen'>
+      <div className='px-2 max-w-screen'>
         <ScrollArea className="w-full whitespace-nowrap mt-[5rem] px-4 md:px-4 bg-muted/5 shadow-sm scroll-smooth bg-background/100">
           <div className='flex items-center w-max gap-8 md:gap-12 p-2 h-14'>
             <Link  href={`/home/services`}>
@@ -67,7 +67,7 @@ const ServicesPage = async ({ searchParams }: { searchParams: { [key: string]: s
 
       {/* Content */}
         <div
-          className="flex-1 overflow-y-auto pb-8 mt-4"
+          className="flex justify-center overflow-y-auto pb-8 mt-4"
           style={{ paddingTop: 'env(safe-area-inset-top)' }}
         >
           <MatchedServices searchParams={searchParams} />
